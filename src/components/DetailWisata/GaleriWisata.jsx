@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
-import GaleriNglanggeran1 from "../../assets/DetailWisata/GaleriNglanggeran1.png";
-import GaleriNglanggeran2 from "../../assets/DetailWisata/GaleriNglanggeran2.png";
+import GaleriNglanggeran1 from "../../assets/DetailWisata/galeriNglanggeran1.png";
+import GaleriNglanggeran2 from "../../assets/DetailWisata/galeriNglanggeran2.png";
 import arrowRight from "../../assets/DetailWisata/icon/arrowRight.svg";
 
 const images = [GaleriNglanggeran1, GaleriNglanggeran2, GaleriNglanggeran1, GaleriNglanggeran2];
