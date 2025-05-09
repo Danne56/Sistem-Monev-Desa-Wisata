@@ -10,6 +10,8 @@ import { Atraksi } from "./pages/Atraksi";
 import { DetailWisata } from "./pages/DetailWisata";
 import { Navbar2 } from "./components/Navbar/Navbar2";
 import { LandingPage } from "./pages/LandingPage";
+import { DashboardDinas } from "./pages/DashboardDinas";
+import { DashboardAdmin } from "./pages/DashboardAdmin";
 
 function AppContent() {
   const location = useLocation();
@@ -20,8 +22,9 @@ function AppContent() {
 
   return (
     <>
-      {!isSpecialPage && <Navbar />}
+      {path == "/dashboard/admin" || "/dashboard/admin" ? null : !isSpecialPage && <Navbar />}
       {path === "/masuk" || path === "/register" ? <Navbar2 /> : null}
+
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<Home />} />
@@ -30,6 +33,8 @@ function AppContent() {
         <Route path="/lokasi" element={<Lokasi />} />
         <Route path="/atraksi" element={<Atraksi />} />
         <Route path="/detail" element={<DetailWisata />} />
+        <Route path="/dashboard/dinas" element={<DashboardDinas />} />
+        <Route path="/dashboard/admin" element={<DashboardAdmin />} />
       </Routes>
       <Footer />
     </>

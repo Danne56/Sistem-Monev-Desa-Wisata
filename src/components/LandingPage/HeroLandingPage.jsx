@@ -4,6 +4,7 @@ import arrow_outward from "../../assets/Beranda/arrow_outward.svg";
 import arrowRight from "../../assets/LandingPage/icon/arrowRight.svg";
 import arrowLeft from "../../assets/LandingPage/icon/arrowLeft.svg";
 import location from "../../assets/LandingPage/icon/location.svg";
+import { Link } from "react-router-dom";
 
 // Data dummy desa
 const desaList = [
@@ -93,11 +94,12 @@ export const HeroLandingPage = () => {
             Inovasi dan adaptasi masyarakat desa membuka ruang untuk berkarya, menciptakan lapangan kerja serta mempersiapkan desa wisata lebih mendunia melalui pariwisata dan ekonomi kreatif. Menyajikan pilihan bagi wisatawan untuk
             menikmati alam terbuka, sembari merasakan pengalaman berwisata di tengah kehidupan masyarakat pedesaan.
           </p>
-
-          <button className="mt-8 flex items-center gap-2 border border-white px-6 py-3 rounded-full mx-auto">
-            <span className="text-white text-normal sm:text-xl">Masuk Monev</span>
-            <img src={arrow_outward} alt="arrow" />
-          </button>
+          <Link to="/home">
+            <button className="mt-8 flex items-center gap-2 border border-white px-6 py-3 rounded-full mx-auto">
+              <span className="text-white text-normal sm:text-xl">Masuk Monev</span>
+              <img src={arrow_outward} alt="arrow" />
+            </button>
+          </Link>
         </div>
       </div>
 
