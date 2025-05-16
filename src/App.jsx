@@ -12,19 +12,20 @@ import { Navbar2 } from "./components/Navbar/Navbar2";
 import { LandingPage } from "./pages/LandingPage";
 import { DashboardDinas } from "./pages/DashboardDinas";
 import { DashboardAdmin } from "./pages/DashboardAdmin";
+import { UserContextProvider } from "./context/UserContext";
 
 function AppContent() {
   const location = useLocation();
   const path = location.pathname;
 
-  const specialPaths = ["/masuk", "/register", "/"]; // tambahkan "/" di sini
+  const specialPaths = ["/masuk", "/register", "/"]; 
   const isSpecialPage = specialPaths.includes(path);
 
   return (
     <>
-      {path == "/dashboard/admin" || "/dashboard/admin" ? null : !isSpecialPage && <Navbar />}
-      {path === "/masuk" || path === "/register" ? <Navbar2 /> : null}
-
+      {/* {path == "/dashboard/admin" || "/dashboard/admin" ? null : !isSpecialPage && <Navbar />}
+      {path === "/masuk" || path === "/register" ? <Navbar2 /> : null} */}
+      <Navbar/>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<Home />} />
@@ -44,9 +45,11 @@ function AppContent() {
 // Komponen utama
 function App() {
   return (
+    <UserContextProvider>
     <BrowserRouter>
       <AppContent />
     </BrowserRouter>
+    </UserContextProvider>
   );
 }
 
