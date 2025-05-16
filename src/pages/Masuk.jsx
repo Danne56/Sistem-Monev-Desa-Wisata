@@ -27,6 +27,7 @@ export const Masuk = () => {
           if (res.ok) {
             // Token valid → arahkan ke home
             navigate("/home");
+            console.log(res.data)
           } else {
             // Token tidak valid → hapus token dan tetap di halaman login
             localStorage.removeItem("token");
