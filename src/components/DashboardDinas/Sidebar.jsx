@@ -46,25 +46,25 @@ export const Sidebar = ({ activeSection, setActiveSection }) => {
       )}
 
       {/* Sidebar content */}
-      <div className={`bg-white md:w-64 flex-shrink-0 border-r border-gray-200 fixed md:sticky top-0 h-full z-40 transition-all duration-300 ease-in-out ${isOpen ? "left-0 w-64" : "-left-64 w-0 md:left-0 md:w-64"}`}>
+      <div className={`bg-white md:w-64 flex-shrink-0 border-r border-gray-200 fixed md:sticky top-0 h-full z-40 transition-all duration-300 ease-in-out ${isOpen ? "left-0 w-64 " : "-left-64 w-0 md:left-0 md:w-64"}`}>
         <div className="p-4 flex items-center">
           <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white font-bold">M</div>
           <span className="ml-2 font-bold text-lg">Monev</span>
         </div>
 
         <nav className="mt-6">
-          <div className={`flex items-center px-4 py-3 cursor-pointer ${activeSection === "verifikasi" ? "bg-gray-100 border-l-4 border-black" : ""}`} onClick={() => handleNavClick("verifikasi")}>
+          <div className={`flex items-center px-4 py-3 cursor-pointer ${activeSection === "kategori" ? "bg-gray-100 border-l-4 border-black" : ""}`} onClick={() => handleNavClick("kategori")}>
             <div className="w-6 h-6 mr-3">
               <img src={verifikasi} alt="icon-verif" />
             </div>
-            <span className={activeSection === "verifikasi" ? "font-medium" : "text-gray-600"}>Permintaan Verifikasi</span>
+            <span className={activeSection === "kategori" ? "font-medium" : "text-gray-600"}>Kategori Desa</span>
           </div>
 
-          <div className={`flex items-center px-4 py-3 cursor-pointer ${activeSection === "akun" ? "bg-gray-100 border-l-4 border-black" : ""}`} onClick={() => handleNavClick("akun")}>
+          <div className={`flex items-center px-4 py-3 cursor-pointer ${activeSection === "status" ? "bg-gray-100 border-l-4 border-black" : ""}`} onClick={() => handleNavClick("status")}>
             <div className="w-6 h-6 mr-3">
               <img src={accountCircle} alt="accountCircle" />
             </div>
-            <span className={activeSection === "akun" ? "font-medium" : "text-gray-600"}>Akun</span>
+            <span className={activeSection === "status" ? "font-medium" : "text-gray-600"}>Status Desa</span>
           </div>
         </nav>
       </div>

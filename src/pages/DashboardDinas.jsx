@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { Verifikasi } from "../components/DashboardDinas/Verifikasi";
 import { Sidebar } from "../components/DashboardDinas/Sidebar";
-import { Akun } from "../components/DashboardDinas/Akun";
+import { KategoriDesa } from "../components/DashboardDinas/KategoriDesa";
+import { StatusDesa } from "../components/DashboardDinas/StatusDesa";
 
 export const DashboardDinas = () => {
-  const [activeSection, setActiveSection] = useState("verifikasi");
+  const [activeSection, setActiveSection] = useState("kategori");
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
       <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
-      {activeSection === "verifikasi" ? <Verifikasi /> : <Akun />}
+      {activeSection === "kategori" ? <KategoriDesa /> : <StatusDesa />}
     </div>
   );
 };

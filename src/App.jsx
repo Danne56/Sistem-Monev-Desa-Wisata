@@ -10,22 +10,22 @@ import { Atraksi } from "./pages/Atraksi";
 import { DetailWisata } from "./pages/DetailWisata";
 import { Navbar2 } from "./components/Navbar/Navbar2";
 import { LandingPage } from "./pages/LandingPage";
+import { UserContextProvider } from "./context/UserContext";
 import { DashboardDinas } from "./pages/DashboardDinas";
 import { DashboardAdmin } from "./pages/DashboardAdmin";
-import { UserContextProvider } from "./context/UserContext";
+
+
 
 function AppContent() {
   const location = useLocation();
   const path = location.pathname;
 
-  const specialPaths = ["/masuk", "/register", "/"]; 
+  const specialPaths = ["/masuk", "/register", "/", "/dashboard/dinas", "/dashboard/admin"]; 
   const isSpecialPage = specialPaths.includes(path);
 
   return (
     <>
-      {/* {path == "/dashboard/admin" || "/dashboard/admin" ? null : !isSpecialPage && <Navbar />}
-      {path === "/masuk" || path === "/register" ? <Navbar2 /> : null} */}
-      <Navbar/>
+      {isSpecialPage ? <Navbar2 /> : <Navbar />}
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<Home />} />
