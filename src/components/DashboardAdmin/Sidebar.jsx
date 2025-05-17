@@ -60,6 +60,13 @@ export const Sidebar = ({ activeSection, setActiveSection }) => {
             <span className={activeSection === "verifikasi" ? "font-medium" : "text-gray-600"}>Permintaan Verifikasi</span>
           </div>
 
+          <div className={`flex items-center px-4 py-3 cursor-pointer ${activeSection === "kelolakun" ? "bg-gray-100 border-l-4 border-black" : ""}`} onClick={() => handleNavClick("kelolakun")}>
+            <div className="w-6 h-6 mr-3">
+              <img src={accountCircle} alt="kelola-akun" />
+            </div>
+            <span className={activeSection === "kelolakun" ? "font-medium" : "text-gray-600"}>Kelola Akun</span>
+          </div>
+
           <div className={`flex items-center px-4 py-3 cursor-pointer ${activeSection === "akun" ? "bg-gray-100 border-l-4 border-black" : ""}`} onClick={() => handleNavClick("akun")}>
             <div className="w-6 h-6 mr-3">
               <img src={accountCircle} alt="accountCircle" />
