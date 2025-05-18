@@ -1,24 +1,53 @@
-// Verifikasi.jsx
 import React, { useState, useEffect } from "react";
 import profile from "../../assets/Dashboard/profile.svg";
 import { FaCaretDown } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { axiosInstance } from "../../config";
 
 export const Verifikasi = () => {
-  const [requests, setRequests] = useState([
-    { id: 1, email: "desawisata@gmail.com", name: "Desa Wisata Lorem Ipsum", date: "18/04/2025 23.17", status: "Diterima" },
-    { id: 2, email: "desawisata@gmail.com", name: "Desa Wisata Lorem Ipsum", date: "18/04/2025 23.17", status: "Diproses" },
-    { id: 3, email: "desawisata@gmail.com", name: "Desa Wisata Lorem Ipsum", date: "18/04/2025 23.17", status: "Selesai" },
-    { id: 4, email: "desawisata@gmail.com", name: "Desa Wisata Lorem Ipsum", date: "18/04/2025 23.17", status: "Ditolak" },
-    { id: 5, email: "desawisata@gmail.com", name: "Desa Wisata Lorem Ipsum", date: "18/04/2025 23.17", status: "Diterima" },
-    { id: 6, email: "desawisata@gmail.com", name: "Desa Wisata Lorem Ipsum", date: "18/04/2025 23.17", status: "Diproses" },
-    { id: 7, email: "desawisata@gmail.com", name: "Desa Wisata Lorem Ipsum", date: "18/04/2025 23.17", status: "Selesai" },
-    { id: 8, email: "desawisata@gmail.com", name: "Desa Wisata Lorem Ipsum", date: "18/04/2025 23.17", status: "Ditolak" },
-  ]);
-
+  const [requests, setRequests] = useState([]);
   const [openDropdown, setOpenDropdown] = useState(null);
 
-  // Close dropdown when clicking outside
+  useEffect(() => {
+    const fetchRequests = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const response = await axiosInstance.get("/api/permintaan", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const result = response.data;
+
+        if (result.status === "success") {
+          const mappedData = result.data.map((req, index) => ({
+            id: index + 1,
+            kd_permintaan: req.kd_permintaan,
+            email: req.email,
+            name: req.nama_desa_wisata,
+            date: new Date(req.created_at).toLocaleString(),
+            status: capitalizeFirstLetter(req.status_permintaan),
+            kd_desa: req.kd_desa,
+          }));
+
+          setRequests(mappedData);
+        } else {
+          Swal.fire("Gagal", "Tidak dapat memuat data permintaan.", "error");
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Kesalahan", "Terjadi kesalahan jaringan.", "error");
+      }
+    };
+
+    fetchRequests();
+  }, []);
+
+  const capitalizeFirstLetter = (string) =>
+    string.charAt(0).toUpperCase() + string.slice(1);
+
+  // Dropdown
   useEffect(() => {
     const closeDropdown = (e) => {
       if (!e.target.closest(".status-dropdown")) {
@@ -51,9 +80,15 @@ export const Verifikasi = () => {
     setOpenDropdown(openDropdown === id ? null : id);
   };
 
-  const changeStatus = (requestId, newStatus) => {
+  const changeStatus = async (request, newStatus) => {
+    if (!newStatus || !statusOptions.includes(newStatus)) {
+      return Swal.fire("Gagal", "Pilih status yang valid.", "error");
+    }
+
+    const token = localStorage.getItem("token");
+
     Swal.fire({
-      title: "Konfirmasi Perubahan Status",
+      title: "Konfirmasi Perubahan",
       text: `Apakah Anda yakin ingin mengubah status menjadi "${newStatus}"?`,
       icon: "warning",
       showCancelButton: true,
@@ -61,12 +96,90 @@ export const Verifikasi = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Ya, Ubah!",
       cancelButtonText: "Batal",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        setRequests(requests.map((req) => (req.id === requestId ? { ...req, status: newStatus } : req)));
-        setOpenDropdown(null);
+        try {
+          const response = await axiosInstance.put(
+            `/api/permintaan/${request.kd_permintaan}`,
+            {
+              status_permintaan: newStatus.toLowerCase(),
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
-        Swal.fire("Berhasil!", "Status berhasil diubah.", "success");
+          if (response.data.status !== "success") {
+            throw new Error(response.data.message || "Gagal ubah status");
+          }
+
+          const updatedRequestResponse = await axiosInstance.get(
+            `/api/permintaan/${request.kd_permintaan}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          const updatedRequest = updatedRequestResponse.data.data;
+
+          setRequests((prev) =>
+            prev.map((req) =>
+              req.kd_permintaan === request.kd_permintaan
+                ? {
+                    ...req,
+                    status: capitalizeFirstLetter(
+                      updatedRequest.status_permintaan
+                    ),
+                  }
+                : req
+            )
+          );
+
+          if (newStatus === "Selesai") {
+            const postStatusResponse = await axiosInstance.post(
+              "/api/status-desa",
+              {
+                kd_desa: updatedRequest.kd_desa,
+                status: "aktif",
+                keterangan: `Desa Wisata ${updatedRequest.nama_desa_wisata} telah diverifikasi.`,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+
+            if (postStatusResponse.data.status !== "success") {
+              throw new Error(
+                postStatusResponse.data.message ||
+                  "Gagal menambahkan status desa."
+              );
+            }
+
+            Swal.fire(
+              "Berhasil!",
+              "Permintaan selesai & desa ditambahkan ke status aktif.",
+              "success"
+            );
+          } else {
+            Swal.fire("Berhasil!", "Status berhasil diubah.", "success");
+          }
+        } catch (err) {
+          console.error("Error updating status:", err);
+          Swal.fire(
+            "Gagal",
+            err.response?.data?.message ||
+              "Terjadi kesalahan saat mengubah status.",
+            "error"
+          );
+        }
+
+        setOpenDropdown(null);
       }
     });
   };
@@ -83,7 +196,11 @@ export const Verifikasi = () => {
               <div className="text-sm text-gray-500">Admin</div>
             </div>
             <div className="h-10 w-10 rounded-full bg-blue-600 overflow-hidden">
-              <img src={profile} alt="Profile" className="h-full w-full object-cover" />
+              <img
+                src={profile}
+                alt="Profile"
+                className="h-full w-full object-cover"
+              />
             </div>
           </div>
         </div>
@@ -106,34 +223,61 @@ export const Verifikasi = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th scope="col" className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-sm font-medium text-gray-600"
+                >
                   No
                 </th>
-                <th scope="col" className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-sm font-medium text-gray-600"
+                >
                   Email
                 </th>
-                <th scope="col" className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-sm font-medium text-gray-600"
+                >
                   Nama Desa Wisata
                 </th>
-                <th scope="col" className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                  Tanggal & Waktu Permintaan(?)
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-sm font-medium text-gray-600"
+                >
+                  Tanggal & Waktu Permintaan
                 </th>
-                <th scope="col" className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-sm font-medium text-gray-600"
+                >
                   Status Request
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {requests.map((request) => (
-                <tr key={request.id}>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{request.id}</td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{request.email}</td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{request.name}</td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{request.date}</td>
+                <tr key={request.kd_permintaan}>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                    {request.id}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                    {request.email}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                    {request.name}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                    {request.date}
+                  </td>
                   <td className="px-4 py-3 whitespace-nowrap text-sm relative">
                     <div className="status-dropdown">
-                      <button onClick={() => toggleDropdown(request.id)} className={`inline-flex items-center px-3 py-1 rounded ${getStatusColor(request.status)}`}>
-                        {request.status} <FaCaretDown size={16} className="ml-1" />
+                      <button
+                        onClick={() => toggleDropdown(request.id)}
+                        className={`inline-flex items-center px-3 py-1 rounded ${getStatusColor(request.status)}`}
+                      >
+                        {request.status}{" "}
+                        <FaCaretDown size={16} className="ml-1" />
                       </button>
 
                       {openDropdown === request.id && (
@@ -141,7 +285,12 @@ export const Verifikasi = () => {
                           <ul className="py-1">
                             {statusOptions.map((status) => (
                               <li key={status}>
-                                <button onClick={() => changeStatus(request.id, status)} className={`block px-4 py-2 text-sm w-full text-left hover:bg-gray-100 ${status === request.status ? "font-bold" : ""}`}>
+                                <button
+                                  onClick={() => changeStatus(request, status)} // Kirim request & status langsung
+                                  className={`block px-4 py-2 text-sm w-full text-left hover:bg-gray-100 ${
+                                    status === request.status ? "font-bold" : ""
+                                  }`}
+                                >
                                   {status}
                                 </button>
                               </li>

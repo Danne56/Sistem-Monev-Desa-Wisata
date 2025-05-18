@@ -4,6 +4,7 @@ import mataBuka from "../assets/Register/mataBuka.svg";
 import mataTutup from "../assets/Register/mataTutup.svg";
 import other_pay from "../assets/Masuk/other-pay.png";
 import penglipuran from "../assets/Masuk/penglipuran.png";
+import { axiosInstance } from "../config";
 
 export const Masuk = () => {
   const [isClosed, setIsClosed] = useState(true);
@@ -16,31 +17,23 @@ export const Masuk = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      fetch("http://localhost:5000/authentication/me", {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      })
-        .then(async (res) => {
-          if (res.ok) {
-            // Token valid → arahkan ke home
+      axiosInstance
+        .get("/authentication/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          if (res.status === 200) {
             navigate("/home");
-            console.log(res.data)
-          } else {
-            // Token tidak valid → hapus token dan tetap di halaman login
-            localStorage.removeItem("token");
-            setError("Sesi Anda telah berakhir. Silakan login kembali.");
           }
         })
         .catch((err) => {
-          console.error("Error verifying token:", err);
           localStorage.removeItem("token");
-          setError("Terjadi kesalahan. Silakan login ulang.");
+          setError("Sesi Anda telah berakhir. Silakan login kembali.");
         });
     }
-  }, [navigate, setError]);
+  }, [navigate]);
 
   const toggleEye = () => {
     setIsClosed(!isClosed);
@@ -50,28 +43,28 @@ export const Masuk = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/authentication/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      const response = await axiosInstance.post("/authentication/login", {
+        email,
+        password,
       });
 
-      const data = await response.json();
+      const data = response.data;
 
-      if (!response.ok) {
+      if (data.status === "success") {
+        localStorage.setItem("token", data.token);
+        navigate("/home");
+        // setTimeout(() => {
+        window.location.reload();
+        // }, 10);
+      } else {
         throw new Error(data.message || "Login gagal");
       }
-
-      // Simpan token ke localStorage
-      localStorage.setItem("token", data.token);
-
-      // Redirect ke halaman utama
-      window.location.href = "/home";
-
     } catch (err) {
-      setError(err.message || "Email atau password salah!");
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "Email atau password salah!";
+      setError(errorMessage);
     }
   };
 
@@ -79,7 +72,11 @@ export const Masuk = () => {
     <>
       <section className="">
         <div className="container-register flex">
-          <img src={penglipuran} className="w-[70vw] h-screen lg:block hidden object-cover" alt="img" />
+          <img
+            src={penglipuran}
+            className="w-[70vw] h-screen lg:block hidden object-cover"
+            alt="img"
+          />
           <div className="lg:w-[30%] h-screen w-full grid place-items-center">
             <form
               onSubmit={handleLogin}
@@ -91,7 +88,10 @@ export const Masuk = () => {
 
               {/* Email */}
               <div className="input2 flex flex-col mb-6">
-                <label htmlFor="email" className="md:text-base text-smallText text-[#5D5D5D] tracking-[-0.32px] font-semibold leading-normal">
+                <label
+                  htmlFor="email"
+                  className="md:text-base text-smallText text-[#5D5D5D] tracking-[-0.32px] font-semibold leading-normal"
+                >
                   Email
                 </label>
                 <input
@@ -108,7 +108,10 @@ export const Masuk = () => {
 
               {/* Password */}
               <div className="input2 flex flex-col mb-6 relative">
-                <label htmlFor="password" className="md:text-base text-smallText text-[#5D5D5D] tracking-[-0.32px] font-semibold leading-normal">
+                <label
+                  htmlFor="password"
+                  className="md:text-base text-smallText text-[#5D5D5D] tracking-[-0.32px] font-semibold leading-normal"
+                >
                   Password:
                 </label>
                 <input
