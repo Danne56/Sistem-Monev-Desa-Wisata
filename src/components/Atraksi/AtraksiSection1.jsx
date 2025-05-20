@@ -1,10 +1,10 @@
 import React from "react";
 import location from "../../assets/Atraksi/location.svg";
-import gunungApiPurba from "../../assets/Atraksi/WisataPopuler/gunungApiPurba.png";
-import indroKiloHills from "../../assets/Atraksi/WisataPopuler/indroKiloHills.png";
-import kawahSikidang from "../../assets/Atraksi/WisataPopuler/kawahSikidang.png";
-import paralayang from "../../assets/Atraksi/WisataPopuler/paralayang.png";
-import sentraOpak from "../../assets/Atraksi/WisataPopuler/sentraOpak.png";
+import gunungApiPurba from "../../assets/Atraksi/WisataPopuler/gunungApiPurba.webp";
+import indroKiloHills from "../../assets/Atraksi/WisataPopuler/indroKiloHills.webp";
+import kawahSikidang from "../../assets/Atraksi/WisataPopuler/kawahSikidang.webp";
+import paralayang from "../../assets/Atraksi/WisataPopuler/paralayang.webp";
+import sentraOpak from "../../assets/Atraksi/WisataPopuler/sentraOpak.webp";
 
 const Card = ({ image, title, locationName }) => (
   <div className="relative w-full h-full rounded-xl overflow-hidden bg-cover bg-center" style={{ backgroundImage: `url(${image})` }}>

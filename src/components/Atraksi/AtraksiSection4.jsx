@@ -1,8 +1,8 @@
 import React from "react";
 import location from "../../assets/Beranda/location.svg";
-import DewiSinta from "../../assets/Beranda/DewiSinta.png";
-import GoaCemara from "../../assets/Beranda/GoaCemara.png";
-import Nglanggeran from "../../assets/Beranda/Nglanggeran.png";
+import DewiSinta from "../../assets/Beranda/DewiSinta.webp";
+import GoaCemara from "../../assets/Beranda/GoaCemara.webp";
+import Nglanggeran from "../../assets/Beranda/Nglanggeran.webp";
 
 export const AtraksiSection4 = () => {
   const wisataData = [

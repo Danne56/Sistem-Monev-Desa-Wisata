@@ -5,7 +5,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-import Pulosari from "../../assets/Beranda/Pulosari.png";
+import Pulosari from "../../assets/Beranda/Pulosari.webp";
 import location from "../../assets/Beranda/location.svg";
 import arrowLeft from "../../assets/Beranda/arrowLeft.svg";
 import arrowRight from "../../assets/Beranda/arrowRight.svg";

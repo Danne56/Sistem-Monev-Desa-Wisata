@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import DewitaMandiri from "../../assets/Beranda/DewitaMandiri.png";
+import DewitaMandiri from "../../assets/Beranda/DewitaMandiri.webp";
 import arrowGreenRight from "../../assets/Beranda/arrowGreenRight.svg";
 import arrowGreenLeft from "../../assets/Beranda/arrowGreenLeft.svg";
 import timerIcon from "../../assets/Beranda/timerIcon.svg";

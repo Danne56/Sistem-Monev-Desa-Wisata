@@ -1,8 +1,8 @@
 import React from "react";
 import location from "../../assets/Beranda/location.svg";
-import Top1 from "../../assets/Beranda/DewiSinta.png";
-import Top2 from "../../assets/Beranda/GoaCemara.png";
-import Top3 from "../../assets/Beranda/Nglanggeran.png";
+import Top1 from "../../assets/Beranda/DewiSinta.webp";
+import Top2 from "../../assets/Beranda/GoaCemara.webp";
+import Top3 from "../../assets/Beranda/Nglanggeran.webp";
 import shadow from "../../assets/Beranda/shadow.png";
 import { Link } from "react-router-dom";
 

@@ -1,25 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import profile from "../../assets/Dashboard/profile.svg";
 import { FaCaretDown, FaPencilAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { axiosInstance } from "../../config";
+import { UserContext } from "../../context/UserContext";
 
 export const KelolaAkun = () => {
-  const [accounts, setAccounts] = useState([
-    { id: 1, name: "Desa Wisata Lorem Ipsum", email: "desawisata@gmail.com", status: "Aktif" },
-    { id: 2, name: "Desa Wisata Lorem Ipsum", email: "desawisata@gmail.com", status: "Aktif" },
-    { id: 3, name: "Desa Wisata Lorem Ipsum", email: "desawisata@gmail.com", status: "Aktif" },
-    { id: 4, name: "Desa Wisata Lorem Ipsum", email: "desawisata@gmail.com", status: "Aktif" },
-    { id: 5, name: "Desa Wisata Lorem Ipsum", email: "desawisata@gmail.com", status: "Aktif" },
-    { id: 6, name: "Desa Wisata Lorem Ipsum", email: "desawisata@gmail.com", status: "Aktif" },
-    { id: 7, name: "Desa Wisata Lorem Ipsum", email: "desawisata@gmail.com", status: "Aktif" },
-    { id: 8, name: "Desa Wisata Lorem Ipsum", email: "desawisata@gmail.com", status: "Aktif" },
-  ]);
+  const [accounts, setAccounts] = useState([]);
+  const { user } = useContext(UserContext);
+
+  // Fetch data desa wisata saat komponen mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosInstance.get("/api/desa-wisata");
+        const data = response.data.data || [];
+
+        // Mapping data agar cocok UI
+        const mappedData = data.map((desa, index) => ({
+          id: index + 1,
+          name: desa.nama_desa,
+          email: desa.email,
+          status: desa.is_verified ? "Aktif" : "Tidak Aktif",
+        }));
+
+        setAccounts(mappedData);
+      } catch (err) {
+        console.error("Gagal memuat data:", err);
+        setError("Gagal memuat data desa wisata.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const [openDropdown, setOpenDropdown] = useState(null);
   const [filters, setFilters] = useState({
     status: "Aktif",
     provinsi: "Jawa Tengah",
-    kabupaten: "Magelang"
+    kabupaten: "Magelang",
   });
 
   // Filter options
@@ -43,39 +64,54 @@ export const KelolaAkun = () => {
     setOpenDropdown(openDropdown === id ? null : id);
   };
 
-  const changeStatus = (accountId, newStatus) => {
+  const changeStatus = async (accountId, newStatus, accountEmail) => {
+    const token = localStorage.getItem("token");
+
     Swal.fire({
       title: "Konfirmasi Perubahan Status",
-      text: `Apakah Anda yakin ingin mengubah status akun menjadi "${newStatus}"?`,
+      text: `Apakah Anda yakin ingin mengubah status menjadi "${newStatus}"?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Ya, Ubah!",
       cancelButtonText: "Batal",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        setAccounts(accounts.map((acc) => (acc.id === accountId ? { ...acc, status: newStatus } : acc)));
-        setOpenDropdown(null);
+        try {
+          // Kirim request ke endpoint verifikasi
+          const response = await axiosInstance.put(
+            `/authentication/verify/${accountEmail}`,
+            {
+              is_verified: newStatus === "Aktif" ? true : false,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
-        Swal.fire("Berhasil!", "Status akun berhasil diubah.", "success");
-      }
-    });
-  };
-
-  const handleResetPassword = (accountId) => {
-    Swal.fire({
-      title: "Reset Password",
-      text: "Apakah Anda yakin ingin mereset password akun ini?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, Reset!",
-      cancelButtonText: "Batal",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire("Berhasil!", "Password akun berhasil direset.", "success");
+          if (response.data.status === "success") {
+            // Update UI
+            setAccounts(
+              accounts.map((acc) =>
+                acc.id === accountId ? { ...acc, status: newStatus } : acc
+              )
+            );
+            setOpenDropdown(null);
+            Swal.fire("Berhasil!", "Status akun berhasil diubah.", "success");
+          } else {
+            throw new Error(response.data.message || "Gagal ubah status");
+          }
+        } catch (err) {
+          console.error("Error updating status:", err);
+          Swal.fire(
+            "Gagal",
+            err.response?.data?.message || "Tidak dapat mengubah status akun.",
+            "error"
+          );
+        }
       }
     });
   };
@@ -83,7 +119,7 @@ export const KelolaAkun = () => {
   const handleFilterChange = (filterType, value) => {
     setFilters({
       ...filters,
-      [filterType]: value
+      [filterType]: value,
     });
   };
 
@@ -95,11 +131,15 @@ export const KelolaAkun = () => {
           <h1 className="text-2xl font-bold">Kelola Akun</h1>
           <div className="flex items-center">
             <div className="mr-2 text-right">
-              <div className="font-semibold">Alfian Maulana</div>
-              <div className="text-sm text-gray-500">Admin</div>
+              <div className="font-semibold">{user?.data.fullname}</div>
+              <div className="text-sm text-gray-500">{user?.data.role}</div>
             </div>
             <div className="h-10 w-10 rounded-full bg-blue-600 overflow-hidden">
-              <img src={profile} alt="Profile" className="h-full w-full object-cover" />
+              <img
+                src={profile}
+                alt="Profile"
+                className="h-full w-full object-cover"
+              />
             </div>
           </div>
         </div>
@@ -110,13 +150,15 @@ export const KelolaAkun = () => {
           <div>
             <div className="text-sm mb-2">Status</div>
             <div className="relative inline-block w-full">
-              <select 
+              <select
                 className="border border-gray-300 rounded px-4 py-2 pr-10 appearance-none bg-white w-full"
                 value={filters.status}
                 onChange={(e) => handleFilterChange("status", e.target.value)}
               >
-                {statusOptions.map(option => (
-                  <option key={option} value={option}>{option}</option>
+                {statusOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
                 ))}
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -124,18 +166,20 @@ export const KelolaAkun = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Provinsi Filter */}
           <div>
             <div className="text-sm mb-2">Provinsi</div>
             <div className="relative inline-block w-full">
-              <select 
+              <select
                 className="border border-gray-300 rounded px-4 py-2 pr-10 appearance-none bg-white w-full"
                 value={filters.provinsi}
                 onChange={(e) => handleFilterChange("provinsi", e.target.value)}
               >
-                {provinsiOptions.map(option => (
-                  <option key={option} value={option}>{option}</option>
+                {provinsiOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
                 ))}
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -143,18 +187,22 @@ export const KelolaAkun = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Kabupaten/Kota Filter */}
           <div>
             <div className="text-sm mb-2">Kabupaten/Kota</div>
             <div className="relative inline-block w-full">
-              <select 
+              <select
                 className="border border-gray-300 rounded px-4 py-2 pr-10 appearance-none bg-white w-full"
                 value={filters.kabupaten}
-                onChange={(e) => handleFilterChange("kabupaten", e.target.value)}
+                onChange={(e) =>
+                  handleFilterChange("kabupaten", e.target.value)
+                }
               >
-                {kabupatenOptions.map(option => (
-                  <option key={option} value={option}>{option}</option>
+                {kabupatenOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
                 ))}
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -169,19 +217,28 @@ export const KelolaAkun = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th scope="col" className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-sm font-medium text-gray-600"
+                >
                   No
                 </th>
-                <th scope="col" className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-sm font-medium text-gray-600"
+                >
                   Nama Desa Wisata
                 </th>
-                <th scope="col" className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-sm font-medium text-gray-600"
+                >
                   Email
                 </th>
-                <th scope="col" className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                  Password
-                </th>
-                <th scope="col" className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-sm font-medium text-gray-600"
+                >
                   Status Akun
                 </th>
               </tr>
@@ -189,24 +246,27 @@ export const KelolaAkun = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {accounts.map((account) => (
                 <tr key={account.id}>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{account.id}</td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{account.name}</td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{account.email}</td>
                   <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                    <button 
-                      onClick={() => handleResetPassword(account.id)} 
-                      className="inline-flex items-center px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                      Ubah Password <FaPencilAlt size={12} className="ml-1" />
-                    </button>
+                    {account.id}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                    {account.name}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                    {account.email}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap text-sm relative">
                     <div className="status-dropdown">
-                      <button 
-                        onClick={() => toggleDropdown(account.id)} 
-                        className={`inline-flex items-center px-3 py-1 rounded ${account.status === 'Aktif' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}
+                      <button
+                        onClick={() => toggleDropdown(account.id)}
+                        className={`inline-flex items-center px-3 py-1 rounded ${
+                          account.status === "Aktif"
+                            ? "bg-green-500 text-white"
+                            : "bg-red-500 text-white"
+                        }`}
                       >
-                        {account.status} <FaCaretDown size={16} className="ml-1" />
+                        {account.status}{" "}
+                        <FaCaretDown size={16} className="ml-1" />
                       </button>
 
                       {openDropdown === account.id && (
@@ -214,9 +274,17 @@ export const KelolaAkun = () => {
                           <ul className="py-1">
                             {statusOptions.map((status) => (
                               <li key={status}>
-                                <button 
-                                  onClick={() => changeStatus(account.id, status)} 
-                                  className={`block px-4 py-2 text-sm w-full text-left hover:bg-gray-100 ${status === account.status ? "font-bold" : ""}`}
+                                <button
+                                  onClick={() =>
+                                    changeStatus(
+                                      account.id,
+                                      status,
+                                      account.email
+                                    )
+                                  }
+                                  className={`block px-4 py-2 text-sm w-full text-left hover:bg-gray-100 ${
+                                    account.status === status ? "font-bold" : ""
+                                  }`}
                                 >
                                   {status}
                                 </button>

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import mataBuka from "../assets/Register/mataBuka.svg";
 import mataTutup from "../assets/Register/mataTutup.svg";
 import other_pay from "../assets/Masuk/other-pay.png";
-import penglipuran from "../assets/Masuk/penglipuran.png";
+import penglipuran from "../assets/Masuk/penglipuran.webp";
 import { axiosInstance } from "../config";
 
 export const Masuk = () => {

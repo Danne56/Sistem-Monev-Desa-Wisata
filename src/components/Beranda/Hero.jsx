@@ -1,5 +1,5 @@
 import React from "react";
-import HeroBerandaImg from "../../assets/Beranda/heroPic.png";
+import HeroBerandaImg from "../../assets/Beranda/heroPic.webp";
 import arrow_outward from "../../assets/Beranda/arrow_outward.svg";
 import { Link } from "react-router-dom";
 

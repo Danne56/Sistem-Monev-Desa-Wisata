@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import heroPic from "../../assets/Beranda/heroPic.png";
+import heroPic from "../../assets/Beranda/heroPic.webp";
 import arrow_outward from "../../assets/Beranda/arrow_outward.svg";
 import arrowRight from "../../assets/LandingPage/icon/arrowRight.svg";
 import arrowLeft from "../../assets/LandingPage/icon/arrowLeft.svg";

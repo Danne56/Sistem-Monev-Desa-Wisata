@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import profile from "../../assets/Dashboard/profile.svg";
 import { FaCaretDown } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { axiosInstance } from "../../config";
+import { UserContext } from "../../context/UserContext";
 
 export const StatusDesa = () => {
   const [villages, setVillages] = useState([]);
@@ -110,6 +111,8 @@ export const StatusDesa = () => {
     });
   };
 
+  const { user } = useContext(UserContext);
+
   // Logika Filter
   const filteredVillages = villages.filter((village) => {
     const matchStatus = statusFilter === "Semua" || village.status === statusFilter;
@@ -129,8 +132,8 @@ export const StatusDesa = () => {
           <h1 className="text-2xl font-bold">Status Desa</h1>
           <div className="flex items-center">
             <div className="mr-2 text-right">
-              <div className="font-semibold">Alfian Maulana</div>
-              <div className="text-sm text-gray-500">Dinas</div>
+              <div className="font-semibold">{user?.data.fullname}</div>
+              <div className="text-sm text-gray-500">{user?.data.role}</div>
             </div>
             <div className="h-10 w-10 rounded-full bg-blue-600 overflow-hidden">
               <img src={profile} alt="Profile" className="h-full w-full object-cover" />

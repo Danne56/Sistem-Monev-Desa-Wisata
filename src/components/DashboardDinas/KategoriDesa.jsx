@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import profile from "../../assets/Dashboard/profile.svg";
 import { FaCaretDown, FaPencilAlt, FaTimes } from "react-icons/fa";
+import { UserContext } from "../../context/UserContext";
 
 export const KategoriDesa = () => {
   const [villages, setVillages] = useState([
@@ -22,6 +23,7 @@ export const KategoriDesa = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [currentVillage, setCurrentVillage] = useState(null);
 
+
   // Score form state
   const [scores, setScores] = useState({
     partisipasi: 100,
@@ -29,6 +31,7 @@ export const KategoriDesa = () => {
     akses: 99,
     keramahan: 99,
     fasilitas: 99,
+    produk: "",
     produk: "",
   });
 
@@ -49,7 +52,13 @@ export const KategoriDesa = () => {
   };
 
   const changeCategory = (villageId, newCategory) => {
-    setVillages(villages.map((village) => (village.id === villageId ? { ...village, category: newCategory } : village)));
+    setVillages(
+      villages.map((village) =>
+        village.id === villageId
+          ? { ...village, category: newCategory }
+          : village
+      )
+    );
     setOpenDropdown(null);
   };
 
@@ -61,6 +70,7 @@ export const KategoriDesa = () => {
       akses: 99,
       keramahan: 99,
       fasilitas: 99,
+      produk: "",
       produk: "",
     });
     setShowPopup(true);
@@ -78,6 +88,8 @@ export const KategoriDesa = () => {
     setShowPopup(false);
   };
 
+  const { user } = useContext(UserContext);
+
   const categoryOptions = ["Mandiri", "Berkembang", "Perintis", "Rintisan"];
 
   return (
@@ -88,8 +100,8 @@ export const KategoriDesa = () => {
           <h1 className="text-2xl font-bold">Kategori Desa Wisata</h1>
           <div className="flex items-center">
             <div className="mr-2 text-right">
-              <div className="font-semibold">Alfian Maulana</div>
-              <div className="text-sm text-gray-500">Dinas</div>
+              <div className="font-semibold">{user?.data.fullname}</div>
+              <div className="text-sm text-gray-500">{user?.data.role}</div>
             </div>
             <div className="h-10 w-10 rounded-full bg-blue-600 overflow-hidden">
               <img src={profile} alt="Profile" className="h-full w-full object-cover" />
@@ -102,7 +114,11 @@ export const KategoriDesa = () => {
           <div>
             <label className="block text-sm mb-2">Kategori</label>
             <div className="relative">
-              <select className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+              <select
+                className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white"
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+              >
                 <option value="Perintis">Perintis</option>
                 <option value="Berkembang">Berkembang</option>
                 <option value="Mandiri">Mandiri</option>
@@ -117,7 +133,11 @@ export const KategoriDesa = () => {
           <div>
             <label className="block text-sm mb-2">Provinsi</label>
             <div className="relative">
-              <select className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white" value={provinceFilter} onChange={(e) => setProvinceFilter(e.target.value)}>
+              <select
+                className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white"
+                value={provinceFilter}
+                onChange={(e) => setProvinceFilter(e.target.value)}
+              >
                 <option value="Jawa Tengah">Jawa Tengah</option>
                 <option value="Jawa Barat">Jawa Barat</option>
                 <option value="Jawa Timur">Jawa Timur</option>
@@ -131,7 +151,11 @@ export const KategoriDesa = () => {
           <div>
             <label className="block text-sm mb-2">Kabupaten/Kota</label>
             <div className="relative">
-              <select className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white" value={regionFilter} onChange={(e) => setRegionFilter(e.target.value)}>
+              <select
+                className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white"
+                value={regionFilter}
+                onChange={(e) => setRegionFilter(e.target.value)}
+              >
                 <option value="Magelang">Magelang</option>
                 <option value="Semarang">Semarang</option>
                 <option value="Solo">Solo</option>
@@ -145,7 +169,11 @@ export const KategoriDesa = () => {
           <div>
             <label className="block text-sm mb-2">Urutkan</label>
             <div className="relative">
-              <select className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white" value={sortFilter} onChange={(e) => setSortFilter(e.target.value)}>
+              <select
+                className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white"
+                value={sortFilter}
+                onChange={(e) => setSortFilter(e.target.value)}
+              >
                 <option value="Rerata Tertinggi">Rerata Tertinggi</option>
                 <option value="Rerata Terendah">Rerata Terendah</option>
                 <option value="A-Z">A-Z</option>
@@ -215,10 +243,14 @@ export const KategoriDesa = () => {
             {/* Popup Header */}
             <div className="flex justify-between items-center p-4 border-b">
               <h2 className="text-lg font-semibold">{currentVillage.name}</h2>
-              <button onClick={() => setShowPopup(false)} className="text-gray-500 hover:text-gray-700">
+              <button
+                onClick={() => setShowPopup(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
                 <FaTimes />
               </button>
             </div>
+
 
             {/* Popup Content */}
             <div className="p-4">
@@ -239,6 +271,7 @@ export const KategoriDesa = () => {
                   <label className="block text-sm mb-1">Keramahan Difabel</label>
                   <input type="number" min="1" max="100" value={scores.keramahan} onChange={(e) => setScores({ ...scores, keramahan: e.target.value })} className="w-full border border-gray-300 rounded px-3 py-2" />
                 </div>
+                UserContext
                 <div>
                   <label className="block text-sm mb-1">Fasilitas Tempat Wisata</label>
                   <input type="number" min="1" max="100" value={scores.fasilitas} onChange={(e) => setScores({ ...scores, fasilitas: e.target.value })} className="w-full border border-gray-300 rounded px-3 py-2" />
@@ -249,11 +282,13 @@ export const KategoriDesa = () => {
                 </div>
               </div>
 
+
               <div className="mt-4">
                 <label className="block text-sm mb-1">Rerata Skor</label>
                 <input type="number" value={scores.partisipasi} disabled className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-100" />
               </div>
             </div>
+
 
             {/* Popup Footer */}
             <div className="p-4 border-t flex justify-end space-x-2">
@@ -270,3 +305,4 @@ export const KategoriDesa = () => {
     </div>
   );
 };
+

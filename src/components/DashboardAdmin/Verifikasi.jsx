@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import profile from "../../assets/Dashboard/profile.svg";
 import { FaCaretDown } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { axiosInstance } from "../../config";
+import { UserContext } from "../../context/UserContext";
 
 export const Verifikasi = () => {
   const [requests, setRequests] = useState([]);
@@ -184,6 +185,8 @@ export const Verifikasi = () => {
     });
   };
 
+  const { user } = useContext(UserContext);
+
   return (
     <div className="flex-1 overflow-x-auto md:ml-0 md:mt-0 mt-16">
       <div className="p-6">
@@ -192,8 +195,8 @@ export const Verifikasi = () => {
           <h1 className="text-2xl font-bold">Permintaan Verifikasi</h1>
           <div className="flex items-center">
             <div className="mr-2 text-right">
-              <div className="font-semibold">Alfian Maulana</div>
-              <div className="text-sm text-gray-500">Admin</div>
+              <div className="font-semibold">{user?.data.fullname}</div>
+              <div className="text-sm text-gray-500">{user?.data.role}</div>
             </div>
             <div className="h-10 w-10 rounded-full bg-blue-600 overflow-hidden">
               <img

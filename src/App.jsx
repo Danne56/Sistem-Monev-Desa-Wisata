@@ -14,6 +14,8 @@ import { UserContextProvider } from "./context/UserContext";
 import { DashboardDinas } from "./pages/DashboardDinas";
 import { DashboardAdmin } from "./pages/DashboardAdmin";
 import { DashboardPengelola } from "./pages/DashboardPengelola";
+import { Unauthorized } from "./pages/Unauthorized";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppContent() {
   const location = useLocation();
@@ -36,8 +38,23 @@ function AppContent() {
         <Route path="/lokasi" element={<Lokasi />} />
         <Route path="/atraksi" element={<Atraksi />} />
         <Route path="/detail" element={<DetailWisata />} />
-        <Route path="/dashboard/dinas" element={<DashboardDinas />} />
-        <Route path="/dashboard/admin" element={<DashboardAdmin />} />
+        <Route
+          path="/dashboard/dinas"
+          element={
+            <ProtectedRoute allowedRoles={["dinas"]}>
+              <DashboardDinas />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/admin"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <DashboardAdmin />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/dashboard/pengelola" element={<DashboardPengelola />} />
       </Routes>
       <Footer />

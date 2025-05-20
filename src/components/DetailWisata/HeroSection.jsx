@@ -1,5 +1,5 @@
 import React from "react";
-import fotoDewita from "../../assets/DetailWisata/nglanggeran.png";
+import fotoDewita from "../../assets/DetailWisata/nglanggeran.webp";
 import shadow from "../../assets/DetailWisata/shadow.png";
 
 export const HeroSection = () => {
