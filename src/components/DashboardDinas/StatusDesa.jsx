@@ -18,8 +18,7 @@ export const StatusDesa = () => {
       try {
         const response = await axiosInstance.get("/api/status-desa");
         const data = response.data.data || [];
-        const capitalizeFirstLetter = (string) =>
-          string.replace(/\b\w/g, (char) => char.toUpperCase());
+        const capitalizeFirstLetter = (string) => string.replace(/\b\w/g, (char) => char.toUpperCase());
 
         const mappedData = data.map((desa, index) => ({
           id: index + 1,
@@ -103,11 +102,7 @@ export const StatusDesa = () => {
           }
         } catch (err) {
           console.error("Error updating status:", err);
-          Swal.fire(
-            "Gagal",
-            err.response?.data?.message || "Gagal mengubah status desa.",
-            "error"
-          );
+          Swal.fire("Gagal", err.response?.data?.message || "Gagal mengubah status desa.", "error");
         }
 
         setOpenDropdown(null);
@@ -117,14 +112,11 @@ export const StatusDesa = () => {
 
   // Logika Filter
   const filteredVillages = villages.filter((village) => {
-    const matchStatus =
-      statusFilter === "Semua" || village.status === statusFilter;
+    const matchStatus = statusFilter === "Semua" || village.status === statusFilter;
 
-    const matchProvinsi =
-      provinceFilter === "Semua" || village.province === provinceFilter;
+    const matchProvinsi = provinceFilter === "Semua" || village.province === provinceFilter;
 
-    const matchKabupaten =
-      regionFilter === "Semua" || village.region === regionFilter;
+    const matchKabupaten = regionFilter === "Semua" || village.region === regionFilter;
 
     return matchStatus && matchProvinsi && matchKabupaten;
   });
@@ -141,11 +133,7 @@ export const StatusDesa = () => {
               <div className="text-sm text-gray-500">Dinas</div>
             </div>
             <div className="h-10 w-10 rounded-full bg-blue-600 overflow-hidden">
-              <img
-                src={profile}
-                alt="Profile"
-                className="h-full w-full object-cover"
-              />
+              <img src={profile} alt="Profile" className="h-full w-full object-cover" />
             </div>
           </div>
         </div>
@@ -155,11 +143,7 @@ export const StatusDesa = () => {
           <div>
             <label className="block text-sm mb-2">Status</label>
             <div className="relative">
-              <select
-                className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
+              <select className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
                 <option value="Semua">Semua</option>
                 <option value="Aktif">Aktif</option>
                 <option value="Tidak Aktif">Tidak Aktif</option>
@@ -175,11 +159,7 @@ export const StatusDesa = () => {
           <div>
             <label className="block text-sm mb-2">Provinsi</label>
             <div className="relative">
-              <select
-                className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white"
-                value={provinceFilter}
-                onChange={(e) => setProvinceFilter(e.target.value)}
-              >
+              <select className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white" value={provinceFilter} onChange={(e) => setProvinceFilter(e.target.value)}>
                 <option value="Semua">Semua Provinsi</option>
                 <option value="Jawa Tengah">Jawa Tengah</option>
                 <option value="Jawa Barat">Jawa Barat</option>
@@ -194,11 +174,7 @@ export const StatusDesa = () => {
           <div>
             <label className="block text-sm mb-2">Kabupaten/Kota</label>
             <div className="relative">
-              <select
-                className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white"
-                value={regionFilter}
-                onChange={(e) => setRegionFilter(e.target.value)}
-              >
+              <select className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white" value={regionFilter} onChange={(e) => setRegionFilter(e.target.value)}>
                 <option value="Semua">Semua Kabupaten</option>
                 <option value="Magelang">Magelang</option>
                 <option value="Solo">Solo</option>
@@ -212,72 +188,60 @@ export const StatusDesa = () => {
         </div>
 
         {/* Table */}
-        <div className="bg-gray-50 rounded-lg overflow-x-scroll shadow-sm border border-gray-200 relative">
-          {/* Table Header */}
-          <div className="grid grid-cols-4 gap-4 bg-gray-100 px-4 py-3 border-b border-gray-200">
-            <div className="text-sm font-medium text-gray-600">No</div>
-            <div className="text-sm font-medium text-gray-600">
-              Nama Desa Wisata
-            </div>
-            <div className="text-sm font-medium text-gray-600">Status</div>
-            <div className="text-sm font-medium text-gray-600">Keterangan</div>
-          </div>
-
-          {/* Table Body */}
-          {filteredVillages.length > 0 ? (
-            filteredVillages.map((village) => (
-              <div
-                key={village.kd_status}
-                className="grid grid-cols-4 gap-4 px-4 py-3 border-b border-gray-200 hover:bg-gray-50"
-              >
-                <div className="text-sm text-gray-900">{village.id}</div>
-                <div className="text-sm text-gray-900">{village.name}</div>
-                <div className="text-sm relative">
-                  <div className="status-dropdown relative">
-                    <button
-                      onClick={() => toggleDropdown(village.id)}
-                      className={`inline-flex items-center px-3 py-1 rounded ${
-                        village.status === "Aktif"
-                          ? "bg-green-500"
-                          : village.status === "Tidak Aktif"
-                            ? "bg-red-500"
-                            : village.status === "Perbaikan"
-                              ? "bg-yellow-500"
-                              : "bg-gray-500"
-                      } text-white`}
-                    >
-                      {village.status}{" "}
-                      <FaCaretDown size={16} className="ml-1" />
-                    </button>
-
-                    {openDropdown === village.id && (
-                      <div className="absolute mt-1 w-44 bg-white rounded-md shadow-lg z-50">
-                        <ul className="py-1">
-                          {statusOptions.map((status) => (
-                            <li key={status}>
-                              <button
-                                onClick={() => changeStatus(village, status)}
-                                className="block px-4 py-2 text-sm w-full text-left hover:bg-gray-100"
-                              >
-                                {status}
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-200 shadow-sm rounded-lg">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">No</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Nama Desa Wisata</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 min-w-36">Status</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Keterangan</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredVillages.length > 0 ? (
+                filteredVillages.map((village) => (
+                  <tr key={village.kd_status} className="border-b hover:bg-gray-50">
+                    <td className="px-4 py-3 text-sm text-gray-900">{village.id}</td>
+                    <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">{village.name}</td>
+                    <td className="px-4 py-3 text-sm min-w-36">
+                      <div className="status-dropdown relative">
+                        <button
+                          onClick={() => toggleDropdown(village.id)}
+                          className={`inline-flex items-center px-3 py-1 rounded ${
+                            village.status === "Aktif" ? "bg-green-500" : village.status === "Tidak Aktif" ? "bg-red-500" : village.status === "Perbaikan" ? "bg-yellow-500" : "bg-gray-500"
+                          } text-white`}
+                        >
+                          {village.status}
+                          <FaCaretDown size={12} className="ml-2" />
+                        </button>
+                        {openDropdown === village.id && (
+                          <div className="absolute mt-1 w-44 bg-white rounded-md shadow-lg z-10">
+                            <ul className="py-1">
+                              {statusOptions.map((status) => (
+                                <li key={status}>
+                                  <button onClick={() => changeStatus(village, status)} className="block px-4 py-2 text-sm w-full text-left hover:bg-gray-100">
+                                    {status}
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </div>
-                <div className="text-sm text-gray-600">
-                  {village.description}
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="text-center p-4 text-gray-500">
-              Tidak ada data desa.
-            </div>
-          )}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{village.description}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="px-4 py-6 text-center text-gray-500">
+                    Tidak ada data desa.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import HeroBerandaImg from "../../assets/Beranda/heroPic.png";
 import arrow_outward from "../../assets/Beranda/arrow_outward.svg";
+import { Link } from "react-router-dom";
 
 export const Hero = () => {
   const backgroundImageStyle = {
@@ -16,10 +17,13 @@ export const Hero = () => {
               Desa Wisata Penglipuran terletak cukup strategis berjarak 60 km dengan jarak tempuh 1 jam 30 menit dari Bandara Internasional Ngurah Rai. Secara georafis terletak pada ketinggian 600- 650 m dari permukaan air laut, sehingga
               memiliki suhu yang cukup sejuk
             </p>
-            <button className="buttonJelajahi border-[1px] border-white py-2 px-6 rounded-full flex justify-start items-center gap-2 mt-8">
-              <p className="text-white  2xl:text-body lg:text-[18px] text-normal">Jelajahi</p>
-              <img src={arrow_outward} alt="arrow_outward" />
-            </button>
+
+            <Link to="/lokasi">
+              <button className="buttonJelajahi border-[1px] border-white py-2 px-6 rounded-full flex justify-start items-center gap-2 mt-8">
+                <p className="text-white  2xl:text-body lg:text-[18px] text-normal">Jelajahi</p>
+                <img src={arrow_outward} alt="arrow_outward" />
+              </button>
+            </Link>
           </div>
         </div>
       </div>

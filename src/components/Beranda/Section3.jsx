@@ -3,6 +3,7 @@ import location from "../../assets/Beranda/location.svg";
 import DewiSinta from "../../assets/Beranda/DewiSinta.png";
 import GoaCemara from "../../assets/Beranda/GoaCemara.png";
 import Nglanggeran from "../../assets/Beranda/Nglanggeran.png";
+import { Link } from "react-router-dom";
 
 const wisataData = {
   "Wisata Alam": [
@@ -65,9 +66,9 @@ export const Section3 = () => {
         </div>
 
         {/* Button */}
-        <div className="mt-10 flex justify-center">
+        <Link to="/lokasi" className="mt-10 flex justify-center">
           <button className="bg-[#135D36] text-white px-6 py-2 rounded-full font-medium hover:bg-green-800 transition">Jelajahi Desa Wisata Lainnya</button>
-        </div>
+        </Link>
       </div>
     </section>
   );

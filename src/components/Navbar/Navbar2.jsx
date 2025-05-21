@@ -106,14 +106,29 @@ export const Navbar2 = () => {
                       <p className="text-[#8A8A8A]">{user?.data.email}</p>
                     </div>
                     <hr />
-                    <div className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
-                      <TbNews className="md:text-2xl text-xl" />
-                      <p className="font-semibold md:text-normal text-smallText ">Laporan Saya</p>
-                    </div>
-                    <div className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
+                    {user?.data.role === "dinas" && (
+                      <Link to="/dashboard/dinas" className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
+                        <TbNews className="md:text-2xl text-xl" />
+                        <p className="font-semibold md:text-normal text-smallText ">Dashboard</p>
+                      </Link>
+                    )}
+                    {user?.data.role === "admin" && (
+                      <Link to="/dashboard/admin" className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
+                        <TbNews className="md:text-2xl text-xl" />
+                        <p className="font-semibold md:text-normal text-smallText ">Dashboard</p>
+                      </Link>
+                    )}
+                    {user?.data.role === "pengelola" && (
+                      <Link to="/dashboard/dinas" className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
+                        <TbNews className="md:text-2xl text-xl" />
+                        <p className="font-semibold md:text-normal text-smallText ">Dashboard</p>
+                      </Link>
+                    )}
+
+                    {/* <Link className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
                       <TbUserEdit className="md:text-2xl text-xl" />
                       <p className="font-semibold md:text-normal text-smallText ">Edit Profile</p>
-                    </div>
+                    </Link> */}
                     <div onClick={handleLogout} className="text-[#B3261E] flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
                       <MdLogin className="md:text-2xl text-xl" />
                       <p className="font-semibold md:text-normal text-smallText ">Keluar</p>

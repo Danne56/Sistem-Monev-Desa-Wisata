@@ -21,7 +21,7 @@ export const KategoriDesa = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [currentVillage, setCurrentVillage] = useState(null);
-  
+
   // Score form state
   const [scores, setScores] = useState({
     partisipasi: 100,
@@ -29,7 +29,7 @@ export const KategoriDesa = () => {
     akses: 99,
     keramahan: 99,
     fasilitas: 99,
-    produk: ""
+    produk: "",
   });
 
   // Close dropdown when clicking outside
@@ -61,22 +61,20 @@ export const KategoriDesa = () => {
       akses: 99,
       keramahan: 99,
       fasilitas: 99,
-      produk: ""
+      produk: "",
     });
     setShowPopup(true);
   };
 
   const handleSaveScores = () => {
     // Calculate new average score
-    const scoreValues = Object.values(scores).filter(score => score !== "");
-    const numericScores = scoreValues.map(score => typeof score === 'string' ? parseInt(score, 10) : score);
+    const scoreValues = Object.values(scores).filter((score) => score !== "");
+    const numericScores = scoreValues.map((score) => (typeof score === "string" ? parseInt(score, 10) : score));
     const average = Math.round(numericScores.reduce((a, b) => a + b, 0) / numericScores.length);
-    
+
     // Update village score
-    setVillages(villages.map((village) => 
-      village.id === currentVillage.id ? { ...village, score: average } : village
-    ));
-    
+    setVillages(villages.map((village) => (village.id === currentVillage.id ? { ...village, score: average } : village)));
+
     setShowPopup(false);
   };
 
@@ -94,7 +92,7 @@ export const KategoriDesa = () => {
               <div className="text-sm text-gray-500">Dinas</div>
             </div>
             <div className="h-10 w-10 rounded-full bg-blue-600 overflow-hidden">
-              <img src="/api/placeholder/40/40" alt="Profile" className="h-full w-full object-cover" />
+              <img src={profile} alt="Profile" className="h-full w-full object-cover" />
             </div>
           </div>
         </div>
@@ -161,50 +159,52 @@ export const KategoriDesa = () => {
         </div>
 
         {/* Table */}
-        <div className="bg-gray-50 rounded-lg overflow-x-scroll shadow-sm border border-gray-200">
-          {/* Table Header */}
-          <div className="grid grid-cols-5 gap-4 bg-gray-100 px-4 py-3 border-b border-gray-200">
-            <div className="text-sm font-medium text-gray-600">No</div>
-            <div className="text-sm font-medium text-gray-600">Nama Desa Wisata</div>
-            <div className="text-sm font-medium text-gray-600">Kategori</div>
-            <div className="text-sm font-medium text-gray-600">Edit Skor</div>
-            <div className="text-sm font-medium text-gray-600">Rerata Skor</div>
-          </div>
-
-          {/* Table Body */}
-          {villages.map((village) => (
-            <div key={village.id} className="grid grid-cols-5 gap-4 px-4 py-3 border-b border-gray-200 hover:bg-gray-50">
-              <div className="text-sm text-gray-900">{village.id}</div>
-              <div className="text-sm text-gray-900">{village.name}</div>
-              <div className="text-sm">
-                <div className="category-dropdown relative">
-                  <button onClick={() => toggleDropdown(village.id)} className="inline-flex items-center px-3 py-1 rounded bg-blue-500 text-white">
-                    {village.category}
-                  </button>
-
-                  {openDropdown === village.id && (
-                    <div className="absolute mt-1 w-44 bg-white rounded-md shadow-lg z-10">
-                      <ul className="py-1">
-                        {categoryOptions.map((category) => (
-                          <li key={category}>
-                            <button onClick={() => changeCategory(village.id, category)} className={`block px-4 py-2 text-sm w-full text-left hover:bg-gray-100 ${village.category === category ? "font-bold" : ""}`}>
-                              {category}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
+        <div className="overflow-x-auto">
+          <table className="min-w-full overflow-x-auto bg-white border border-gray-200 shadow-sm rounded-lg">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">No</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 min-w-36">Nama Desa Wisata</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Kategori</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 min-w-36">Edit Skor</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Rerata Skor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {villages.map((village) => (
+                <tr key={village.id} className="border-b hover:bg-gray-50">
+                  <td className="px-4 py-3 text-sm text-gray-900">{village.id}</td>
+                  <td className="px-4 py-3 text-sm text-gray-900">{village.name}</td>
+                  <td className="px-4 py-3 text-sm">
+                    <div className="category-dropdown relative">
+                      <button onClick={() => toggleDropdown(village.id)} className="inline-flex items-center px-3 py-1 rounded bg-blue-500 text-white">
+                        {village.category}
+                      </button>
+                      {openDropdown === village.id && (
+                        <div className="absolute mt-1 w-44 bg-white rounded-md shadow-lg z-10">
+                          <ul className="py-1">
+                            {categoryOptions.map((category) => (
+                              <li key={category}>
+                                <button onClick={() => changeCategory(village.id, category)} className={`block px-4 py-2 text-sm w-full text-left hover:bg-gray-100 ${village.category === category ? "font-bold" : ""}`}>
+                                  {category}
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              </div>
-              <div className="text-sm text-gray-900">
-                <button onClick={() => openEditScorePopup(village)} className="inline-flex items-center px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
-                  <FaPencilAlt size={12} className="mr-2" /> Edit Skor 
-                </button>
-              </div>
-              <div className="text-sm text-gray-900">{village.score}</div>
-            </div>
-          ))}
+                  </td>
+                  <td className="px-4 py-3 text-sm min-w-36">
+                    <button onClick={() => openEditScorePopup(village)} className="inline-flex items-center px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+                      <FaPencilAlt size={12} className="mr-2" /> Edit Skor
+                    </button>
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-900">{village.score}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -219,100 +219,48 @@ export const KategoriDesa = () => {
                 <FaTimes />
               </button>
             </div>
-            
+
             {/* Popup Content */}
             <div className="p-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm mb-1">Partisipasi Masyarakat</label>
-                  <input 
-                    type="number" 
-                    min="1" 
-                    max="100" 
-                    value={scores.partisipasi} 
-                    onChange={(e) => setScores({...scores, partisipasi: e.target.value})}
-                    className="w-full border border-gray-300 rounded px-3 py-2"
-                  />
+                  <input type="number" min="1" max="100" value={scores.partisipasi} onChange={(e) => setScores({ ...scores, partisipasi: e.target.value })} className="w-full border border-gray-300 rounded px-3 py-2" />
                 </div>
                 <div>
                   <label className="block text-sm mb-1">Keragaman Paket Wisata</label>
-                  <input 
-                    type="number" 
-                    min="1" 
-                    max="100" 
-                    value={scores.keragaman} 
-                    onChange={(e) => setScores({...scores, keragaman: e.target.value})}
-                    className="w-full border border-gray-300 rounded px-3 py-2"
-                  />
+                  <input type="number" min="1" max="100" value={scores.keragaman} onChange={(e) => setScores({ ...scores, keragaman: e.target.value })} className="w-full border border-gray-300 rounded px-3 py-2" />
                 </div>
                 <div>
                   <label className="block text-sm mb-1">Akses Tempat Wisata</label>
-                  <input 
-                    type="number" 
-                    min="1" 
-                    max="100" 
-                    value={scores.akses} 
-                    onChange={(e) => setScores({...scores, akses: e.target.value})}
-                    className="w-full border border-gray-300 rounded px-3 py-2"
-                  />
+                  <input type="number" min="1" max="100" value={scores.akses} onChange={(e) => setScores({ ...scores, akses: e.target.value })} className="w-full border border-gray-300 rounded px-3 py-2" />
                 </div>
                 <div>
                   <label className="block text-sm mb-1">Keramahan Difabel</label>
-                  <input 
-                    type="number" 
-                    min="1" 
-                    max="100" 
-                    value={scores.keramahan} 
-                    onChange={(e) => setScores({...scores, keramahan: e.target.value})}
-                    className="w-full border border-gray-300 rounded px-3 py-2"
-                  />
+                  <input type="number" min="1" max="100" value={scores.keramahan} onChange={(e) => setScores({ ...scores, keramahan: e.target.value })} className="w-full border border-gray-300 rounded px-3 py-2" />
                 </div>
                 <div>
                   <label className="block text-sm mb-1">Fasilitas Tempat Wisata</label>
-                  <input 
-                    type="number" 
-                    min="1" 
-                    max="100" 
-                    value={scores.fasilitas} 
-                    onChange={(e) => setScores({...scores, fasilitas: e.target.value})}
-                    className="w-full border border-gray-300 rounded px-3 py-2"
-                  />
+                  <input type="number" min="1" max="100" value={scores.fasilitas} onChange={(e) => setScores({ ...scores, fasilitas: e.target.value })} className="w-full border border-gray-300 rounded px-3 py-2" />
                 </div>
                 <div>
                   <label className="block text-sm mb-1">Produk Tempat Wisata</label>
-                  <input 
-                    type="text" 
-                    placeholder="Masukkan angka 1-100" 
-                    value={scores.produk} 
-                    onChange={(e) => setScores({...scores, produk: e.target.value})}
-                    className="w-full border border-gray-300 rounded px-3 py-2"
-                  />
+                  <input type="text" placeholder="Masukkan angka 1-100" value={scores.produk} onChange={(e) => setScores({ ...scores, produk: e.target.value })} className="w-full border border-gray-300 rounded px-3 py-2" />
                 </div>
               </div>
-              
+
               <div className="mt-4">
                 <label className="block text-sm mb-1">Rerata Skor</label>
-                <input 
-                  type="number" 
-                  value={scores.partisipasi} 
-                  disabled 
-                  className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-100"
-                />
+                <input type="number" value={scores.partisipasi} disabled className="w-full border border-gray-300 rounded px-3 py-2 bg-gray-100" />
               </div>
             </div>
-            
+
             {/* Popup Footer */}
             <div className="p-4 border-t flex justify-end space-x-2">
-              <button 
-                onClick={() => setShowPopup(false)} 
-                className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-100"
-              >
+              <button onClick={() => setShowPopup(false)} className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-100">
                 Batal
               </button>
-              <button 
-                onClick={handleSaveScores} 
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
+              <button onClick={handleSaveScores} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
                 Simpan
               </button>
             </div>

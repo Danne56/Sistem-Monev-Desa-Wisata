@@ -15,22 +15,18 @@ import { DashboardDinas } from "./pages/DashboardDinas";
 import { DashboardAdmin } from "./pages/DashboardAdmin";
 import { DashboardPengelola } from "./pages/DashboardPengelola";
 
-
-
 function AppContent() {
   const location = useLocation();
   const path = location.pathname;
 
-  const specialPaths = ["/masuk", "/register", "/"]; 
-  const withoutNavbar = [ "/dashboard/dinas", "/dashboard/admin", "/dashboard/pengelola"]; 
+  const specialPaths = ["/masuk", "/register"];
+  const withoutNavbar = ["/dashboard/dinas", "/dashboard/admin", "/dashboard/pengelola"];
   const isSpecialPage = specialPaths.includes(path);
-    const isWithoutNavbar = withoutNavbar.includes(path);
+  const isWithoutNavbar = withoutNavbar.includes(path);
 
   return (
     <>
-     {!isWithoutNavbar && (
-        isSpecialPage ? <Navbar2 /> : <Navbar />
-      )}
+      {!isWithoutNavbar && (isSpecialPage ? <Navbar2 /> : <Navbar />)}
 
       <Routes>
         <Route path="/" element={<LandingPage />} />
@@ -53,9 +49,9 @@ function AppContent() {
 function App() {
   return (
     <UserContextProvider>
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
     </UserContextProvider>
   );
 }

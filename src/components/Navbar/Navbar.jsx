@@ -58,7 +58,7 @@ export const Navbar = () => {
     { to: "/atraksi", text: "Laporan" },
   ];
 
-  const navbarClasses = `w-full absolute top-0 z-50 ${scrolling ? "bg-white text-black shadow-sm sticky top-0" : "text-white bg-transparent"}`;
+  const navbarClasses = `w-full z-50 transition-all duration-200 ease-in-out ${scrolling ? "fixed top-0 bg-white text-black shadow-sm" : "absolute top-0 text-white bg-transparent"}`;
 
   const buttonMasuk = `hover:brightness-90 duration-150 w-[95px] h-[51px] px-6 py-4 rounded-[12px] border ${scrolling ? "border-black text-black" : "border-white text-white"} justify-center items-center gap-2.5 inline-flex`;
 
@@ -106,14 +106,29 @@ export const Navbar = () => {
                       <p className="text-[#8A8A8A]">{user?.data.email}</p>
                     </div>
                     <hr />
-                    <div className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
-                      <TbNews className="md:text-2xl text-xl" />
-                      <p className="font-semibold md:text-normal text-smallText ">Laporan Saya</p>
-                    </div>
-                    <div className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
+                    {user?.data.role === "dinas" && (
+                      <Link to="/dashboard/dinas" className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
+                        <TbNews className="md:text-2xl text-xl" />
+                        <p className="font-semibold md:text-normal text-smallText ">Dashboard</p>
+                      </Link>
+                    )}
+                    {user?.data.role === "admin" && (
+                      <Link to="/dashboard/admin" className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
+                        <TbNews className="md:text-2xl text-xl" />
+                        <p className="font-semibold md:text-normal text-smallText ">Dashboard</p>
+                      </Link>
+                    )}
+                    {user?.data.role === "pengelola" && (
+                      <Link to="/dashboard/dinas" className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
+                        <TbNews className="md:text-2xl text-xl" />
+                        <p className="font-semibold md:text-normal text-smallText ">Dashboard</p>
+                      </Link>
+                    )}
+
+                    {/* <Link className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
                       <TbUserEdit className="md:text-2xl text-xl" />
                       <p className="font-semibold md:text-normal text-smallText ">Edit Profile</p>
-                    </div>
+                    </Link> */}
                     <div onClick={handleLogout} className="text-[#B3261E] flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
                       <MdLogin className="md:text-2xl text-xl" />
                       <p className="font-semibold md:text-normal text-smallText ">Keluar</p>
