@@ -212,7 +212,7 @@ export const StatusDesa = () => {
         </div>
 
         {/* Table */}
-        <div className="bg-gray-50 rounded-lg overflow-hidden shadow-sm border border-gray-200 relative">
+        <div className="bg-gray-50 rounded-lg overflow-x-scroll shadow-sm border border-gray-200 relative">
           {/* Table Header */}
           <div className="grid grid-cols-4 gap-4 bg-gray-100 px-4 py-3 border-b border-gray-200">
             <div className="text-sm font-medium text-gray-600">No</div>

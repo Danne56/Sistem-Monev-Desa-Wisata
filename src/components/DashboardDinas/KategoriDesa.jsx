@@ -83,7 +83,7 @@ export const KategoriDesa = () => {
   const categoryOptions = ["Mandiri", "Berkembang", "Perintis", "Rintisan"];
 
   return (
-    <div className="flex-1 overflow-x-auto">
+    <div className="flex-1 overflow-x-auto md:mt-0 mt-16">
       <div className="p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -161,7 +161,7 @@ export const KategoriDesa = () => {
         </div>
 
         {/* Table */}
-        <div className="bg-gray-50 rounded-lg overflow-hidden shadow-sm border border-gray-200">
+        <div className="bg-gray-50 rounded-lg overflow-x-scroll shadow-sm border border-gray-200">
           {/* Table Header */}
           <div className="grid grid-cols-5 gap-4 bg-gray-100 px-4 py-3 border-b border-gray-200">
             <div className="text-sm font-medium text-gray-600">No</div>

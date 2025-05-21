@@ -46,7 +46,7 @@ export const Sidebar = ({ activeSection, setActiveSection }) => {
       )}
 
       {/* Sidebar content */}
-      <div className={`bg-white md:w-64 flex-shrink-0 border-r border-gray-200 fixed md:sticky top-0 h-full z-40 transition-all duration-300 ease-in-out ${isOpen ? "left-0 w-64 " : "-left-64 w-0 md:left-0 md:w-64"}`}>
+      <div className={`bg-white md:w-64 flex-shrink-0 border-r border-gray-200 fixed md:sticky top-0 h-screen md:h-screen z-40 transition-all duration-300 ease-in-out overflow-y-auto ${isOpen ? "left-0 w-64 " : "-left-64 w-0 md:left-0 md:w-64"}`}>
         <div className="p-4 flex items-center">
           <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white font-bold">M</div>
           <span className="ml-2 font-bold text-lg">Monev</span>
