@@ -1,9 +1,10 @@
 import React from "react";
 import location from "../../assets/Beranda/location.svg";
-import Top1 from "../../assets/Beranda/DewiSinta.png";
-import Top2 from "../../assets/Beranda/GoaCemara.png";
-import Top3 from "../../assets/Beranda/Nglanggeran.png";
+import Top1 from "../../assets/Beranda/DewiSinta.webp";
+import Top2 from "../../assets/Beranda/GoaCemara.webp";
+import Top3 from "../../assets/Beranda/Nglanggeran.webp";
 import shadow from "../../assets/Beranda/shadow.png";
+import { Link } from "react-router-dom";
 
 export const Section1 = () => {
   const data = [
@@ -34,7 +35,9 @@ export const Section1 = () => {
         </div>
       </div>
 
-      <button className="mt-8 rounded-full border-none focus:outline-none bg-greenMain py-3 px-6 text-white">Jelajahi Wisata Lainnya</button>
+      <Link to="/lokasi">
+        <button className="mt-8 rounded-full border-none focus:outline-none bg-greenMain py-3 px-6 text-white">Jelajahi Wisata Lainnya</button>
+      </Link>
     </section>
   );
 };

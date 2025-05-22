@@ -1,13 +1,13 @@
 import React from "react";
-import bangli from "../../assets/Lokasi/KabupatenWisata/bangli.png";
-import banyuwangi from "../../assets/Lokasi/KabupatenWisata/banyuwangi.png";
-import bintan from "../../assets/Lokasi/KabupatenWisata/bintan.png";
-import sleman from "../../assets/Lokasi/KabupatenWisata/sleman.png";
-import gianyar from "../../assets/Lokasi/KabupatenWisata/gianyar.png";
-import gunkid from "../../assets/Lokasi/KabupatenWisata/gunkid.png";
-import rajaAmpat from "../../assets/Lokasi/KabupatenWisata/rajaAmpat.png";
-import tabanan from "../../assets/Lokasi/KabupatenWisata/tabanan.png";
-import torajaUtara from "../../assets/Lokasi/KabupatenWisata/torajaUtara.png";
+import bangli from "../../assets/Lokasi/KabupatenWisata/bangli.webp";
+import banyuwangi from "../../assets/Lokasi/KabupatenWisata/banyuwangi.webp";
+import bintan from "../../assets/Lokasi/KabupatenWisata/bintan.webp";
+import sleman from "../../assets/Lokasi/KabupatenWisata/sleman.webp";
+import gianyar from "../../assets/Lokasi/KabupatenWisata/gianyar.webp";
+import gunkid from "../../assets/Lokasi/KabupatenWisata/gunkid.webp";
+import rajaAmpat from "../../assets/Lokasi/KabupatenWisata/rajaAmpat.webp";
+import tabanan from "../../assets/Lokasi/KabupatenWisata/tabanan.webp";
+import torajaUtara from "../../assets/Lokasi/KabupatenWisata/torajaUtara.webp";
 
 const Card = ({ image, label, span }) => (
   <div

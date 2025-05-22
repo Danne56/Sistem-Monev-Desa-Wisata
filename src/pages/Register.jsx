@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import mataBuka from "../assets/Register/mataBuka.svg";
 import mataTutup from "../assets/Register/mataTutup.svg";
 import other_pay from "../assets/Register/other-pay.png";
-import curug from "../assets/Register/curug.png";
+import curug from "../assets/Register/curug.webp";
 import arrowDown from "../assets/Register/arrowDown.svg";
 import Indonesia from "../data/dataProvinsi";
 import { axiosInstance } from "../config";

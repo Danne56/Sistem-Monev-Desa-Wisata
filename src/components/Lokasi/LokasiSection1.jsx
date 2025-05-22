@@ -1,13 +1,13 @@
 import React from "react";
-import acehWisata from "../../assets/Lokasi/ProvinsiWisata/acehWisata.png";
-import baliWisata from "../../assets/Lokasi/ProvinsiWisata/baliWisata.png";
-import diyWisata from "../../assets/Lokasi/ProvinsiWisata/diyWisata.png";
-import jabarWisata from "../../assets/Lokasi/ProvinsiWisata/jabarWisata.png";
-import jatengWisata from "../../assets/Lokasi/ProvinsiWisata/jatengWisata.png";
-import jatimWisata from "../../assets/Lokasi/ProvinsiWisata/jatimWisata.png";
-import nttWisata from "../../assets/Lokasi/ProvinsiWisata/nttWisata.png";
-import papuaWisata from "../../assets/Lokasi/ProvinsiWisata/papuaWisata.png";
-import sumbarWisata from "../../assets/Lokasi/ProvinsiWisata/sumbarWisata.png";
+import acehWisata from "../../assets/Lokasi/ProvinsiWisata/acehWisata.webp";
+import baliWisata from "../../assets/Lokasi/ProvinsiWisata/baliWisata.webp";
+import diyWisata from "../../assets/Lokasi/ProvinsiWisata/diyWisata.webp";
+import jabarWisata from "../../assets/Lokasi/ProvinsiWisata/jabarWisata.webp";
+import jatengWisata from "../../assets/Lokasi/ProvinsiWisata/jatengWisata.webp";
+import jatimWisata from "../../assets/Lokasi/ProvinsiWisata/jatimWisata.webp";
+import nttWisata from "../../assets/Lokasi/ProvinsiWisata/nttWisata.webp";
+import papuaWisata from "../../assets/Lokasi/ProvinsiWisata/papuaWisata.webp";
+import sumbarWisata from "../../assets/Lokasi/ProvinsiWisata/sumbarWisata.webp";
 
 const Card = ({ image, label, span }) => (
   <div

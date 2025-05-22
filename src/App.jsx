@@ -13,19 +13,23 @@ import { LandingPage } from "./pages/LandingPage";
 import { UserContextProvider } from "./context/UserContext";
 import { DashboardDinas } from "./pages/DashboardDinas";
 import { DashboardAdmin } from "./pages/DashboardAdmin";
-
-
+import { DashboardPengelola } from "./pages/DashboardPengelola";
+import { Unauthorized } from "./pages/Unauthorized";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppContent() {
   const location = useLocation();
   const path = location.pathname;
 
-  const specialPaths = ["/masuk", "/register", "/", "/dashboard/dinas", "/dashboard/admin"]; 
+  const specialPaths = ["/masuk", "/register"];
+  const withoutNavbar = ["/dashboard/dinas", "/dashboard/admin", "/dashboard/pengelola"];
   const isSpecialPage = specialPaths.includes(path);
+  const isWithoutNavbar = withoutNavbar.includes(path);
 
   return (
     <>
-      {isSpecialPage ? <Navbar2 /> : <Navbar />}
+      {!isWithoutNavbar && (isSpecialPage ? <Navbar2 /> : <Navbar />)}
+
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<Home />} />
@@ -34,8 +38,24 @@ function AppContent() {
         <Route path="/lokasi" element={<Lokasi />} />
         <Route path="/atraksi" element={<Atraksi />} />
         <Route path="/detail" element={<DetailWisata />} />
-        <Route path="/dashboard/dinas" element={<DashboardDinas />} />
-        <Route path="/dashboard/admin" element={<DashboardAdmin />} />
+        <Route
+          path="/dashboard/dinas"
+          element={
+            <ProtectedRoute allowedRoles={["dinas"]}>
+              <DashboardDinas />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/admin"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <DashboardAdmin />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/dashboard/pengelola" element={<DashboardPengelola />} />
       </Routes>
       <Footer />
     </>
@@ -46,9 +66,9 @@ function AppContent() {
 function App() {
   return (
     <UserContextProvider>
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
     </UserContextProvider>
   );
 }

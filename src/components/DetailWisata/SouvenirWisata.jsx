@@ -4,7 +4,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 
-import souvenir from "../../assets/DetailWisata/souvenir.png";
+import souvenir from "../../assets/DetailWisata/souvenir.webp";
 import arrowRight from "../../assets/DetailWisata/icon/arrowRight.svg";
 
 const dummySouvenir = [

@@ -18,17 +18,16 @@ export function UserContextProvider({ children }) {
 
       try {
         const res = await axiosInstance.get("/authentication/me", {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         });
         setUser(res.data);
-        
+
         // Jika ingin fetch data tambahan berdasarkan user._id
         // const userDataRes = await axiosInstance.get(`/user/${res.data._id}`);
         // setDataUserLogin(userDataRes.data);
-
       } catch (err) {
         console.error("Gagal mengambil data user:", err);
       }
@@ -38,8 +37,23 @@ export function UserContextProvider({ children }) {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, dataUserLogin, setDataUserLogin }}>
+    <UserContext.Provider
+      value={{ user, setUser, dataUserLogin, setDataUserLogin }}
+    >
       {children}
     </UserContext.Provider>
   );
 }
+
+export const getRoleFromToken = () => {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1])); // Decode JWT payload
+    return payload.role;
+  } catch (err) {
+    console.error("Gagal decode token:", err);
+    return null;
+  }
+};

@@ -5,10 +5,11 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-import Pulosari from "../../assets/Beranda/Pulosari.png";
+import Pulosari from "../../assets/Beranda/Pulosari.webp";
 import location from "../../assets/Beranda/location.svg";
 import arrowLeft from "../../assets/Beranda/arrowLeft.svg";
 import arrowRight from "../../assets/Beranda/arrowRight.svg";
+import { Link } from "react-router-dom";
 
 export const Section2 = () => {
   const data = [
@@ -68,9 +69,9 @@ export const Section2 = () => {
           ))}
         </Swiper>
 
-        <div className="flex justify-center mt-6">
+        <Link to="/atraksi" className="flex justify-center mt-6">
           <button className="bg-white text-greenMain font-semibold px-6 py-2 rounded-full shadow hover:opacity-90 transition">Jelajahi Atraksi Lainnya</button>
-        </div>
+        </Link>
       </div>
     </section>
   );

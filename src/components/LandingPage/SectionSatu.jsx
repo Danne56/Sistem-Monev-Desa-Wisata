@@ -1,6 +1,6 @@
 import React from "react";
 import unwto from "../../assets/LandingPage/unwto.png";
-import kabGunungKidul from "../../assets/LandingPage/kabGunungKidul.png";
+import kabGunungKidul from "../../assets/LandingPage/kabGunungKidul.webp";
 import medalStarIcon from "../../assets/LandingPage/icon/medalStarIcon.svg";
 
 export const SectionSatu = () => {

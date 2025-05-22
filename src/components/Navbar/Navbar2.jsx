@@ -10,15 +10,13 @@ import { MdLogin } from "react-icons/md";
 import { UserContext } from "../../context/UserContext";
 
 export const Navbar2 = () => {
-  const {user} =useContext(UserContext)
+  const { user } = useContext(UserContext);
   const [showMobileNav, setShowMobileNav] = useState(false);
   const [scrolling, setScrolling] = useState(false);
   // const [user, setUser] = useState(false);
   const location = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
-
-
 
   // Handle scroll
   useEffect(() => {
@@ -50,7 +48,7 @@ export const Navbar2 = () => {
   }, [dropdownRef]);
 
   const handleLogout = () => {
-   localStorage.removeItem("token");
+    localStorage.removeItem("token");
     window.location.reload();
   };
 
@@ -58,8 +56,6 @@ export const Navbar2 = () => {
     { to: "/home", text: "Beranda" },
     { to: "/lokasi", text: "Laporkan" },
     { to: "/atraksi", text: "Laporan" },
-    { to: "/statistik", text: "Statistik" },
-    { to: "/tentang", text: "Tentang Kami" },
   ];
 
   const navbarClasses = `w-full absolute top-0 z-50 bg-white text-black shadow-sm sticky top-0`;
@@ -72,8 +68,7 @@ export const Navbar2 = () => {
   // Fungsi untuk memeriksa apakah link sesuai dengan path URL saat ini
   const isLinkActive = (path) => (path === "/" ? location.pathname === path : location.pathname.startsWith(path));
 
-const splitNama = user?.data.fullname.split(" ")[0];
-
+  const splitNama = user?.data.fullname.split(" ")[0];
 
   return (
     <header className={navbarClasses}>
@@ -94,12 +89,6 @@ const splitNama = user?.data.fullname.split(" ")[0];
           <Link to="/atraksi" className={`ml-4 ${isLinkActive("/atraksi") ? "text-yellowMain" : ""}`}>
             Atraksi
           </Link>
-          <Link to="/statistik" className={`ml-4 ${isLinkActive("/statistik") ? "text-yellowMain" : ""}`}>
-            Statistik
-          </Link>
-          <Link to="/tentang" className={`ml-4 ${isLinkActive("/tentang") ? "text-yellowMain" : ""}`}>
-            Tentang Kami
-          </Link>
         </div>
 
         <div className="font-semibold text-normal ">
@@ -117,14 +106,29 @@ const splitNama = user?.data.fullname.split(" ")[0];
                       <p className="text-[#8A8A8A]">{user?.data.email}</p>
                     </div>
                     <hr />
-                    <div className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
-                      <TbNews className="md:text-2xl text-xl" />
-                      <p className="font-semibold md:text-normal text-smallText ">Laporan Saya</p>
-                    </div>
-                    <div className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
+                    {user?.data.role === "dinas" && (
+                      <Link to="/dashboard/dinas" className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
+                        <TbNews className="md:text-2xl text-xl" />
+                        <p className="font-semibold md:text-normal text-smallText ">Dashboard</p>
+                      </Link>
+                    )}
+                    {user?.data.role === "admin" && (
+                      <Link to="/dashboard/admin" className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
+                        <TbNews className="md:text-2xl text-xl" />
+                        <p className="font-semibold md:text-normal text-smallText ">Dashboard</p>
+                      </Link>
+                    )}
+                    {user?.data.role === "pengelola" && (
+                      <Link to="/dashboard/dinas" className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
+                        <TbNews className="md:text-2xl text-xl" />
+                        <p className="font-semibold md:text-normal text-smallText ">Dashboard</p>
+                      </Link>
+                    )}
+
+                    {/* <Link className="text-black flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
                       <TbUserEdit className="md:text-2xl text-xl" />
                       <p className="font-semibold md:text-normal text-smallText ">Edit Profile</p>
-                    </div>
+                    </Link> */}
                     <div onClick={handleLogout} className="text-[#B3261E] flex items-center gap-3 mt-2 hover:bg-gray-100 duration-150 cursor-pointer px-4 py-2">
                       <MdLogin className="md:text-2xl text-xl" />
                       <p className="font-semibold md:text-normal text-smallText ">Keluar</p>
@@ -162,22 +166,20 @@ const splitNama = user?.data.fullname.split(" ")[0];
           <AiOutlineClose className="text-black mt-5 w-5 h-5 absolute right-3" onClick={() => setShowMobileNav(false)} />
           <div className="overflow-hidden nav-kiri mt-20 sm:text-body text-normal flex flex-col items-center p-4">
             <div className="flex flex-col gap-3 mb-6">
-
-              {user &&
-              <>
-              
-              <Link to="/masuk" className="ml-4">
-                <div className="hover:brightness-90 duration-150 max-w-[95px] max-h-[51px] md:px-6 md:py-4 px-5 py-3 rounded-[12px] border border-black text-black justify-center items-center gap-2.5 inline-flex">
-                  <div className="text-base font-semibold ">Masuk</div>
-                </div>
-              </Link>
-              <Link to="/daftar" className="ml-4">
-                <div className="hover:brightness-90 hover:border duration-150 max-w-[95px] max-h-[51px] md:px-6 md:py-4 px-5 py-3 bg-greenMain text-white rounded-[12px] justify-center items-center gap-2.5 inline-flex">
-                  <div className="text-base font-semibold  ">Daftar</div>
-                </div>
-              </Link>
-              </>
-              }
+              {user && (
+                <>
+                  <Link to="/masuk" className="ml-4">
+                    <div className="hover:brightness-90 duration-150 max-w-[95px] max-h-[51px] md:px-6 md:py-4 px-5 py-3 rounded-[12px] border border-black text-black justify-center items-center gap-2.5 inline-flex">
+                      <div className="text-base font-semibold ">Masuk</div>
+                    </div>
+                  </Link>
+                  <Link to="/daftar" className="ml-4">
+                    <div className="hover:brightness-90 hover:border duration-150 max-w-[95px] max-h-[51px] md:px-6 md:py-4 px-5 py-3 bg-greenMain text-white rounded-[12px] justify-center items-center gap-2.5 inline-flex">
+                      <div className="text-base font-semibold  ">Daftar</div>
+                    </div>
+                  </Link>
+                </>
+              )}
             </div>
             {navLinks.map((link, index) => (
               <Link key={index} to={link.to} className="text-black mb-4 duration-100 hover:brightness-90" onClick={() => setShowMobileNav(false)}>

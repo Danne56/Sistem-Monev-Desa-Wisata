@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import heroLokasi from "../../assets/Lokasi/heroLokasi.png";
+import heroLokasi from "../../assets/Lokasi/heroLokasi.webp";
 import searchIcon from "../../assets/Lokasi/searchIcon.svg";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { CiLocationOn } from "react-icons/ci";
