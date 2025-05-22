@@ -3,6 +3,7 @@ import location from "../../assets/Beranda/location.svg";
 import DewiSinta from "../../assets/Beranda/DewiSinta.webp";
 import GoaCemara from "../../assets/Beranda/GoaCemara.webp";
 import Nglanggeran from "../../assets/Beranda/Nglanggeran.webp";
+import { Link } from "react-router-dom";
 
 const wisataData = {
   "Wisata Alam": [
