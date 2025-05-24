@@ -135,7 +135,7 @@ export const Register = () => {
                         <ul className="p-2 ">
                           {Indonesia.find(
                             (provinsi) =>
-                              provinsi.namaProvinsi === provinsiDipilih,
+                              provinsi.namaProvinsi === provinsiDipilih
                           ).kabupatenKota.map((kabupaten, index) => (
                             <li
                               key={index}
@@ -278,6 +278,19 @@ export const Register = () => {
               >
                 {loading ? "Memproses..." : "Register"}
               </button>
+
+              {/* Login Link */}
+              <div className="text-center mt-4">
+                <span className="text-stone-500 text-base font-medium leading-normal">
+                  Sudah punya akun?{" "}
+                </span>
+                <Link
+                  to={"/masuk"}
+                  className="text-greenMain text-base font-bold underline leading-normal"
+                >
+                  Masuk
+                </Link>
+              </div>
 
               {error && (
                 <p className="wrong-input mt-4 text-center text-red-500">

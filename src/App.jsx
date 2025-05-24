@@ -15,20 +15,26 @@ import { DashboardDinas } from "./pages/DashboardDinas";
 import { DashboardAdmin } from "./pages/DashboardAdmin";
 import { DashboardPengelola } from "./pages/DashboardPengelola";
 import { Unauthorized } from "./pages/Unauthorized";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./pages/ProtectedRoute";
 
 function AppContent() {
   const location = useLocation();
   const path = location.pathname;
 
-  const specialPaths = ["/masuk", "/register"];
-  const withoutNavbar = ["/dashboard/dinas", "/dashboard/admin", "/dashboard/pengelola"];
-  const isSpecialPage = specialPaths.includes(path);
+  // const specialPaths = ["/masuk", "/register"];
+  const withoutNavbar = [
+    "/dashboard/dinas",
+    "/dashboard/admin",
+    "/dashboard/pengelola",
+    "/masuk",
+    "/register",
+  ];
+  // const isSpecialPage = specialPaths.includes(path);
   const isWithoutNavbar = withoutNavbar.includes(path);
 
   return (
     <>
-      {!isWithoutNavbar && (isSpecialPage ? <Navbar2 /> : <Navbar />)}
+      {!isWithoutNavbar && <Navbar />}
 
       <Routes>
         <Route path="/" element={<LandingPage />} />
