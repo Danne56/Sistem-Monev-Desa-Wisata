@@ -9,15 +9,8 @@ export const DeskripsiDesa = () => {
     namaDesa: "",
     lokasiDesa: "",
     deskripsiDesa: "",
-    fasilitas: [
-      "Areal Parkir",
-      "Jungle Tracking",
-      "Kamar Mandi Umum",
-      "Mushola",
-      "Selfie Area",
-      "Spot Foto",
-    ],
-    videoURLs: ["https://www.youtube.com/"],
+    fasilitas: [""],
+    videoURLs: [""],
     coverImage: null,
     galleryImages: [],
   });
@@ -187,24 +180,15 @@ export const DeskripsiDesa = () => {
             <div className="text-sm text-gray-500">{user?.data.role}</div>
           </div>
           <div className="h-10 w-10 rounded-full bg-blue-600 overflow-hidden">
-            <img
-              src={profile}
-              alt="Profile"
-              className="h-full w-full object-cover"
-            />
+            <img src={profile} alt="Profile" className="h-full w-full object-cover" />
           </div>
         </div>
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-lg p-6 shadow-sm"
-      >
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 shadow-sm">
         {/* Cover Image Upload */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Cover
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Cover</label>
           <div
             className="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer"
             onClick={() => coverInputRef.current.click()}
@@ -213,11 +197,7 @@ export const DeskripsiDesa = () => {
           >
             {formData.coverImage ? (
               <div className="w-full relative">
-                <img
-                  src={formData.coverImage}
-                  alt="Cover Preview"
-                  className="w-full h-64 object-cover rounded-lg"
-                />
+                <img src={formData.coverImage} alt="Cover Preview" className="w-full h-64 object-cover rounded-lg" />
                 <button
                   type="button"
                   className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
@@ -232,106 +212,50 @@ export const DeskripsiDesa = () => {
             ) : (
               <>
                 <FiUpload className="text-gray-400 text-3xl mb-2" />
-                <p className="text-sm text-center text-gray-500">
-                  Upload a file or drag and drop
-                </p>
-                <p className="text-xs text-center text-gray-400 mt-1">
-                  JPEG, JPG, PNG (5MB, 1440×506px)
-                </p>
+                <p className="text-sm text-center text-gray-500">Upload a file or drag and drop</p>
+                <p className="text-xs text-center text-gray-400 mt-1">JPEG, JPG, PNG (5MB, 1440×506px)</p>
               </>
             )}
-            <input
-              type="file"
-              ref={coverInputRef}
-              onChange={handleCoverUpload}
-              accept="image/jpeg,image/jpg,image/png"
-              className="hidden"
-            />
+            <input type="file" ref={coverInputRef} onChange={handleCoverUpload} accept="image/jpeg,image/jpg,image/png" className="hidden" />
           </div>
         </div>
 
         {/* Nama Desa Wisata */}
         <div className="mb-6">
-          <label
-            htmlFor="namaDesa"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
+          <label htmlFor="namaDesa" className="block text-sm font-medium text-gray-700 mb-2">
             Nama Desa Wisata
           </label>
-          <input
-            type="text"
-            id="namaDesa"
-            value={formData.namaDesa}
-            onChange={(e) =>
-              setFormData({ ...formData, namaDesa: e.target.value })
-            }
-            className="w-full border border-gray-300 rounded-lg p-2"
-          />
+          <input type="text" id="namaDesa" value={formData.namaDesa} onChange={(e) => setFormData({ ...formData, namaDesa: e.target.value })} className="w-full border border-gray-300 rounded-lg p-2" />
         </div>
 
         {/* Lokasi Desa Wisata */}
         <div className="mb-6">
-          <label
-            htmlFor="lokasiDesa"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
+          <label htmlFor="lokasiDesa" className="block text-sm font-medium text-gray-700 mb-2">
             Lokasi Desa Wisata
           </label>
-          <input
-            type="text"
-            id="lokasiDesa"
-            value={formData.lokasiDesa}
-            onChange={(e) =>
-              setFormData({ ...formData, lokasiDesa: e.target.value })
-            }
-            className="w-full border border-gray-300 rounded-lg p-2"
-          />
+          <input type="text" id="lokasiDesa" value={formData.lokasiDesa} onChange={(e) => setFormData({ ...formData, lokasiDesa: e.target.value })} className="w-full border border-gray-300 rounded-lg p-2" />
         </div>
 
         {/* Deskripsi Desa Wisata */}
         <div className="mb-6">
-          <label
-            htmlFor="deskripsiDesa"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
+          <label htmlFor="deskripsiDesa" className="block text-sm font-medium text-gray-700 mb-2">
             Deskripsi Desa Wisata
           </label>
-          <textarea
-            id="deskripsiDesa"
-            value={formData.deskripsiDesa}
-            onChange={(e) =>
-              setFormData({ ...formData, deskripsiDesa: e.target.value })
-            }
-            className="w-full border border-gray-300 rounded-lg p-2"
-            rows={5}
-          />
+          <textarea id="deskripsiDesa" value={formData.deskripsiDesa} onChange={(e) => setFormData({ ...formData, deskripsiDesa: e.target.value })} className="w-full border border-gray-300 rounded-lg p-2" rows={5} />
         </div>
 
         {/* Fasilitas Desa Wisata */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Fasilitas Desa Wisata
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Fasilitas Desa Wisata</label>
           <div className="space-y-2">
             {formData.fasilitas.map((item, index) => (
               <div key={index} className="flex items-center">
-                <div className="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center mr-2">
-                  {fasilitasIcons[item] || "•"}
-                </div>
-                <input
-                  type="text"
-                  value={item}
-                  onChange={(e) => updateFasilitas(index, e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg p-2"
-                />
+                <div className="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center mr-2">{fasilitasIcons[item] || "•"}</div>
+                <input type="text" value={item} onChange={(e) => updateFasilitas(index, e.target.value)} className="w-full border border-gray-300 rounded-lg p-2" />
               </div>
             ))}
             <div className="mt-2">
-              <button
-                type="button"
-                onClick={addFasilitas}
-                className="flex items-center text-blue-500 hover:text-blue-700"
-              >
+              <button type="button" onClick={addFasilitas} className="flex items-center text-blue-500 hover:text-blue-700">
                 <FiPlusCircle className="mr-1" /> Tambah Fasilitas
               </button>
             </div>
@@ -340,27 +264,14 @@ export const DeskripsiDesa = () => {
 
         {/* URL Video / Youtube */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            URL Video / Youtube
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">URL Video / Youtube</label>
           <div className="space-y-2">
             {formData.videoURLs.map((url, index) => (
-              <input
-                key={index}
-                type="text"
-                value={url}
-                onChange={(e) => updateVideoURL(index, e.target.value)}
-                placeholder="https://www.youtube.com/..."
-                className="w-full border border-gray-300 rounded-lg p-2"
-              />
+              <input key={index} type="text" value={url} onChange={(e) => updateVideoURL(index, e.target.value)} placeholder="https://www.youtube.com/..." className="w-full border border-gray-300 rounded-lg p-2" />
             ))}
           </div>
           <div className="mt-2">
-            <button
-              type="button"
-              onClick={addVideoURL}
-              className="flex items-center justify-center w-full border border-gray-300 rounded-lg p-2 text-gray-500 hover:bg-gray-50"
-            >
+            <button type="button" onClick={addVideoURL} className="flex items-center justify-center w-full border border-gray-300 rounded-lg p-2 text-gray-500 hover:bg-gray-50">
               <FiPlusCircle className="mr-2" /> Tambah URL Video
             </button>
           </div>
@@ -368,9 +279,7 @@ export const DeskripsiDesa = () => {
 
         {/* Galeri */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Galeri
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Galeri</label>
           <div
             className="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer mb-4"
             onClick={() => galleryInputRef.current.click()}
@@ -378,20 +287,9 @@ export const DeskripsiDesa = () => {
             onDrop={handleGalleryDrop}
           >
             <FiUpload className="text-gray-400 text-3xl mb-2" />
-            <p className="text-sm text-center text-gray-500">
-              Upload a file or drag and drop
-            </p>
-            <p className="text-xs text-center text-gray-400 mt-1">
-              JPEG, JPG, PNG (nMB, 1440×506px, maks 8 file)
-            </p>
-            <input
-              type="file"
-              ref={galleryInputRef}
-              onChange={handleGalleryUpload}
-              accept="image/jpeg,image/jpg,image/png"
-              className="hidden"
-              multiple
-            />
+            <p className="text-sm text-center text-gray-500">Upload a file or drag and drop</p>
+            <p className="text-xs text-center text-gray-400 mt-1">JPEG, JPG, PNG (nMB, 1440×506px, maks 8 file)</p>
+            <input type="file" ref={galleryInputRef} onChange={handleGalleryUpload} accept="image/jpeg,image/jpg,image/png" className="hidden" multiple />
           </div>
 
           {/* Gallery Preview */}
@@ -399,16 +297,8 @@ export const DeskripsiDesa = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
               {formData.galleryImages.map((image, index) => (
                 <div key={index} className="relative">
-                  <img
-                    src={image}
-                    alt={`Gallery image ${index + 1}`}
-                    className="w-full h-32 object-cover rounded-lg"
-                  />
-                  <button
-                    type="button"
-                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 w-6 h-6 flex items-center justify-center"
-                    onClick={() => removeGalleryImage(index)}
-                  >
+                  <img src={image} alt={`Gallery image ${index + 1}`} className="w-full h-32 object-cover rounded-lg" />
+                  <button type="button" className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 w-6 h-6 flex items-center justify-center" onClick={() => removeGalleryImage(index)}>
                     ×
                   </button>
                 </div>
@@ -416,23 +306,16 @@ export const DeskripsiDesa = () => {
             </div>
           )}
 
-          <div className="mt-4">
-            <button
-              type="button"
-              onClick={() => galleryInputRef.current.click()}
-              className="flex items-center justify-center w-full border border-gray-300 rounded-lg p-2 text-gray-500 hover:bg-gray-50"
-            >
+          {/* <div className="mt-4">
+            <button type="button" onClick={() => galleryInputRef.current.click()} className="flex items-center justify-center w-full border border-gray-300 rounded-lg p-2 text-gray-500 hover:bg-gray-50">
               <FiPlusCircle className="mr-2" /> Tambah Foto/Galeri
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Submit Button */}
         <div className="flex justify-end">
-          <button
-            type="submit"
-            className="bg-blue-500 text-white rounded-lg px-6 py-2 hover:bg-blue-600"
-          >
+          <button type="submit" className="bg-blue-500 text-white rounded-lg px-6 py-2 hover:bg-blue-600">
             Simpan
           </button>
         </div>
