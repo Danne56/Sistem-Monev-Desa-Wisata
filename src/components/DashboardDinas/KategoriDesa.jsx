@@ -217,7 +217,11 @@ export const KategoriDesa = () => {
     // Validasi semua field diisi
     const scoreValues = Object.values(scores);
     if (scoreValues.some((score) => score === "" || isNaN(score))) {
-      alert("Semua nilai skor harus diisi dengan angka antara 1-100");
+      Swal.fire({
+        icon: "error",
+        title: "Validasi Gagal",
+        text: "Semua nilai skor harus diisi dengan angka antara 1-100",
+      });
       return;
     }
 
@@ -269,10 +273,18 @@ export const KategoriDesa = () => {
           showConfirmButton: false,
         });
       } else {
-        alert(data.message || "Gagal menyimpan skor");
+        Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: data.message || "Gagal menyimpan skor",
+        });
       }
     } catch (err) {
-      alert("Error saat menyimpan skor");
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Terjadi kesalahan saat menyimpan skor",
+      });
       console.error("Error saving scores:", err);
     } finally {
       setLoading(false);
