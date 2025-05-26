@@ -7,7 +7,8 @@ import { SouvenirWisata } from "../components/DetailWisata/SouvenirWisata";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { axiosInstance } from "../config";
-import { PenginapanWIsata } from "../components/DetailWisata/PenginapanWisata";
+import { PenginapanWisata } from "../components/DetailWisata/PenginapanWisata";
+import { PaketWisata } from "../components/DetailWisata/PaketWisata";
 
 export const DetailWisata = () => {
   const [desa, setDesa] = useState(null);
@@ -50,7 +51,8 @@ export const DetailWisata = () => {
       />
       <GaleriWisata images={deskripsiDesa.galeri_desa} />
       <AtraksiWisata atraksi={deskripsiWisata.atraksi} />
-      <PenginapanWIsata atraksi={deskripsiWisata.penginapan} />
+      <PaketWisata paketWisata={deskripsiWisata.paket_wisata} />
+      <PenginapanWisata penginapan={deskripsiWisata.penginapan} />
       <SouvenirWisata souvenir={deskripsiWisata.suvenir} />
     </>
   );

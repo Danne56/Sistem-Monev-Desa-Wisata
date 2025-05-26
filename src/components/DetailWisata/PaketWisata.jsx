@@ -6,14 +6,15 @@ import "swiper/css/navigation";
 
 import arrowRight from "../../assets/DetailWisata/icon/arrowRight.svg";
 
-export const PenginapanWisata = ({ penginapan = [] }) => {
-  if (!penginapan.length) return null;
+export const PaketWisata = ({ paketWisata = [] }) => {
+  if (!paketWisata.length) return null;
+  console.log(paketWisata);
 
   return (
     <section className="py-10 px-4 sm:px-10 relative">
       <div className="max-w-7xl mx-auto">
         <h2 className="md:text-[26px] sm:text-2xl text-body font-bold my-6 mb-4">
-          Penginapan
+          Paket Wisata
         </h2>
 
         <div className="relative">
@@ -22,8 +23,8 @@ export const PenginapanWisata = ({ penginapan = [] }) => {
             spaceBetween={16}
             slidesPerView={1}
             navigation={{
-              nextEl: ".penginapan-next",
-              prevEl: ".penginapan-prev",
+              nextEl: ".paketWisata-next",
+              prevEl: ".paketWisata-prev",
             }}
             breakpoints={{
               640: { slidesPerView: 2 },
@@ -31,7 +32,7 @@ export const PenginapanWisata = ({ penginapan = [] }) => {
               1024: { slidesPerView: 4 },
             }}
           >
-            {penginapan.map((item, idx) => (
+            {paketWisata.map((item, idx) => (
               <SwiperSlide key={idx}>
                 <div className="rounded-xl overflow-hidden shadow-sm">
                   <img
@@ -52,11 +53,11 @@ export const PenginapanWisata = ({ penginapan = [] }) => {
             ))}
           </Swiper>
 
-          <button className="penginapan-prev absolute left-0 top-1/2 -translate-y-1/2 rounded-full z-10">
+          <button className="paketWisata-prev absolute left-0 top-1/2 -translate-y-1/2 rounded-full z-10">
             <img src={arrowRight} alt="left" className="w-8 h-8 rotate-180" />
           </button>
 
-          <button className="penginapan-next absolute right-0 top-1/2 -translate-y-1/2 rounded-full z-10">
+          <button className="paketWisata-next absolute right-0 top-1/2 -translate-y-1/2 rounded-full z-10">
             <img src={arrowRight} alt="right" className="w-8 h-8" />
           </button>
         </div>

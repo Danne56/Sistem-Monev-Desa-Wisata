@@ -10,6 +10,7 @@ import {
 import profile from "../../assets/Dashboard/profile.svg";
 import { UserContext } from "../../context/UserContext";
 import { axiosInstance } from "../../config";
+import Swal from "sweetalert2";
 
 export const DeskripsiDesa = () => {
   const { user } = useContext(UserContext);
@@ -86,9 +87,12 @@ export const DeskripsiDesa = () => {
       } catch (error) {
         console.error("Error fetching user desa:", error);
         if (error.response?.status === 404) {
-          alert(
-            "Anda belum memiliki desa wisata. Silakan hubungi administrator."
-          );
+          Swal.fire({
+            icon: "warning",
+            title: "Desa Wisata Tidak Ditemukan",
+            text: "Anda belum memiliki desa wisata. Silakan hubungi administrator.",
+            confirmButtonColor: "#3085d6",
+          });
         }
       } finally {
         setLoading(false);
@@ -104,7 +108,12 @@ export const DeskripsiDesa = () => {
     if (file) {
       // Validasi ukuran file (5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert("Ukuran file terlalu besar. Maksimal 5MB.");
+        Swal.fire({
+          icon: "error",
+          title: "File Terlalu Besar",
+          text: "Ukuran file terlalu besar. Maksimal 5MB.",
+          confirmButtonColor: "#3085d6",
+        });
         return;
       }
 
@@ -123,7 +132,12 @@ export const DeskripsiDesa = () => {
   const handleGalleryUpload = (event) => {
     const files = Array.from(event.target.files);
     if (files.length > 8) {
-      alert("Maksimal 8 gambar untuk galeri.");
+      Swal.fire({
+        icon: "warning",
+        title: "Terlalu Banyak File",
+        text: "Maksimal 8 gambar untuk galeri.",
+        confirmButtonColor: "#3085d6",
+      });
       return;
     }
 
@@ -134,7 +148,12 @@ export const DeskripsiDesa = () => {
       files.forEach((file) => {
         // Validasi ukuran file
         if (file.size > 5 * 1024 * 1024) {
-          alert(`File ${file.name} terlalu besar. Maksimal 5MB per file.`);
+          Swal.fire({
+            icon: "error",
+            title: "File Terlalu Besar",
+            text: `File ${file.name} terlalu besar. Maksimal 5MB per file.`,
+            confirmButtonColor: "#3085d6",
+          });
           return;
         }
 
@@ -169,7 +188,12 @@ export const DeskripsiDesa = () => {
     const file = event.dataTransfer.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        alert("Ukuran file terlalu besar. Maksimal 5MB.");
+        Swal.fire({
+          icon: "error",
+          title: "File Terlalu Besar",
+          text: "Ukuran file terlalu besar. Maksimal 5MB.",
+          confirmButtonColor: "#3085d6",
+        });
         return;
       }
 
@@ -193,7 +217,12 @@ export const DeskripsiDesa = () => {
     event.preventDefault();
     const files = Array.from(event.dataTransfer.files);
     if (files.length > 8) {
-      alert("Maksimal 8 gambar untuk galeri.");
+      Swal.fire({
+        icon: "warning",
+        title: "Terlalu Banyak File",
+        text: "Maksimal 8 gambar untuk galeri.",
+        confirmButtonColor: "#3085d6",
+      });
       return;
     }
 
@@ -203,7 +232,12 @@ export const DeskripsiDesa = () => {
 
       files.forEach((file) => {
         if (file.size > 5 * 1024 * 1024) {
-          alert(`File ${file.name} terlalu besar. Maksimal 5MB per file.`);
+          Swal.fire({
+            icon: "error",
+            title: "File Terlalu Besar",
+            text: `File ${file.name} terlalu besar. Maksimal 5MB per file.`,
+            confirmButtonColor: "#3085d6",
+          });
           return;
         }
 
@@ -315,7 +349,12 @@ export const DeskripsiDesa = () => {
     event.preventDefault();
 
     if (!userDesa) {
-      alert("Data desa tidak ditemukan.");
+      Swal.fire({
+        icon: "error",
+        title: "Data Tidak Ditemukan",
+        text: "Data desa tidak ditemukan.",
+        confirmButtonColor: "#3085d6",
+      });
       return;
     }
 
@@ -327,7 +366,7 @@ export const DeskripsiDesa = () => {
 
       // Prepare data object - DIFFERENT for POST vs PUT
       let dataToSubmit;
-      
+
       if (existingDeskripsi) {
         // For PUT request - DON'T include kd_desa since it's in the route
         dataToSubmit = {
@@ -395,11 +434,14 @@ export const DeskripsiDesa = () => {
       }
 
       if (response.data.status === "success") {
-        alert(
-          existingDeskripsi
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: existingDeskripsi
             ? "Deskripsi desa berhasil diperbarui!"
-            : "Deskripsi desa berhasil ditambahkan!"
-        );
+            : "Deskripsi desa berhasil ditambahkan!",
+          confirmButtonColor: "#3085d6",
+        });
 
         // Update state with new data
         setExistingDeskripsi(response.data.data);
@@ -415,10 +457,14 @@ export const DeskripsiDesa = () => {
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert(
-        error.response?.data?.message ||
-          "Terjadi kesalahan saat menyimpan data."
-      );
+      Swal.fire({
+        icon: "error",
+        title: "Gagal Menyimpan",
+        text:
+          error.response?.data?.message ||
+          "Terjadi kesalahan saat menyimpan data.",
+        confirmButtonColor: "#3085d6",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -449,7 +495,12 @@ export const DeskripsiDesa = () => {
       );
 
       if (response.data.status === "success") {
-        alert("Deskripsi desa berhasil dihapus!");
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Deskripsi desa berhasil dihapus!",
+          confirmButtonColor: "#3085d6",
+        });
 
         // Reset state
         setExistingDeskripsi(null);
@@ -465,10 +516,14 @@ export const DeskripsiDesa = () => {
       }
     } catch (error) {
       console.error("Error deleting deskripsi:", error);
-      alert(
-        error.response?.data?.message ||
-          "Terjadi kesalahan saat menghapus data."
-      );
+      Swal.fire({
+        icon: "error",
+        title: "Gagal Menghapus",
+        text:
+          error.response?.data?.message ||
+          "Terjadi kesalahan saat menghapus data.",
+        confirmButtonColor: "#3085d6",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -517,9 +572,7 @@ export const DeskripsiDesa = () => {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Deskripsi Desa</h1>
-          <p className="text-gray-600 mt-1">
-            {userDesa.nama_desa} ({userDesa.kd_desa})
-          </p>
+          <p className="text-gray-600 mt-1">{userDesa.nama_desa}</p>
         </div>
         <div className="flex items-center">
           <div className="mr-2 text-right">
