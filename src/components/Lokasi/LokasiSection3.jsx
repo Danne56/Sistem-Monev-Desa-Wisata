@@ -1,30 +1,26 @@
-import React from "react";
-import location from "../../assets/Beranda/location.svg";
-import DewiSinta from "../../assets/Beranda/DewiSinta.webp";
-import GoaCemara from "../../assets/Beranda/GoaCemara.webp";
-import Nglanggeran from "../../assets/Beranda/Nglanggeran.webp";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { axiosInstance } from "../../config";
 
 export const LokasiSection3 = () => {
-  const wisataData = [
-    { title: "Desa Wisata Dewi Sinta", location: "Kabupaten Bantul", image: DewiSinta },
-    { title: "Desa Wisata Nglanggeran", location: "Kabupaten Gunungkidul", image: Nglanggeran },
-    { title: "Desa Wisata Goa Cemara", location: "Kabupaten Gunungkidul", image: GoaCemara },
-    { title: "Desa Wisata Dewi Sinta", location: "Kabupaten Bantul", image: DewiSinta },
-    { title: "Desa Wisata Nglanggeran", location: "Kabupaten Gunungkidul", image: Nglanggeran },
-    { title: "Desa Wisata Goa Cemara", location: "Kabupaten Gunungkidul", image: GoaCemara },
-    { title: "Desa Budaya Batik", location: "Kabupaten Bantul", image: DewiSinta },
-    { title: "Desa Budaya Batik", location: "Kabupaten Bantul", image: DewiSinta },
-    { title: "Desa Tari Tradisional", location: "Kabupaten Sleman", image: Nglanggeran },
-    { title: "Desa Adat Imogiri", location: "Kabupaten Bantul", image: GoaCemara },
-    { title: "Desa Adat Imogiri", location: "Kabupaten Bantul", image: GoaCemara },
-    { title: "Kampung Wisata Kreatif", location: "Kota Yogyakarta", image: Nglanggeran },
-    { title: "Taman Pintar", location: "Kota Yogyakarta", image: DewiSinta },
-    { title: "Taman Pintar", location: "Kota Yogyakarta", image: DewiSinta },
-    { title: "Desa Wisata Edukasi", location: "Kabupaten Sleman", image: GoaCemara },
-    { title: "Desa Wisata Edukasi", location: "Kabupaten Sleman", image: GoaCemara },
-    { title: "Desa Wisata Edukasi", location: "Kabupaten Sleman", image: GoaCemara },
-    { title: "Desa Wisata Edukasi", location: "Kabupaten Sleman", image: GoaCemara },
-  ];
+  const [wisataData, setWisataData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosInstance.get("/api/desa-wisata/details");
+        console.log(response);
+        if (response.data.status === "success") {
+          setWisataData(response.data.data);
+        } else {
+          console.error("Failed to fetch data:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <section className="py-10 px-4 lg:px-20">
@@ -33,18 +29,22 @@ export const LokasiSection3 = () => {
 
         {/* Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {wisataData.map((item, index) => (
-            <div key={index} className="relative rounded-xl overflow-hidden shadow-md group">
-              <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col  p-4">
-                <h3 className="text-white font-semibold text-lg">{item.title}</h3>
-                <div className="flex items-center gap-2 text-white text-sm mt-1">
-                  <img src={location} alt="location" className="w-4 h-4" />
-                  <span>{item.location}</span>
+          {wisataData.map(
+            (item) =>
+              item.gambar_cover && (
+                <div key={item.kd_desa} className="relative rounded-xl overflow-hidden shadow-md group">
+                  <img src={item.gambar_cover} alt={item.nama_popular} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col p-4">
+                    <h3 className="text-white font-semibold text-lg">{item.nama_popular}</h3>
+                    <div className="flex items-center gap-2 text-white text-sm mt-1">
+                      <span>{item.kabupaten}</span>
+                    </div>
+                  </div>
+                  {/* Tautan ke halaman detail */}
+                  <a href={`/detail/${item.kd_desa}`} className="absolute inset-0"></a>
                 </div>
-              </div>
-            </div>
-          ))}
+              )
+          )}
         </div>
 
         {/* Button */}

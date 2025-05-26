@@ -1,0 +1,667 @@
+[
+  {
+    "id_desa": "DESA-0501",
+    "provinsi": "Jawa Barat",
+    "kabupaten": "Bandung",
+    "nama_desa": "Desa Cimahi",
+    "nama_popular": "Lembang Indah",
+    "alamat": "Jl. Lembang No. 123",
+    "jenis_wisata": ["wisata alam", "wisata budaya"],
+    "pengelola": "Pak Joko",
+    "nomor_telepon": "081234567890",
+    "email": "defa12@wisata.com",
+    "kategori_desa": "Maju",
+    "status": "aktif",
+    "keterangan": "Desa Wisata Desa Cimahi telah diverifikasi oleh admin",
+    "partisipasi_masyarakat": 95,
+    "keragaman_paket_wisata": 88,
+    "akses_tempat_wisata": 90,
+    "keramahan_difabel": 80,
+    "fasilitas_tempat_wisata": 95,
+    "produk_tempat_wisata": 85,
+    "rata_rata_nilai": 88,
+    "penjelasan_umum": "Deskripsi umum tentang desa wisata ini",
+    "fasilitas": ["parkir", "toilet", "tempat ibadah", "tempat bermain anak", "tempat penginapan", "tempat makan", "tempat souvenir", "spot foto"],
+    "cover_desa": "https://example.com/cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=tsuO "],
+    "url_video": ["https://www.youtube.com/watch?v=tsuO "],
+    "atraksi": [
+      { "id": 1, "nama": "Atraksi 1", "jenis_atraksi": "wisata alam", "gambar": "https://example.com/image1.jpg ", "likes": 100 },
+      { "id": 2, "nama": "Atraksi 2", "jenis_atraksi": "wisata budaya", "gambar": "https://example.com/image2.jpg ", "likes": 34 }
+    ],
+    "penginapan": [
+      { "nama": "Penginapan 1", "harga": 200000, "gambar": "https://example.com/inn1.jpg " },
+      { "nama": "Penginapan 2", "harga": 300000, "gambar": "https://example.com/inn2.jpg " }
+    ],
+    "paket_wisata": [
+      { "nama": "Paket 1", "harga": 500000, "gambar": "https://example.com/package1.jpg " },
+      { "nama": "Paket 2", "harga": 700000, "gambar": "https://example.com/package2.jpg " }
+    ],
+    "suvenir": [
+      { "nama": "Souvenir 1", "harga": 50000, "gambar": "https://example.com/souvenir1.jpg " },
+      { "nama": "Souvenir 2", "harga": 70000, "gambar": "https://example.com/souvenir2.jpg " }
+    ],
+    "likes": 150
+  },
+  {
+    "id_desa": "DESA-0502",
+    "provinsi": "Bali",
+    "kabupaten": "Badung",
+    "nama_desa": "Desa Ubud",
+    "nama_popular": "Ubud Village",
+    "alamat": "Jl. Raya Ubud No. 45",
+    "jenis_wisata": ["wisata budaya", "wisata alam"],
+    "pengelola": "I Wayan Artawan",
+    "nomor_telepon": "081345678901",
+    "email": "ubudvillage@wisata.com",
+    "kategori_desa": "Mandiri",
+    "status": "aktif",
+    "keterangan": "Desa Wisata terbaik di Bali",
+    "partisipasi_masyarakat": 90,
+    "keragaman_paket_wisata": 85,
+    "akses_tempat_wisata": 88,
+    "keramahan_difabel": 75,
+    "fasilitas_tempat_wisata": 92,
+    "produk_tempat_wisata": 87,
+    "rata_rata_nilai": 86,
+    "penjelasan_umum": "Desa Wisata yang menawarkan seni dan budaya tradisional Bali.",
+    "fasilitas": ["parkir", "toilet", "tempat ibadah", "tempat makan", "tempat souvenir", "spot foto"],
+    "cover_desa": "https://example.com/ubud-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=abc123 ", "https://www.youtube.com/watch?v=def456 "],
+    "url_video": ["https://www.youtube.com/watch?v=ghi789 "],
+    "atraksi": [
+      { "id": 3, "nama": "Tari Kecak", "jenis_atraksi": "wisata budaya", "gambar": "https://example.com/kecak.jpg ", "likes": 200 },
+      { "id": 4, "nama": "Sawah Terasering", "jenis_atraksi": "wisata alam", "gambar": "https://example.com/terasering.jpg ", "likes": 180 }
+    ],
+    "penginapan": [
+      { "nama": "Villa Sawah", "harga": 400000, "gambar": "https://example.com/villa1.jpg " },
+      { "nama": "Homestay Ubud", "harga": 250000, "gambar": "https://example.com/homestay1.jpg " }
+    ],
+    "paket_wisata": [
+      { "nama": "Paket Budaya", "harga": 600000, "gambar": "https://example.com/paket-budaya.jpg " },
+      { "nama": "Paket Alam", "harga": 750000, "gambar": "https://example.com/paket-alam.jpg " }
+    ],
+    "suvenir": [
+      { "nama": "Batik Ubud", "harga": 150000, "gambar": "https://example.com/batik.jpg " },
+      { "nama": "Patung Kayu", "harga": 300000, "gambar": "https://example.com/patung.jpg " }
+    ],
+    "likes": 250
+  },
+  {
+    "id_desa": "DESA-0503",
+    "provinsi": "Yogyakarta",
+    "kabupaten": "Bantul",
+    "nama_desa": "Desa Wisata Krebet",
+    "nama_popular": "Krebet Eco Village",
+    "alamat": "Dusun Krebet, Bantul",
+    "jenis_wisata": ["wisata edukasi", "wisata alam"],
+    "pengelola": "Bu Ani",
+    "nomor_telepon": "081456789012",
+    "email": "krebeteco@wisata.com",
+    "kategori_desa": "Mandiri",
+    "status": "aktif",
+    "keterangan": "Desa wisata dengan konsep lingkungan hijau",
+    "partisipasi_masyarakat": 88,
+    "keragaman_paket_wisata": 80,
+    "akses_tempat_wisata": 85,
+    "keramahan_difabel": 70,
+    "fasilitas_tempat_wisata": 90,
+    "produk_tempat_wisata": 80,
+    "rata_rata_nilai": 84,
+    "penjelasan_umum": "Desa Krebet mengedepankan ekowisata dan pembelajaran ramah lingkungan.",
+    "fasilitas": ["parkir", "toilet", "tempat ibadah", "spot foto", "area edukasi"],
+    "cover_desa": "https://example.com/krebet-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=jkl012 "],
+    "url_video": ["https://www.youtube.com/watch?v=mno345 "],
+    "atraksi": [
+      { "id": 5, "nama": "Edukasi Pertanian Organik", "jenis_atraksi": "wisata edukasi", "gambar": "https://example.com/organik.jpg ", "likes": 170 },
+      { "id": 6, "nama": "Agro Wisata Mangga", "jenis_atraksi": "wisata alam", "gambar": "https://example.com/mangga.jpg ", "likes": 150 }
+    ],
+    "penginapan": [
+      { "nama": "Homestay Krebet", "harga": 180000, "gambar": "https://example.com/homestay2.jpg " }
+    ],
+    "paket_wisata": [
+      { "nama": "Paket Edukasi", "harga": 400000, "gambar": "https://example.com/paket-edu.jpg " }
+    ],
+    "suvenir": [
+      { "nama": "Madu Asli Krebet", "harga": 80000, "gambar": "https://example.com/madu.jpg " }
+    ],
+    "likes": 200
+  },
+  {
+    "id_desa": "DESA-0504",
+    "provinsi": "NTT",
+    "kabupaten": "Manggarai Barat",
+    "nama_desa": "Desa Golo Bilang",
+    "nama_popular": "Danau Kelimutu",
+    "alamat": "Jl. Kelimutu No. 1",
+    "jenis_wisata": ["wisata alam"],
+    "pengelola": "Thomas Djo",
+    "nomor_telepon": "081567890123",
+    "email": "kelimutu@wisata.com",
+    "kategori_desa": "Berkembang",
+    "status": "aktif",
+    "keterangan": "Desa dekat Danau Kelimutu yang populer",
+    "partisipasi_masyarakat": 75,
+    "keragaman_paket_wisata": 70,
+    "akses_tempat_wisata": 80,
+    "keramahan_difabel": 60,
+    "fasilitas_tempat_wisata": 75,
+    "produk_tempat_wisata": 65,
+    "rata_rata_nilai": 73,
+    "penjelasan_umum": "Desa Wisata dengan view indah Danau Kelimutu",
+    "fasilitas": ["parkir", "toilet", "spot foto"],
+    "cover_desa": "https://example.com/kelimutu-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=pqr678 "],
+    "url_video": ["https://www.youtube.com/watch?v=stu901 "],
+    "atraksi": [
+      { "id": 7, "nama": "Danau Tiga Warna", "jenis_atraksi": "wisata alam", "gambar": "https://example.com/danau.jpg ", "likes": 120 }
+    ],
+    "penginapan": [],
+    "paket_wisata": [],
+    "suvenir": [
+      { "nama": "Ulos Flores", "harga": 120000, "gambar": "https://example.com/ulos.jpg " }
+    ],
+    "likes": 130
+  },
+  {
+    "id_desa": "DESA-0505",
+    "provinsi": "Sumatera Utara",
+    "kabupaten": "Samosir",
+    "nama_desa": "Desa Ambarita",
+    "nama_popular": "Ambarita Stone Chairs",
+    "alamat": "Pulau Samosir",
+    "jenis_wisata": ["wisata budaya", "wisata sejarah"],
+    "pengelola": "Robert Sinaga",
+    "nomor_telepon": "081678901234",
+    "email": "ambarita@wisata.com",
+    "kategori_desa": "Berkembang",
+    "status": "aktif",
+    "keterangan": "Desa dengan bangunan megalitik kuno",
+    "partisipasi_masyarakat": 80,
+    "keragaman_paket_wisata": 75,
+    "akses_tempat_wisata": 85,
+    "keramahan_difabel": 65,
+    "fasilitas_tempat_wisata": 80,
+    "produk_tempat_wisata": 70,
+    "rata_rata_nilai": 76,
+    "penjelasan_umum": "Desa Wisata dengan nilai sejarah tinggi di Pulau Samosir.",
+    "fasilitas": ["parkir", "toilet", "spot foto"],
+    "cover_desa": "https://example.com/ambarita-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=vwx123 "],
+    "url_video": ["https://www.youtube.com/watch?v=yza456 "],
+    "atraksi": [
+      { "id": 8, "nama": "Kursi Batu Bersejarah", "jenis_atraksi": "wisata sejarah", "gambar": "https://example.com/kursi-batu.jpg ", "likes": 140 }
+    ],
+    "penginapan": [
+      { "nama": "Cottage Danau Toba", "harga": 350000, "gambar": "https://example.com/cottage.jpg " }
+    ],
+    "paket_wisata": [
+      { "nama": "Paket Sejarah & Budaya", "harga": 550000, "gambar": "https://example.com/paket-hist.jpg " }
+    ],
+    "suvenir": [
+      { "nama": "Ulos Batak", "harga": 100000, "gambar": "https://example.com/ulos-batak.jpg " }
+    ],
+    "likes": 180
+  },
+  {
+    "id_desa": "DESA-0506",
+    "provinsi": "Kalimantan Selatan",
+    "kabupaten": "Banjarbaru",
+    "nama_desa": "Desa Wisata Sungai Jingah",
+    "nama_popular": "Rumah Rakit Banjarbaru",
+    "alamat": "Jl. Sungai Jingah No. 1",
+    "jenis_wisata": ["wisata air", "wisata budaya"],
+    "pengelola": "Hendra Saputra",
+    "nomor_telepon": "081789012345",
+    "email": "sungaijingah@wisata.com",
+    "kategori_desa": "Berkembang",
+    "status": "aktif",
+    "keterangan": "Desa Wisata dengan rumah apung unik",
+    "partisipasi_masyarakat": 78,
+    "keragaman_paket_wisata": 72,
+    "akses_tempat_wisata": 80,
+    "keramahan_difabel": 60,
+    "fasilitas_tempat_wisata": 75,
+    "produk_tempat_wisata": 68,
+    "rata_rata_nilai": 74,
+    "penjelasan_umum": "Desa dengan keunikan rumah rakit di atas sungai.",
+    "fasilitas": ["parkir", "toilet", "spot foto"],
+    "cover_desa": "https://example.com/rakitan-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=bcd789 "],
+    "url_video": ["https://www.youtube.com/watch?v=efg012 "],
+    "atraksi": [
+      { "id": 9, "nama": "Wisata Rumah Rakit", "jenis_atraksi": "wisata air", "gambar": "https://example.com/rakit.jpg ", "likes": 130 }
+    ],
+    "penginapan": [
+      { "nama": "Rumah Apung Homestay", "harga": 280000, "gambar": "https://example.com/apung.jpg " }
+    ],
+    "paket_wisata": [
+      { "nama": "Paket Wisata Air", "harga": 450000, "gambar": "https://example.com/paket-air.jpg " }
+    ],
+    "suvenir": [
+      "Nama barang belum tersedia"
+    ],
+    "likes": 140
+  },
+  {
+    "id_desa": "DESA-0507",
+    "provinsi": "Sulawesi Utara",
+    "kabupaten": "Manado",
+    "nama_desa": "Desa Tikala",
+    "nama_popular": "Tikala Airstrip",
+    "alamat": "Jl. Tikala Raya No. 10",
+    "jenis_wisata": ["wisata kuliner", "wisata kota"],
+    "pengelola": "Freddy Kalalo",
+    "nomor_telepon": "081890123456",
+    "email": "tikala@wisata.com",
+    "kategori_desa": "Berkembang",
+    "status": "aktif",
+    "keterangan": "Desa Wisata dengan street food terkenal",
+    "partisipasi_masyarakat": 70,
+    "keragaman_paket_wisata": 65,
+    "akses_tempat_wisata": 80,
+    "keramahan_difabel": 65,
+    "fasilitas_tempat_wisata": 70,
+    "produk_tempat_wisata": 60,
+    "rata_rata_nilai": 70,
+    "penjelasan_umum": "Desa Tikala dikenal dengan jajanan malam hari yang lezat.",
+    "fasilitas": ["parkir", "toilet", "spot foto"],
+    "cover_desa": "https://example.com/tikala-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=ghi456 "],
+    "url_video": ["https://www.youtube.com/watch?v=jkl789 "],
+    "atraksi": [
+      { "id": 10, "nama": "Tikala Night Market", "jenis_atraksi": "wisata kuliner", "gambar": "https://example.com/tikala-night.jpg ", "likes": 110 }
+    ],
+    "penginapan": [],
+    "paket_wisata": [],
+    "suvenir": [
+      { "nama": "Dodol Rumput Laut", "harga": 25000, "gambar": "https://example.com/dodol.jpg " }
+    ],
+    "likes": 120
+  },
+  {
+    "id_desa": "DESA-0508",
+    "provinsi": "Maluku",
+    "kabupaten": "Ambon",
+    "nama_desa": "Desa Hative Kecil",
+    "nama_popular": "Pantai Hative",
+    "alamat": "Jl. Pantai Hative No. 5",
+    "jenis_wisata": ["wisata alam", "wisata pantai"],
+    "pengelola": "John Latuihamallo",
+    "nomor_telepon": "081901234567",
+    "email": "hativemaluku@wisata.com",
+    "kategori_desa": "Berkembang",
+    "status": "aktif",
+    "keterangan": "Desa Wisata dengan pantai pasir putih",
+    "partisipasi_masyarakat": 72,
+    "keragaman_paket_wisata": 68,
+    "akses_tempat_wisata": 78,
+    "keramahan_difabel": 60,
+    "fasilitas_tempat_wisata": 70,
+    "produk_tempat_wisata": 62,
+    "rata_rata_nilai": 71,
+    "penjelasan_umum": "Desa dengan destinasi pantai eksotis di Maluku.",
+    "fasilitas": ["parkir", "toilet", "spot foto"],
+    "cover_desa": "https://example.com/hative-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=mno123 "],
+    "url_video": ["https://www.youtube.com/watch?v=pqr456 "],
+    "atraksi": [
+      { "id": 11, "nama": "Pantai Pasir Putih", "jenis_atraksi": "wisata pantai", "gambar": "https://example.com/pasir-putih.jpg ", "likes": 100 }
+    ],
+    "penginapan": [],
+    "paket_wisata": [],
+    "suvenir": [
+      { "nama": "Kerajinan Mutiara", "harga": 200000, "gambar": "https://example.com/mutiara.jpg " }
+    ],
+    "likes": 110
+  },
+  {
+    "id_desa": "DESA-0509",
+    "provinsi": "Papua",
+    "kabupaten": "Jayapura",
+    "nama_desa": "Desa Wisata Ifar",
+    "nama_popular": "Ifar Culture Village",
+    "alamat": "Distrik Abepura",
+    "jenis_wisata": ["wisata budaya", "wisata sejarah"],
+    "pengelola": "Jonas Mote",
+    "nomor_telepon": "081912345678",
+    "email": "ifar@wisata.com",
+    "kategori_desa": "Berkembang",
+    "status": "aktif",
+    "keterangan": "Desa Wisata dengan kebudayaan suku asli Papua",
+    "partisipasi_masyarakat": 74,
+    "keragaman_paket_wisata": 70,
+    "akses_tempat_wisata": 76,
+    "keramahan_difabel": 60,
+    "fasilitas_tempat_wisata": 72,
+    "produk_tempat_wisata": 64,
+    "rata_rata_nilai": 72,
+    "penjelasan_umum": "Desa dengan budaya khas Suku Dani dan Asmat.",
+    "fasilitas": ["parkir", "toilet", "spot foto"],
+    "cover_desa": "https://example.com/ifar-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=stu789 "],
+    "url_video": ["https://www.youtube.com/watch?v=vwx012 "],
+    "atraksi": [
+      { "id": 12, "nama": "Upacara Adat Papua", "jenis_atraksi": "wisata budaya", "gambar": "https://example.com/upacara.jpg ", "likes": 95 }
+    ],
+    "penginapan": [],
+    "paket_wisata": [],
+    "suvenir": [
+      { "nama": "Topi Cenderawasih", "harga": 150000, "gambar": "https://example.com/topi.jpg " }
+    ],
+    "likes": 105
+  },
+  {
+    "id_desa": "DESA-0510",
+    "provinsi": "Jawa Tengah",
+    "kabupaten": "Magelang",
+    "nama_desa": "Desa Borobudur",
+    "nama_popular": "Borobudur Heritage",
+    "alamat": "Jl. Borobudur KM 10",
+    "jenis_wisata": ["wisata sejarah", "wisata budaya"],
+    "pengelola": "Suryadi Wibowo",
+    "nomor_telepon": "082123456789",
+    "email": "borobudur@wisata.com",
+    "kategori_desa": "Mandiri",
+    "status": "aktif",
+    "keterangan": "Desa Wisata dekat Candi Borobudur",
+    "partisipasi_masyarakat": 90,
+    "keragaman_paket_wisata": 85,
+    "akses_tempat_wisata": 90,
+    "keramahan_difabel": 75,
+    "fasilitas_tempat_wisata": 90,
+    "produk_tempat_wisata": 85,
+    "rata_rata_nilai": 86,
+    "penjelasan_umum": "Desa dengan akses langsung ke Candi Borobudur.",
+    "fasilitas": ["parkir", "toilet", "tempat ibadah", "spot foto"],
+    "cover_desa": "https://example.com/borobudur-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=qwe123 "],
+    "url_video": ["https://www.youtube.com/watch?v=asd456 "],
+    "atraksi": [
+      { "id": 13, "nama": "Candi Borobudur", "jenis_atraksi": "wisata sejarah", "gambar": "https://example.com/boro.jpg ", "likes": 220 }
+    ],
+    "penginapan": [
+      { "nama": "Hotel Candi View", "harga": 600000, "gambar": "https://example.com/hotel-candi.jpg " }
+    ],
+    "paket_wisata": [
+      { "nama": "Paket Sejarah Jawa", "harga": 800000, "gambar": "https://example.com/paket-sejarah.jpg " }
+    ],
+    "suvenir": [
+      { "nama": "Miniatur Candi", "harga": 150000, "gambar": "https://example.com/miniatur.jpg " }
+    ],
+    "likes": 240
+  },
+  {
+    "id_desa": "DESA-0511",
+    "provinsi": "Jawa Timur",
+    "kabupaten": "Banyuwangi",
+    "nama_desa": "Desa Wisata Kemiren",
+    "nama_popular": "Kemiren Highland",
+    "alamat": "Kecamatan Glagah",
+    "jenis_wisata": ["wisata alam", "wisata agro"],
+    "pengelola": "Siti Nurfadilah",
+    "nomor_telepon": "082234567890",
+    "email": "kemiren@wisata.com",
+    "kategori_desa": "Berkembang",
+    "status": "aktif",
+    "keterangan": "Desa Wisata dengan perkebunan teh dan udara sejuk",
+    "partisipasi_masyarakat": 82,
+    "keragaman_paket_wisata": 78,
+    "akses_tempat_wisata": 85,
+    "keramahan_difabel": 70,
+    "fasilitas_tempat_wisata": 80,
+    "produk_tempat_wisata": 75,
+    "rata_rata_nilai": 79,
+    "penjelasan_umum": "Desa dengan nuansa pegunungan dan perkebunan.",
+    "fasilitas": ["parkir", "toilet", "spot foto"],
+    "cover_desa": "https://example.com/kemiren-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=zxc789 "],
+    "url_video": ["https://www.youtube.com/watch?v=tyu098 "],
+    "atraksi": [
+      { "id": 14, "nama": "Perkebunan Teh", "jenis_atraksi": "wisata agro", "gambar": "https://example.com/perkebunan-teh.jpg ", "likes": 160 }
+    ],
+    "penginapan": [
+      { "nama": "Tea Garden Resort", "harga": 500000, "gambar": "https://example.com/resort-teh.jpg " }
+    ],
+    "paket_wisata": [
+      { "nama": "Paket Wisata Agro", "harga": 600000, "gambar": "https://example.com/paket-agro.jpg " }
+    ],
+    "suvenir": [
+      { "nama": "Teh Lokal Kemiren", "harga": 50000, "gambar": "https://example.com/teh.jpg " }
+    ],
+    "likes": 170
+  },
+  {
+    "id_desa": "DESA-0512",
+    "provinsi": "Aceh",
+    "kabupaten": "Aceh Besar",
+    "nama_desa": "Desa Lampulo",
+    "nama_popular": "Pantai Lampulo",
+    "alamat": "Jl. Pantai Lampulo No. 1",
+    "jenis_wisata": ["wisata alam", "wisata religi"],
+    "pengelola": "Muhammad Yusuf",
+    "nomor_telepon": "082345678901",
+    "email": "lampulo@wisata.com",
+    "kategori_desa": "Berkembang",
+    "status": "aktif",
+    "keterangan": "Desa Wisata dengan Pantai dan Masjid Bersejarah",
+    "partisipasi_masyarakat": 78,
+    "keragaman_paket_wisata": 73,
+    "akses_tempat_wisata": 82,
+    "keramahan_difabel": 65,
+    "fasilitas_tempat_wisata": 78,
+    "produk_tempat_wisata": 70,
+    "rata_rata_nilai": 76,
+    "penjelasan_umum": "Desa dengan keindahan pantai dan situs religi Aceh.",
+    "fasilitas": ["parkir", "toilet", "masjid", "spot foto"],
+    "cover_desa": "https://example.com/lampulo-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=opq123 "],
+    "url_video": ["https://www.youtube.com/watch?v=wer456 "],
+    "atraksi": [
+      { "id": 15, "nama": "Masjid Baiturrahman", "jenis_atraksi": "wisata religi", "gambar": "https://example.com/masjid.jpg ", "likes": 150 }
+    ],
+    "penginapan": [],
+    "paket_wisata": [],
+    "suvenir": [
+      { "nama": "Songket Aceh", "harga": 300000, "gambar": "https://example.com/songket.jpg " }
+    ],
+    "likes": 160
+  },
+  {
+    "id_desa": "DESA-0513",
+    "provinsi": "DKI Jakarta",
+    "kabupaten": "Kepulauan Seribu",
+    "nama_desa": "Pulau Tidung",
+    "nama_popular": "Tidung Island",
+    "alamat": "Kecamatan Kepulauan Seribu Selatan",
+    "jenis_wisata": ["wisata alam", "wisata pantai"],
+    "pengelola": "Ahmad Riyanto",
+    "nomor_telepon": "082456789012",
+    "email": "tidung@wisata.com",
+    "kategori_desa": "Berkembang",
+    "status": "aktif",
+    "keterangan": "Desa Wisata di pulau seribu dengan snorkeling dan sunset",
+    "partisipasi_masyarakat": 76,
+    "keragaman_paket_wisata": 70,
+    "akses_tempat_wisata": 80,
+    "keramahan_difabel": 60,
+    "fasilitas_tempat_wisata": 75,
+    "produk_tempat_wisata": 68,
+    "rata_rata_nilai": 74,
+    "penjelasan_umum": "Desa dengan daya tarik laut biru dan pulau cantik.",
+    "fasilitas": ["parkir", "toilet", "spot foto"],
+    "cover_desa": "https://example.com/tidung-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=tyu789 "],
+    "url_video": ["https://www.youtube.com/watch?v=uio098 "],
+    "atraksi": [
+      { "id": 16, "nama": "Jembatan Cinta Tidung", "jenis_atraksi": "wisata alam", "gambar": "https://example.com/jembatan.jpg ", "likes": 140 }
+    ],
+    "penginapan": [
+      { "nama": "Cottage Tidung", "harga": 400000, "gambar": "https://example.com/cottage-tidung.jpg " }
+    ],
+    "paket_wisata": [
+      { "nama": "Paket Snorkeling", "harga": 700000, "gambar": "https://example.com/snorkeling.jpg " }
+    ],
+    "suvenir": [
+      { "nama": "Gantungan Kunci Kerang", "harga": 20000, "gambar": "https://example.com/gantungan.jpg " }
+    ],
+    "likes": 150
+  },
+  {
+    "id_desa": "DESA-0514",
+    "provinsi": "Sulawesi Selatan",
+    "kabupaten": "Toraja",
+    "nama_desa": "Desa Rantepao",
+    "nama_popular": "Rantepao Cultural Village",
+    "alamat": "Kecamatan Rantepao",
+    "jenis_wisata": ["wisata budaya", "wisata sejarah"],
+    "pengelola": "Andi Baso",
+    "nomor_telepon": "082567890123",
+    "email": "rantepao@wisata.com",
+    "kategori_desa": "Berkembang",
+    "status": "aktif",
+    "keterangan": "Desa Wisata dengan upacara adat Toraja",
+    "partisipasi_masyarakat": 80,
+    "keragaman_paket_wisata": 75,
+    "akses_tempat_wisata": 85,
+    "keramahan_difabel": 65,
+    "fasilitas_tempat_wisata": 80,
+    "produk_tempat_wisata": 70,
+    "rata_rata_nilai": 76,
+    "penjelasan_umum": "Desa dengan budaya unik dan ritual tradisional Toraja.",
+    "fasilitas": ["parkir", "toilet", "spot foto"],
+    "cover_desa": "https://example.com/rantepao-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=klm456 "],
+    "url_video": ["https://www.youtube.com/watch?v=nji789 "],
+    "atraksi": [
+      { "id": 17, "nama": "Upacara Pemakaman Toraja", "jenis_atraksi": "wisata budaya", "gambar": "https://example.com/upacara-toraja.jpg ", "likes": 130 }
+    ],
+    "penginapan": [
+      { "nama": "Homestay Toraja", "harga": 300000, "gambar": "https://example.com/homestay-toraja.jpg " }
+    ],
+    "paket_wisata": [
+      { "nama": "Paket Budaya Toraja", "harga": 900000, "gambar": "https://example.com/paket-toraja.jpg " }
+    ],
+    "suvenir": [
+      { "nama": "Miniatur Tongkonan", "harga": 200000, "gambar": "https://example.com/tongkonan.jpg " }
+    ],
+    "likes": 140
+  },
+  {
+    "id_desa": "DESA-0515",
+    "provinsi": "Nusa Tenggara Barat",
+    "kabupaten": "Lombok Tengah",
+    "nama_desa": "Desa Sukadana",
+    "nama_popular": "Sukadana Beach Village",
+    "alamat": "Jl. Pantai Sukadana No. 1",
+    "jenis_wisata": ["wisata alam", "wisata budaya"],
+    "pengelola": "Made Arta",
+    "nomor_telepon": "082678901234",
+    "email": "sukadana@wisata.com",
+    "kategori_desa": "Berkembang",
+    "status": "aktif",
+    "keterangan": "Desa Wisata dengan kombinasi alam dan budaya Sasak",
+    "partisipasi_masyarakat": 78,
+    "keragaman_paket_wisata": 72,
+    "akses_tempat_wisata": 82,
+    "keramahan_difabel": 65,
+    "fasilitas_tempat_wisata": 78,
+    "produk_tempat_wisata": 70,
+    "rata_rata_nilai": 76,
+    "penjelasan_umum": "Desa dengan keindahan pantai dan budaya Sasak.",
+    "fasilitas": ["parkir", "toilet", "spot foto"],
+    "cover_desa": "https://example.com/sukadana-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=poi321 "],
+    "url_video": ["https://www.youtube.com/watch?v=uyt654 "],
+    "atraksi": [
+      { "id": 18, "nama": "Pantai Sukadana", "jenis_atraksi": "wisata alam", "gambar": "https://example.com/pantai-sukadana.jpg ", "likes": 130 }
+    ],
+    "penginapan": [
+      { "nama": "Resort Pantai", "harga": 500000, "gambar": "https://example.com/resort-suka.jpg " }
+    ],
+    "paket_wisata": [
+      { "nama": "Paket Budaya dan Alam", "harga": 800000, "gambar": "https://example.com/paket-lombok.jpg " }
+    ],
+    "suvenir": [
+      { "nama": "Songket Lombok", "harga": 250000, "gambar": "https://example.com/songket-lombok.jpg " }
+    ],
+    "likes": 140
+  },
+  {
+    "id_desa": "DESA-0516",
+    "provinsi": "Kalimantan Timur",
+    "kabupaten": "Balikpapan",
+    "nama_desa": "Desa Wisata Graha Indah",
+    "nama_popular": "Graha City Tour",
+    "alamat": "Jl. Soekarno-Hatta No. 10",
+    "jenis_wisata": ["wisata kota", "wisata kuliner"],
+    "pengelola": "Andika Pratama",
+    "nomor_telepon": "082789012345",
+    "email": "graha@wisata.com",
+    "kategori_desa": "Berkembang",
+    "status": "aktif",
+    "keterangan": "Desa Wisata dengan pusat kuliner dan belanja",
+    "partisipasi_masyarakat": 75,
+    "keragaman_paket_wisata": 70,
+    "akses_tempat_wisata": 80,
+    "keramahan_difabel": 65,
+    "fasilitas_tempat_wisata": 75,
+    "produk_tempat_wisata": 68,
+    "rata_rata_nilai": 74,
+    "penjelasan_umum": "Desa dengan aktivitas urban dan wisata kuliner.",
+    "fasilitas": ["parkir", "toilet", "spot foto"],
+    "cover_desa": "https://example.com/graha-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=tyu123 "],
+    "url_video": ["https://www.youtube.com/watch?v=uio456 "],
+    "atraksi": [
+      { "id": 19, "nama": "Pasar Klandasan", "jenis_atraksi": "wisata kuliner", "gambar": "https://example.com/pasar-klandasan.jpg ", "likes": 120 }
+    ],
+    "penginapan": [
+      { "nama": "Hotel Graha", "harga": 450000, "gambar": "https://example.com/hotel-graha.jpg " }
+    ],
+    "paket_wisata": [
+      { "nama": "Paket Kota Balikpapan", "harga": 600000, "gambar": "https://example.com/paket-balikpapan.jpg " }
+    ],
+    "suvenir": [
+      { "nama": "Abon Ikan", "harga": 50000, "gambar": "https://example.com/abon-ikan.jpg " }
+    ],
+    "likes": 130
+  },
+  {
+    "id_desa": "DESA-0517",
+    "provinsi": "Sulawesi Tengah",
+    "kabupaten": "Palu",
+    "nama_desa": "Desa Wisata Balaroa",
+    "nama_popular": "Balaroa Healing Village",
+    "alamat": "Jl. Balaroa No. 1",
+    "jenis_wisata": ["wisata sejarah", "wisata alam"],
+    "pengelola": "Sri Wahyuni",
+    "nomor_telepon": "082890123456",
+    "email": "balaroa@wisata.com",
+    "kategori_desa": "Berkembang",
+    "status": "aktif",
+    "keterangan": "Desa Wisata dengan sejarah gempa dan reboisasi",
+    "partisipasi_masyarakat": 77,
+    "keragaman_paket_wisata": 72,
+    "akses_tempat_wisata": 80,
+    "keramahan_difabel": 65,
+    "fasilitas_tempat_wisata": 76,
+    "produk_tempat_wisata": 69,
+    "rata_rata_nilai": 75,
+    "penjelasan_umum": "Desa dengan cerita pemulihan pasca gempa.",
+    "fasilitas": ["parkir", "toilet", "spot foto"],
+    "cover_desa": "https://example.com/balaroa-cover.jpg ",
+    "galeri_desa": ["https://www.youtube.com/watch?v=wer789 "],
+    "url_video": ["https://www.youtube.com/watch?v=qaz456 "],
+    "atraksi": [
+      { "id": 20, "nama": "Jejak Gempa Palu", "jenis_atraksi": "wisata sejarah", "gambar": "https://example.com/gempa-palu.jpg ", "likes": 125 }
+    ],
+    "penginapan": [],
+    "paket_wisata": [],
+    "suvenir": [
+      { "nama": "Gantungan Kunci Replika Monumen", "harga": 25000, "gambar": "https://example.com/gantungan-palu.jpg " }
+    ],
+    "likes": 135
+  }
+]
