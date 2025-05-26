@@ -6,14 +6,14 @@ import "swiper/css/navigation";
 
 import arrowRight from "../../assets/DetailWisata/icon/arrowRight.svg";
 
-export const SouvenirWisata = ({ souvenir = [] }) => {
-  if (!souvenir.length) return null;
+export const PenginapanWIsata = ({ penginapan = [] }) => {
+  if (!penginapan.length) return null;
 
   return (
     <section className="py-10 px-4 sm:px-10 relative">
       <div className="max-w-7xl mx-auto">
         <h2 className="md:text-[26px] sm:text-2xl text-body font-bold my-6 mb-4">
-          Souvenir
+          Penginapan
         </h2>
 
         <div className="relative">
@@ -22,8 +22,8 @@ export const SouvenirWisata = ({ souvenir = [] }) => {
             spaceBetween={16}
             slidesPerView={1}
             navigation={{
-              nextEl: ".souvenir-next",
-              prevEl: ".souvenir-prev",
+              nextEl: ".penginapan-next",
+              prevEl: ".penginapan-prev",
             }}
             breakpoints={{
               640: { slidesPerView: 2 },
@@ -31,11 +31,11 @@ export const SouvenirWisata = ({ souvenir = [] }) => {
               1024: { slidesPerView: 4 },
             }}
           >
-            {souvenir.map((item, idx) => (
+            {penginapan.map((item, idx) => (
               <SwiperSlide key={idx}>
                 <div className="rounded-xl overflow-hidden shadow-sm">
                   <img
-                    src={item.gambar || ""}
+                    src={item.gambar?.[0] || ""}
                     alt={item.nama}
                     className="w-full h-[220px] object-cover rounded-xl"
                   />
@@ -43,20 +43,18 @@ export const SouvenirWisata = ({ souvenir = [] }) => {
                     <p className="md:text-xl sm:text-[18px] text-normal font-bold truncate">
                       {item.nama}
                     </p>
-                    <p className="md:text-2xl sm:text-xl text-[18px] text-green-700 font-extrabold">
-                      Rp.{item.harga}
-                    </p>
                   </div>
                 </div>
               </SwiperSlide>
             ))}
           </Swiper>
 
-          <button className="souvenir-prev absolute left-0 top-1/2 -translate-y-1/2 rounded-full z-10">
+          {/* Navigasi */}
+          <button className="penginapan-prev absolute left-0 top-1/2 -translate-y-1/2 rounded-full z-10">
             <img src={arrowRight} alt="left" className="w-8 h-8 rotate-180" />
           </button>
 
-          <button className="souvenir-next absolute right-0 top-1/2 -translate-y-1/2 rounded-full z-10">
+          <button className="penginapan-next absolute right-0 top-1/2 -translate-y-1/2 rounded-full z-10">
             <img src={arrowRight} alt="right" className="w-8 h-8" />
           </button>
         </div>
