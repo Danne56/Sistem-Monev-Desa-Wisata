@@ -6,6 +6,7 @@ import {
   FiTrash2,
   FiSave,
   FiX,
+  FiMapPin,
 } from "react-icons/fi";
 import profile from "../../assets/Dashboard/profile.svg";
 import { UserContext } from "../../context/UserContext";
@@ -605,6 +606,30 @@ export const DeskripsiDesa = () => {
           </div>
         </div>
 
+        {/* Lokasi Desa */}
+        <div className="mb-6">
+          <label
+            htmlFor="lokasiDesa"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            <FiMapPin className="inline mr-1" />
+            Lokasi Desa
+          </label>
+          <input
+            type="text"
+            id="lokasiDesa"
+            value={formData.lokasiDesa}
+            onChange={(e) =>
+              setFormData({ ...formData, lokasiDesa: e.target.value })
+            }
+            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Contoh: Jl. Raya Desa No. 123, Kecamatan ABC, Kabupaten XYZ"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Masukkan alamat lengkap atau koordinat lokasi desa wisata
+          </p>
+        </div>
+
         {/* Deskripsi Desa Wisata */}
         <div className="mb-6">
           <label
@@ -619,7 +644,7 @@ export const DeskripsiDesa = () => {
             onChange={(e) =>
               setFormData({ ...formData, deskripsiDesa: e.target.value })
             }
-            className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             rows={5}
             placeholder="Ceritakan tentang desa wisata Anda..."
           />
