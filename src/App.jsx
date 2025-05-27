@@ -45,22 +45,8 @@ function AppContent() {
         <Route path="/atraksi" element={<Atraksi />} />
         <Route path="/detail/:slug" element={<DetailWisata />} />
         {/* <Route path="/detail" element={<DetailWisata />} /> */}
-        <Route
-          path="/dashboard/dinas"
-          element={
-            <ProtectedRoute allowedRoles={["dinas"]}>
-              <DashboardDinas />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/admin"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <DashboardAdmin />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/dashboard/dinas" element={<DashboardDinas />} />
+        <Route path="/dashboard/admin" element={<DashboardAdmin />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/dashboard/pengelola" element={<DashboardPengelola />} />
       </Routes>
