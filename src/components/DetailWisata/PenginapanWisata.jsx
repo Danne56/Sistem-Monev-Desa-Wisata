@@ -9,6 +9,18 @@ import arrowRight from "../../assets/DetailWisata/icon/arrowRight.svg";
 export const PenginapanWisata = ({ penginapan = [] }) => {
   if (!penginapan.length) return null;
 
+  const formatPrice = (price) => {
+    if (!price) return "-";
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    })
+      .format(price)
+      .replace("IDR", "Rp");
+  };
+
   return (
     <section className="py-10 px-4 sm:px-10 relative">
       <div className="max-w-7xl mx-auto">
@@ -44,7 +56,7 @@ export const PenginapanWisata = ({ penginapan = [] }) => {
                       {item.nama}
                     </p>
                     <p className="md:text-2xl sm:text-xl text-[18px] text-green-700 font-extrabold">
-                      Rp.{item.harga}
+                      {formatPrice(item.harga)}
                     </p>
                   </div>
                 </div>
