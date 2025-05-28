@@ -16,9 +16,9 @@ const fasilitasIcons = {
   "Spot Foto": spotFoto,
 };
 
-// Fungsi untuk mengubah URL ke format YouTube embed
+// Konversi URL video YouTube ke embed format
 const convertToEmbedUrl = (url) => {
-  if (!url.includes("youtube.com") && !url.includes("youtu.be")) return url;
+  if (!url?.includes("youtube.com") && !url?.includes("youtu.be")) return "";
   try {
     if (url.includes("youtu.be")) {
       const id = url.split("/").pop();
@@ -26,20 +26,21 @@ const convertToEmbedUrl = (url) => {
     }
     const urlObj = new URL(url);
     const id = urlObj.searchParams.get("v");
-    return id ? `https://www.youtube.com/embed/${id}` : url;
+    return id ? `https://www.youtube.com/embed/${id}` : "";
   } catch (e) {
-    return url;
+    return "";
   }
 };
 
 export const InformasiWisata = ({
-  namaDesa,
-  lokasi,
-  deskripsi,
+  namaDesa = "Nama Desa Tidak Diketahui",
+  lokasi = "Lokasi tidak tersedia",
+  deskripsi = "",
   fasilitas = [],
   video = [],
 }) => {
   const [showMore, setShowMore] = useState(false);
+  const hasLongDescription = deskripsi?.length > 300;
 
   return (
     <section className="mb-28 py-10 px-4 lg:px-20 max-w-7xl mx-auto">
@@ -53,21 +54,27 @@ export const InformasiWisata = ({
       </div>
 
       {/* Deskripsi */}
-      <p className="text-gray-700 mb-2 lg:text-[18px] md:text-normal text-[15px]">
-        {deskripsi?.substring(0, 300)}
-        {showMore && <>{deskripsi?.substring(300)}</>}
-      </p>
-      {deskripsi?.length > 300 && (
-        <button
-          className="text-blue-500 mb-6 md:text-normal text-[15px]"
-          onClick={() => setShowMore(!showMore)}
-        >
-          {showMore ? "Tutup ▲" : "Baca lebih ▼"}
-        </button>
+      {deskripsi ? (
+        <>
+          <p className="text-gray-700 mb-2 lg:text-[18px] md:text-normal text-[15px]">
+            {deskripsi.substring(0, 300)}
+            {showMore && <>{deskripsi.substring(300)}</>}
+          </p>
+          {hasLongDescription && (
+            <button
+              className="text-blue-500 mb-6 md:text-normal text-[15px]"
+              onClick={() => setShowMore(!showMore)}
+            >
+              {showMore ? "Tutup ▲" : "Baca lebih ▼"}
+            </button>
+          )}
+        </>
+      ) : (
+        <p className="text-gray-500 italic mb-6">Deskripsi tidak tersedia.</p>
       )}
 
       {/* Fasilitas */}
-      {fasilitas.length > 0 && (
+      {Array.isArray(fasilitas) && fasilitas.length > 0 && (
         <>
           <h3 className="md:text-[26px] sm:text-2xl text-body font-bold my-6">
             Fasilitas
@@ -77,7 +84,7 @@ export const InformasiWisata = ({
               <div key={idx} className="flex items-center gap-2">
                 <img
                   src={fasilitasIcons[item] || arealParkir}
-                  alt="icon"
+                  alt={`icon ${item}`}
                   className="w-7"
                 />
                 {item}
@@ -88,27 +95,30 @@ export const InformasiWisata = ({
       )}
 
       {/* Video */}
-      {video.length > 0 && (
+      {Array.isArray(video) && video.length > 0 && (
         <>
           <h3 className="md:text-[26px] sm:text-2xl text-body font-bold my-6">
             Video
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {video.map((url, idx) => (
-              <div
-                key={idx}
-                className="aspect-video w-full rounded-xl overflow-hidden"
-              >
-                <iframe
-                  className="w-full h-full"
-                  src={convertToEmbedUrl(url)}
-                  title={`Video ${idx}`}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              </div>
-            ))}
+            {video.map((url, idx) => {
+              const embedUrl = convertToEmbedUrl(url);
+              return embedUrl ? (
+                <div
+                  key={idx}
+                  className="aspect-video w-full rounded-xl overflow-hidden"
+                >
+                  <iframe
+                    className="w-full h-full"
+                    src={embedUrl}
+                    title={`Video ${idx + 1}`}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              ) : null;
+            })}
           </div>
         </>
       )}
