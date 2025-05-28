@@ -70,11 +70,11 @@ export const Verifikasi = () => {
         const mappedData = result.data.map((req, index) => ({
           id: index + 1,
           kd_permintaan: req.kd_permintaan,
-          email: req.email,
-          name: req.nama_desa_wisata,
+          email: req.email ?? "",
+          name: req.nama_desa_wisata ?? "",
           date: new Date(req.created_at).toISOString(),
           status: capitalizeFirstLetter(req.status_permintaan),
-          kd_desa: req.kd_desa,
+          kd_desa: req.kd_desa ?? "",
         }));
         setRequests(mappedData);
         cacheData(mappedData);
@@ -198,11 +198,16 @@ export const Verifikasi = () => {
   };
 
   const filteredRequests = requests.filter((req) => {
+    const name = req.name || "";
+    const email = req.email || "";
+
     const matchesSearch =
-      req.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      req.email.toLowerCase().includes(searchQuery.toLowerCase());
+      name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      email.toLowerCase().includes(searchQuery.toLowerCase());
+
     const matchesStatus =
       statusFilter === "Semua" || req.status === statusFilter;
+
     return matchesSearch && matchesStatus;
   });
 
