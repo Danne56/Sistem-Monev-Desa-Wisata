@@ -85,13 +85,13 @@ export const StatusDesa = () => {
 
       const mappedData = data.map((desa, index) => ({
         id: index + 1,
-        kd_status: desa.kd_status,
-        name: desa.nama_desa_wisata,
-        status: capitalizeFirstLetter(desa.status),
-        description: desa.keterangan || "-",
-        province: desa.provinsi || "-",
-        region: desa.kabupaten || "-",
-        lastUpdated: desa.tanggal_update || "-",
+        kd_status: desa.kd_status ?? "-",
+        name: desa.nama_desa_wisata ?? "-",
+        status: desa.status ? capitalizeFirstLetter(desa.status) : "-",
+        description: desa.keterangan ?? "-",
+        province: desa.provinsi ?? "-",
+        region: desa.kabupaten ?? "-",
+        lastUpdated: desa.tanggal_update ?? "-",
       }));
 
       setVillages(mappedData);
@@ -194,20 +194,7 @@ export const StatusDesa = () => {
           );
 
           if (response.data.status === "success") {
-            const updatedVillages = villages.map((v) =>
-              v.kd_status === village.kd_status
-                ? {
-                    ...v,
-                    status: newStatus,
-                    description: response.data.data?.keterangan || "-",
-                    lastUpdated:
-                      response.data.data?.tanggal_update ||
-                      new Date().toISOString(),
-                  }
-                : v
-            );
-            setVillages(updatedVillages);
-            cacheData(updatedVillages);
+            await fetchData(false);
             Swal.fire("Berhasil!", "Status desa berhasil diubah.", "success");
           } else {
             throw new Error("Gagal mengubah status");
@@ -274,8 +261,12 @@ export const StatusDesa = () => {
           <h1 className="text-2xl font-bold">Status Desa</h1>
           <div className="flex items-center">
             <div className="mr-2 text-right">
-              <div className="font-semibold">{user?.data.fullname}</div>
-              <div className="text-sm text-gray-500">{user?.data.role}</div>
+              <div className="font-semibold">
+                {user?.data?.fullname || "User"}
+              </div>
+              <div className="text-sm text-gray-500">
+                {user?.data?.role || "Role"}
+              </div>
             </div>
             <div className="h-10 w-10 rounded-full bg-blue-600 overflow-hidden">
               <img

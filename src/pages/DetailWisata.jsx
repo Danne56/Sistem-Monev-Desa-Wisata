@@ -17,6 +17,12 @@ export const DetailWisata = () => {
 
   const { kd_desa } = useParams();
 
+  const Spinner = () => (
+    <div className="flex justify-center items-center min-h-[200px]">
+      <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -40,7 +46,7 @@ export const DetailWisata = () => {
     fetchData();
   }, [kd_desa]);
 
-  if (loading) return <p className="text-center py-10">Memuat data...</p>;
+  if (loading) return <Spinner />;
 
   if (!desa || !deskripsiDesa || !deskripsiWisata) {
     return (

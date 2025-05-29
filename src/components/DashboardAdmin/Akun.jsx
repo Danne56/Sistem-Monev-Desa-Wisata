@@ -65,8 +65,12 @@ export const Akun = () => {
           <h1 className="text-2xl font-bold">Detail akun</h1>
           <div className="flex items-center">
             <div className="mr-2 text-right">
-              <div className="font-semibold">{user?.data.fullname}</div>
-              <div className="text-sm text-gray-500">{user?.data.role}</div>
+              <div className="font-semibold">
+                {user?.data?.fullname || "User"}
+              </div>
+              <div className="text-sm text-gray-500">
+                {user?.data?.role || "Role"}
+              </div>
             </div>
             <div className="h-10 w-10 rounded-full bg-blue-600 overflow-hidden">
               <img

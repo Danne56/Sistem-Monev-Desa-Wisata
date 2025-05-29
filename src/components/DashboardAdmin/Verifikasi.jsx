@@ -237,8 +237,12 @@ export const Verifikasi = () => {
           <h1 className="text-2xl font-bold">Permintaan Verifikasi</h1>
           <div className="flex items-center">
             <div className="text-right mr-2">
-              <div className="font-semibold">{user?.data.fullname}</div>
-              <div className="text-sm text-gray-500">{user?.data.role}</div>
+              <div className="font-semibold">
+                {user?.data?.fullname || "User"}
+              </div>
+              <div className="text-sm text-gray-500">
+                {user?.data?.role || "Role"}
+              </div>
             </div>
             <img src={profile} className="w-10 h-10 rounded-full" />
           </div>

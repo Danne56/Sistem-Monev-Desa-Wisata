@@ -31,32 +31,56 @@ const FasilitasProduk = () => {
           setKdDesa(desa.kd_desa);
           setNamaDesa(desa.nama_desa);
 
-          // Fetch deskripsi wisata
-          const deskripsiResponse = await axiosInstance.get(
-            `/api/deskripsi-wisata/${desa.kd_desa}`
-          );
-          const deskripsiData = deskripsiResponse.data.data || {};
+          try {
+            const deskripsiResponse = await axiosInstance.get(
+              `/api/deskripsi-wisata/${desa.kd_desa}`
+            );
+            const deskripsiData = deskripsiResponse.data.data || {};
 
-          setAtraksi(
-            typeof deskripsiData.atraksi === "string"
-              ? JSON.parse(deskripsiData.atraksi)
-              : deskripsiData.atraksi || []
-          );
-          setPenginapan(
-            typeof deskripsiData.penginapan === "string"
-              ? JSON.parse(deskripsiData.penginapan)
-              : deskripsiData.penginapan || []
-          );
-          setPaketWisata(
-            typeof deskripsiData.paket_wisata === "string"
-              ? JSON.parse(deskripsiData.paket_wisata)
-              : deskripsiData.paket_wisata || []
-          );
-          setSouvenir(
-            typeof deskripsiData.suvenir === "string"
-              ? JSON.parse(deskripsiData.suvenir)
-              : deskripsiData.suvenir || []
-          );
+            setAtraksi(
+              typeof deskripsiData.atraksi === "string"
+                ? JSON.parse(deskripsiData.atraksi)
+                : deskripsiData.atraksi || []
+            );
+            setPenginapan(
+              typeof deskripsiData.penginapan === "string"
+                ? JSON.parse(deskripsiData.penginapan)
+                : deskripsiData.penginapan || []
+            );
+            setPaketWisata(
+              typeof deskripsiData.paket_wisata === "string"
+                ? JSON.parse(deskripsiData.paket_wisata)
+                : deskripsiData.paket_wisata || []
+            );
+            setSouvenir(
+              typeof deskripsiData.suvenir === "string"
+                ? JSON.parse(deskripsiData.suvenir)
+                : deskripsiData.suvenir || []
+            );
+          } catch (err) {
+            if (err.response?.status === 404) {
+              await axiosInstance.post(
+                `/api/deskripsi-wisata`,
+                {
+                  data: JSON.stringify({
+                    kd_desa: desa.kd_desa,
+                    atraksi: [],
+                    penginapan: [],
+                    paket_wisata: [],
+                    suvenir: [],
+                  }),
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+            } else {
+              console.error("Gagal mengambil data deskripsi:", err);
+            }
+          }
         }
       } catch (err) {
         console.error("Gagal mengambil data desa:", err);
@@ -110,8 +134,6 @@ const FasilitasProduk = () => {
         }
       );
 
-      // Perbaikan: Sesuaikan dengan struktur respons yang sebenarnya
-      // Cek beberapa kemungkinan struktur respons
       if (response.data.url) {
         return response.data.url; // Jika respons langsung berisi url
       } else if (response.data.data && response.data.data.url) {
@@ -690,8 +712,12 @@ const FasilitasProduk = () => {
         </div>
         <div className="flex items-center">
           <div className="mr-2 text-right">
-            <div className="font-semibold">{user?.data.fullname}</div>
-            <div className="text-sm text-gray-500">{user?.data.role}</div>
+            <div className="font-semibold">
+              {user?.data?.fullname || "User"}
+            </div>
+            <div className="text-sm text-gray-500">
+              {user?.data?.role || "Role"}
+            </div>
           </div>
           <div className="h-10 w-10 rounded-full bg-blue-600 overflow-hidden">
             <img
