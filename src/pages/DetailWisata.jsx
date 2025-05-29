@@ -14,7 +14,8 @@ export const DetailWisata = () => {
   const [desa, setDesa] = useState(null);
   const [deskripsiDesa, setDeskripsiDesa] = useState(null);
   const [deskripsiWisata, setDeskripsiWisata] = useState(null);
-  const { kd_desa } = useParams();
+  const [loading, setLoading] = useState(true);
+  const { slug } = useParams();
 
   const Spinner = () => (
     <div className="flex justify-center items-center min-h-[200px]">
@@ -25,23 +26,29 @@ export const DetailWisata = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [desaRes, deskripsiDesaRes, deskripsiWisataRes] =
-          await Promise.all([
-            axiosInstance.get(`/api/desa-wisata/${kd_desa}`),
-            axiosInstance.get(`/api/deskripsi-desa/${kd_desa}`),
-            axiosInstance.get(`/api/deskripsi-wisata/${kd_desa}`),
-          ]);
+        const { data } = await axiosInstance.get(
+          `/api/desa-wisata/slug/${slug}`
+        );
+        const desa = data.data;
+        setDesa(desa);
 
-        setDesa(desaRes.data.data);
+        // Setelah dapat kd_desa dari slug, fetch deskripsi
+        const [deskripsiDesaRes, deskripsiWisataRes] = await Promise.all([
+          axiosInstance.get(`/api/deskripsi-desa/${desa.kd_desa}`),
+          axiosInstance.get(`/api/deskripsi-wisata/${desa.kd_desa}`),
+        ]);
+
         setDeskripsiDesa(deskripsiDesaRes.data.data);
         setDeskripsiWisata(deskripsiWisataRes.data.data);
       } catch (error) {
         console.error("Gagal memuat data detail desa wisata:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, [kd_desa]);
+  }, [slug]);  
 
   if (loading) return <Spinner />;
 

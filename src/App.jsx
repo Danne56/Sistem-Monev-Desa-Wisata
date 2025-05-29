@@ -43,7 +43,7 @@ function AppContent() {
         <Route path="/masuk" element={<Masuk />} />
         <Route path="/lokasi" element={<Lokasi />} />
         <Route path="/atraksi" element={<Atraksi />} />
-        <Route path="/detail/:kd_desa" element={<DetailWisata />} />
+        <Route path="/detail/:slug" element={<DetailWisata />} />
         {/* <Route path="/detail" element={<DetailWisata />} /> */}
         <Route
           path="/dashboard/dinas"
