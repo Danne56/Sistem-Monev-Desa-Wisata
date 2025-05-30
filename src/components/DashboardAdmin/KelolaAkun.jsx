@@ -59,14 +59,18 @@ export const KelolaAkun = () => {
     setError(null);
 
     try {
-      const response = await axiosInstance.get("/api/desa-wisata");
+      const response = await axiosInstance.get("/api/users", {
+        params: {
+          includeDesa: true,
+        },
+      });
       const data = response.data.data || [];
 
       const mappedData = data.map((desa, index) => ({
         id: index + 1,
-        name: desa.nama_desa,
-        email: desa.email,
-        status: desa.is_verified ? "Aktif" : "Tidak Aktif",
+        name: desa?.nama_desa || "Tidak diketahui",
+        email: desa?.email || "Tidak tersedia",
+        status: Boolean(desa?.is_verified) ? "Aktif" : "Tidak Aktif",
       }));
 
       setAccounts(mappedData);
@@ -194,6 +198,7 @@ export const KelolaAkun = () => {
   });
 
   const highlightText = (text, keyword) => {
+    if (!text) return "";
     if (!keyword) return text;
     const regex = new RegExp(`(${keyword})`, "gi");
     const parts = text.split(regex);
@@ -227,8 +232,12 @@ export const KelolaAkun = () => {
           <h1 className="text-2xl font-bold">Kelola Akun</h1>
           <div className="flex items-center">
             <div className="mr-2 text-right">
-              <div className="font-semibold">{user?.data.fullname}</div>
-              <div className="text-sm text-gray-500">{user?.data.role}</div>
+              <div className="font-semibold">
+                {user?.data?.fullname || "User"}
+              </div>
+              <div className="text-sm text-gray-500">
+                {user?.data?.role || "Role"}
+              </div>
             </div>
             <div className="h-10 w-10 rounded-full bg-blue-600 overflow-hidden">
               <img

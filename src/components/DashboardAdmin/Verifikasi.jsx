@@ -70,11 +70,11 @@ export const Verifikasi = () => {
         const mappedData = result.data.map((req, index) => ({
           id: index + 1,
           kd_permintaan: req.kd_permintaan,
-          email: req.email,
-          name: req.nama_desa_wisata,
+          email: req.email ?? "",
+          name: req.nama_desa_wisata ?? "",
           date: new Date(req.created_at).toISOString(),
           status: capitalizeFirstLetter(req.status_permintaan),
-          kd_desa: req.kd_desa,
+          kd_desa: req.kd_desa ?? "",
         }));
         setRequests(mappedData);
         cacheData(mappedData);
@@ -198,11 +198,16 @@ export const Verifikasi = () => {
   };
 
   const filteredRequests = requests.filter((req) => {
+    const name = req.name || "";
+    const email = req.email || "";
+
     const matchesSearch =
-      req.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      req.email.toLowerCase().includes(searchQuery.toLowerCase());
+      name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      email.toLowerCase().includes(searchQuery.toLowerCase());
+
     const matchesStatus =
       statusFilter === "Semua" || req.status === statusFilter;
+
     return matchesSearch && matchesStatus;
   });
 
@@ -232,8 +237,12 @@ export const Verifikasi = () => {
           <h1 className="text-2xl font-bold">Permintaan Verifikasi</h1>
           <div className="flex items-center">
             <div className="text-right mr-2">
-              <div className="font-semibold">{user?.data.fullname}</div>
-              <div className="text-sm text-gray-500">{user?.data.role}</div>
+              <div className="font-semibold">
+                {user?.data?.fullname || "User"}
+              </div>
+              <div className="text-sm text-gray-500">
+                {user?.data?.role || "Role"}
+              </div>
             </div>
             <img src={profile} className="w-10 h-10 rounded-full" />
           </div>

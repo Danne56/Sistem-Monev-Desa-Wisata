@@ -16,6 +16,12 @@ export const DetailWisata = () => {
   const [deskripsiWisata, setDeskripsiWisata] = useState(null);
   const { kd_desa } = useParams();
 
+  const Spinner = () => (
+    <div className="flex justify-center items-center min-h-[200px]">
+      <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -37,7 +43,15 @@ export const DetailWisata = () => {
     fetchData();
   }, [kd_desa]);
 
-  if (!desa || !deskripsiDesa || !deskripsiWisata) return <p>Memuat data...</p>;
+  if (loading) return <Spinner />;
+
+  if (!desa || !deskripsiDesa || !deskripsiWisata) {
+    return (
+      <p className="text-center text-red-500 py-10">
+        Gagal memuat informasi desa wisata.
+      </p>
+    );
+  }
 
   return (
     <>

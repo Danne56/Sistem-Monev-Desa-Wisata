@@ -118,11 +118,13 @@ export const Navbar = () => {
                 <div className={settingProfile}>{splitNama}</div>
               </div>
               {showDropdown && (
-                <div className="absolute right-0 mt-4 sm:max-w-62 w-52 bg-white rounded-md shadow-lg z-10">
+                <div className="absolute right-0 mt-4 min-w-[13rem] max-w-sm w-fit bg-white rounded-md shadow-lg z-10">
                   <div className="pt-5 pb-1">
                     <div className="md:text-normal text-smallText px-4 mb-2">
                       <p className="text-black font-semibold">{splitNama}</p>
-                      <p className="text-[#8A8A8A]">{user?.data.email}</p>
+                      <p className="text-[#8A8A8A] break-words whitespace-normal">
+                        {user?.data.email}
+                      </p>
                     </div>
                     <hr />
                     {user?.data.role === "dinas" && (
