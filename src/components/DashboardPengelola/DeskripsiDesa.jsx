@@ -328,7 +328,7 @@ export const DeskripsiDesa = () => {
 
       // Prepare data object - DIFFERENT for POST vs PUT
       let dataToSubmit;
-      
+
       if (existingDeskripsi) {
         // For PUT request - DON'T include kd_desa since it's in the route
         dataToSubmit = {
@@ -337,6 +337,10 @@ export const DeskripsiDesa = () => {
           fasilitas_desa: formData.fasilitas.filter((f) => f.trim() !== ""),
           url_video: formData.videoURLs.filter((url) => url.trim() !== ""),
         };
+        const keepGalleryImages = formData.galleryImages.filter(
+          (img) => !img.startsWith("data:")
+        );
+        dataToSubmit.keep_gallery_images = keepGalleryImages;
       } else {
         // For POST request - include kd_desa
         dataToSubmit = {
