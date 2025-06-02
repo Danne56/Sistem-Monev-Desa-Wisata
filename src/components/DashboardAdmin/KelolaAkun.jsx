@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import profile from "../../assets/Dashboard/profile.svg";
-import { FaCaretDown, FaPencilAlt } from "react-icons/fa";
+import { FaCaretDown, FaPencilAlt, FaSpinner, FaSearch } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { axiosInstance } from "../../config";
 import { UserContext } from "../../context/UserContext";
@@ -8,60 +8,133 @@ import { UserContext } from "../../context/UserContext";
 export const KelolaAkun = () => {
   const [accounts, setAccounts] = useState([]);
   const { user } = useContext(UserContext);
-
-  // Fetch data desa wisata saat komponen mount
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosInstance.get("/api/desa-wisata");
-        const data = response.data.data || [];
-
-        // Mapping data agar cocok UI
-        const mappedData = data.map((desa, index) => ({
-          id: index + 1,
-          name: desa.nama_desa,
-          email: desa.email,
-          status: desa.is_verified ? "Aktif" : "Tidak Aktif",
-        }));
-
-        setAccounts(mappedData);
-      } catch (err) {
-        console.error("Gagal memuat data:", err);
-        setError("Gagal memuat data desa wisata.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [filters, setFilters] = useState({
-    status: "Aktif",
-    provinsi: "Jawa Tengah",
-    kabupaten: "Magelang",
+    status: "Semua",
+    searchKeyword: "",
   });
 
-  // Filter options
   const statusOptions = ["Aktif", "Tidak Aktif"];
-  const provinsiOptions = ["Jawa Tengah", "Jawa Barat", "Jawa Timur", "DIY"];
-  const kabupatenOptions = ["Magelang", "Semarang", "Wonosobo", "Temanggung"];
 
-  // Close dropdown when clicking outside
-  React.useEffect(() => {
-    const closeDropdown = (e) => {
-      if (!e.target.closest(".status-dropdown")) {
-        setOpenDropdown(null);
+  // Cache functions
+  const cacheData = (data) => {
+    const cacheObject = {
+      data: data,
+      timestamp: Date.now(),
+      expiry: 5 * 60 * 1000,
+    };
+    localStorage.setItem("kelolaAkunCache", JSON.stringify(cacheObject));
+  };
+
+  const getCachedData = () => {
+    try {
+      const cached = localStorage.getItem("kelolaAkunCache");
+      if (!cached) return null;
+      const cacheObject = JSON.parse(cached);
+      if (Date.now() - cacheObject.timestamp < cacheObject.expiry) {
+        return cacheObject.data;
+      }
+      localStorage.removeItem("kelolaAkunCache");
+      return null;
+    } catch (error) {
+      console.error("Error reading cache:", error);
+      return null;
+    }
+  };
+
+  const fetchData = useCallback(async (useCache = true) => {
+    if (useCache) {
+      const cachedData = getCachedData();
+      if (cachedData) {
+        setAccounts(cachedData);
+        setInitialLoading(false);
+        return;
+      }
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axiosInstance.get("/api/users", {
+        params: {
+          includeDesa: true,
+        },
+      });
+      const data = response.data.data || [];
+
+      const mappedData = data.map((desa, index) => ({
+        id: index + 1,
+        name: desa?.nama_desa || "Tidak diketahui",
+        email: desa?.email || "Tidak tersedia",
+        status: Boolean(desa?.is_verified) ? "Aktif" : "Tidak Aktif",
+      }));
+
+      setAccounts(mappedData);
+      cacheData(mappedData);
+    } catch (err) {
+      console.error("Gagal memuat data:", err);
+      setError("Tidak dapat memuat data desa wisata.");
+      const cached = localStorage.getItem("kelolaAkunCache");
+      if (cached) {
+        try {
+          const cacheObject = JSON.parse(cached);
+          setAccounts(cacheObject.data);
+          setError("Menggunakan data tersimpan (offline mode)");
+        } catch (cacheError) {
+          console.error("Error reading old cache:", cacheError);
+          Swal.fire("Gagal", "Tidak dapat memuat data desa wisata.", "error");
+        }
+      } else {
+        Swal.fire("Gagal", "Tidak dapat memuat data desa wisata.", "error");
+      }
+    } finally {
+      setLoading(false);
+      setInitialLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData(true);
+  }, [fetchData]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        const cached = localStorage.getItem("kelolaAkunCache");
+        if (cached) {
+          try {
+            const cacheObject = JSON.parse(cached);
+            if (Date.now() - cacheObject.timestamp > 2 * 60 * 1000) {
+              fetchData(false);
+            }
+          } catch (error) {
+            console.error("Error checking cache age:", error);
+          }
+        }
       }
     };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [fetchData]);
 
-    document.addEventListener("click", closeDropdown);
-    return () => document.removeEventListener("click", closeDropdown);
-  }, []);
+  const refreshData = () => {
+    fetchData(false);
+  };
 
   const toggleDropdown = (id) => {
     setOpenDropdown(openDropdown === id ? null : id);
+  };
+
+  const handleFilterChange = (filterType, value) => {
+    setFilters({
+      ...filters,
+      [filterType]: value,
+    });
   };
 
   const changeStatus = async (accountId, newStatus, accountEmail) => {
@@ -79,11 +152,10 @@ export const KelolaAkun = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          // Kirim request ke endpoint verifikasi
           const response = await axiosInstance.put(
             `/authentication/verify/${accountEmail}`,
             {
-              is_verified: newStatus === "Aktif" ? true : false,
+              is_verified: newStatus === "Aktif",
             },
             {
               headers: {
@@ -93,12 +165,11 @@ export const KelolaAkun = () => {
           );
 
           if (response.data.status === "success") {
-            // Update UI
-            setAccounts(
-              accounts.map((acc) =>
-                acc.id === accountId ? { ...acc, status: newStatus } : acc
-              )
+            const updatedAccounts = accounts.map((acc) =>
+              acc.id === accountId ? { ...acc, status: newStatus } : acc
             );
+            setAccounts(updatedAccounts);
+            cacheData(updatedAccounts);
             setOpenDropdown(null);
             Swal.fire("Berhasil!", "Status akun berhasil diubah.", "success");
           } else {
@@ -116,12 +187,42 @@ export const KelolaAkun = () => {
     });
   };
 
-  const handleFilterChange = (filterType, value) => {
-    setFilters({
-      ...filters,
-      [filterType]: value,
-    });
+  const filteredAccounts = accounts.filter((acc) => {
+    const matchesStatus =
+      filters.status === "Semua" || acc.status === filters.status;
+    const keyword = filters.searchKeyword.toLowerCase();
+    const matchesSearch =
+      acc.name.toLowerCase().includes(keyword) ||
+      acc.email.toLowerCase().includes(keyword);
+    return matchesStatus && matchesSearch;
+  });
+
+  const highlightText = (text, keyword) => {
+    if (!text) return "";
+    if (!keyword) return text;
+    const regex = new RegExp(`(${keyword})`, "gi");
+    const parts = text.split(regex);
+    return parts.map((part, i) =>
+      regex.test(part) ? (
+        <mark key={i} className="bg-yellow-200 font-semibold">
+          {part}
+        </mark>
+      ) : (
+        part
+      )
+    );
   };
+
+  if (initialLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="flex items-center space-x-2">
+          <FaSpinner className="animate-spin" />
+          <span>Memuat data...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 overflow-x-auto md:ml-0 md:mt-0 mt-16">
@@ -131,8 +232,12 @@ export const KelolaAkun = () => {
           <h1 className="text-2xl font-bold">Kelola Akun</h1>
           <div className="flex items-center">
             <div className="mr-2 text-right">
-              <div className="font-semibold">{user?.data.fullname}</div>
-              <div className="text-sm text-gray-500">{user?.data.role}</div>
+              <div className="font-semibold">
+                {user?.data?.fullname || "User"}
+              </div>
+              <div className="text-sm text-gray-500">
+                {user?.data?.role || "Role"}
+              </div>
             </div>
             <div className="h-10 w-10 rounded-full bg-blue-600 overflow-hidden">
               <img
@@ -144,70 +249,67 @@ export const KelolaAkun = () => {
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 flex justify-between items-center">
+            <span>{error}</span>
+            {error.includes("offline") && (
+              <button
+                onClick={refreshData}
+                className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+              >
+                Coba Lagi
+              </button>
+            )}
+          </div>
+        )}
+
+        {loading && (
+          <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4">
+            <div className="flex items-center">
+              <FaSpinner className="animate-spin mr-2" />
+              Memuat data...
+            </div>
+          </div>
+        )}
+
+        {/* Search + Filter */}
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-6 gap-4">
+          {/* Search Bar */}
+          <div className="w-full md:flex-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Pencarian
+            </label>
+            <div className="relative">
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Cari nama desa atau email..."
+                value={filters.searchKeyword}
+                onChange={(e) =>
+                  handleFilterChange("searchKeyword", e.target.value)
+                }
+                className="border px-4 py-2 pl-10 rounded w-full"
+              />
+            </div>
+          </div>
+
           {/* Status Filter */}
-          <div>
-            <div className="text-sm mb-2">Status</div>
-            <div className="relative inline-block w-full">
+          <div className="w-full md:w-48">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Filter Status
+            </label>
+            <div className="relative">
               <select
-                className="border border-gray-300 rounded px-4 py-2 pr-10 appearance-none bg-white w-full"
                 value={filters.status}
                 onChange={(e) => handleFilterChange("status", e.target.value)}
+                className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white"
               >
+                <option value="Semua">Semua Status</option>
                 {statusOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
+                  <option key={option}>{option}</option>
                 ))}
               </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <FaCaretDown size={16} />
-              </div>
-            </div>
-          </div>
-
-          {/* Provinsi Filter */}
-          <div>
-            <div className="text-sm mb-2">Provinsi</div>
-            <div className="relative inline-block w-full">
-              <select
-                className="border border-gray-300 rounded px-4 py-2 pr-10 appearance-none bg-white w-full"
-                value={filters.provinsi}
-                onChange={(e) => handleFilterChange("provinsi", e.target.value)}
-              >
-                {provinsiOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <FaCaretDown size={16} />
-              </div>
-            </div>
-          </div>
-
-          {/* Kabupaten/Kota Filter */}
-          <div>
-            <div className="text-sm mb-2">Kabupaten/Kota</div>
-            <div className="relative inline-block w-full">
-              <select
-                className="border border-gray-300 rounded px-4 py-2 pr-10 appearance-none bg-white w-full"
-                value={filters.kabupaten}
-                onChange={(e) =>
-                  handleFilterChange("kabupaten", e.target.value)
-                }
-              >
-                {kabupatenOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <FaCaretDown size={16} />
-              </div>
+              <FaCaretDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
             </div>
           </div>
         </div>
@@ -217,86 +319,92 @@ export const KelolaAkun = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th
-                  scope="col"
-                  className="px-4 py-3 text-left text-sm font-medium text-gray-600"
-                >
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
                   No
                 </th>
-                <th
-                  scope="col"
-                  className="px-4 py-3 text-left text-sm font-medium text-gray-600"
-                >
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
                   Nama Desa Wisata
                 </th>
-                <th
-                  scope="col"
-                  className="px-4 py-3 text-left text-sm font-medium text-gray-600"
-                >
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
                   Email
                 </th>
-                <th
-                  scope="col"
-                  className="px-4 py-3 text-left text-sm font-medium text-gray-600"
-                >
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
                   Status Akun
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {accounts.map((account) => (
-                <tr key={account.id}>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                    {account.id}
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                    {account.name}
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                    {account.email}
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm relative">
-                    <div className="status-dropdown">
+              {filteredAccounts.length > 0 ? (
+                filteredAccounts.map((account) => (
+                  <tr key={account.id}>
+                    <td className="px-4 py-3">{account.id}</td>
+                    <td className="px-4 py-3">
+                      {highlightText(account.name, filters.searchKeyword)}
+                    </td>
+                    <td className="px-4 py-3">
+                      {highlightText(account.email, filters.searchKeyword)}
+                    </td>
+                    <td className="px-4 py-3 relative">
+                      <div className="status-dropdown">
+                        <button
+                          onClick={() => toggleDropdown(account.id)}
+                          className={`inline-flex items-center px-3 py-1 rounded ${
+                            account.status === "Aktif"
+                              ? "bg-green-500 text-white"
+                              : "bg-red-500 text-white"
+                          }`}
+                        >
+                          {account.status}
+                          <FaCaretDown className="ml-1" />
+                        </button>
+                        {openDropdown === account.id && (
+                          <div className="absolute mt-1 w-44 bg-white rounded-md shadow-lg z-10">
+                            <ul className="py-1">
+                              {statusOptions.map((status) => (
+                                <li key={status}>
+                                  <button
+                                    onClick={() =>
+                                      changeStatus(
+                                        account.id,
+                                        status,
+                                        account.email
+                                      )
+                                    }
+                                    className={`block px-4 py-2 text-sm w-full text-left hover:bg-gray-100 ${
+                                      account.status === status
+                                        ? "font-bold"
+                                        : ""
+                                    }`}
+                                  >
+                                    {status}
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="4"
+                    className="px-4 py-6 text-center text-gray-500"
+                  >
+                    <div className="flex flex-col items-center space-y-2">
+                      <span>Tidak ada data akun.</span>
                       <button
-                        onClick={() => toggleDropdown(account.id)}
-                        className={`inline-flex items-center px-3 py-1 rounded ${
-                          account.status === "Aktif"
-                            ? "bg-green-500 text-white"
-                            : "bg-red-500 text-white"
-                        }`}
+                        onClick={refreshData}
+                        className="text-blue-500 hover:text-blue-700 text-sm underline"
                       >
-                        {account.status}{" "}
-                        <FaCaretDown size={16} className="ml-1" />
+                        Muat ulang data
                       </button>
-
-                      {openDropdown === account.id && (
-                        <div className="absolute mt-1 w-44 bg-white rounded-md shadow-lg z-10">
-                          <ul className="py-1">
-                            {statusOptions.map((status) => (
-                              <li key={status}>
-                                <button
-                                  onClick={() =>
-                                    changeStatus(
-                                      account.id,
-                                      status,
-                                      account.email
-                                    )
-                                  }
-                                  className={`block px-4 py-2 text-sm w-full text-left hover:bg-gray-100 ${
-                                    account.status === status ? "font-bold" : ""
-                                  }`}
-                                >
-                                  {status}
-                                </button>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
                     </div>
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

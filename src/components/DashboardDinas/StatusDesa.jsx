@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import profile from "../../assets/Dashboard/profile.svg";
-import { FaCaretDown } from "react-icons/fa";
+import { FaCaretDown, FaSpinner } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { axiosInstance } from "../../config";
 import { UserContext } from "../../context/UserContext";
@@ -8,38 +8,147 @@ import { UserContext } from "../../context/UserContext";
 export const StatusDesa = () => {
   const [villages, setVillages] = useState([]);
   const [openDropdown, setOpenDropdown] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("Semua");
-  const [provinceFilter, setProvinceFilter] = useState("Semua");
-  const [regionFilter, setRegionFilter] = useState("Semua");
+  const [statusFilter, setStatusFilter] = useState(() => {
+    return localStorage.getItem("statusFilter") || "Semua";
+  });
+  const [provinceFilter, setProvinceFilter] = useState(() => {
+    return localStorage.getItem("provinceFilter") || "Semua";
+  });
+  const [regionFilter, setRegionFilter] = useState(() => {
+    return localStorage.getItem("regionFilter") || "Semua";
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const statusOptions = ["Aktif", "Tidak Aktif", "Perbaikan", "Kurang Terawat"];
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosInstance.get("/api/status-desa");
-        const data = response.data.data || [];
-        const capitalizeFirstLetter = (string) => string.replace(/\b\w/g, (char) => char.toUpperCase());
+    localStorage.setItem("statusFilter", statusFilter);
+  }, [statusFilter]);
 
-        const mappedData = data.map((desa, index) => ({
-          id: index + 1,
-          kd_status: desa.kd_status,
-          name: desa.nama_desa_wisata,
-          status: capitalizeFirstLetter(desa.status),
-          description: desa.keterangan || "-",
-          province: desa.provinsi || "-",
-          region: desa.kabupaten || "-",
-        }));
+  useEffect(() => {
+    localStorage.setItem("provinceFilter", provinceFilter);
+  }, [provinceFilter]);
 
-        setVillages(mappedData);
-      } catch (err) {
-        console.error("Error fetching village status:", err);
+  useEffect(() => {
+    localStorage.setItem("regionFilter", regionFilter);
+  }, [regionFilter]);
+
+  const cacheData = (data) => {
+    const cacheObject = {
+      data: data,
+      timestamp: Date.now(),
+      expiry: 5 * 60 * 1000,
+    };
+    localStorage.setItem("statusDesaCache", JSON.stringify(cacheObject));
+  };
+
+  const getCachedData = () => {
+    try {
+      const cached = localStorage.getItem("statusDesaCache");
+      if (!cached) return null;
+
+      const cacheObject = JSON.parse(cached);
+      const now = Date.now();
+
+      if (now - cacheObject.timestamp < cacheObject.expiry) {
+        return cacheObject.data;
+      }
+
+      localStorage.removeItem("statusDesaCache");
+      return null;
+    } catch (error) {
+      console.error("Error reading cache:", error);
+      return null;
+    }
+  };
+
+  const fetchData = useCallback(async (useCache = true) => {
+    if (useCache) {
+      const cachedData = getCachedData();
+      if (cachedData) {
+        setVillages(cachedData);
+        setInitialLoading(false);
+        return;
+      }
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axiosInstance.get("/api/status-desa");
+      const data = response.data.data || [];
+      const capitalizeFirstLetter = (string) =>
+        string.replace(/\b\w/g, (char) => char.toUpperCase());
+
+      const mappedData = data.map((desa, index) => ({
+        id: index + 1,
+        kd_status: desa.kd_status ?? "-",
+        name: desa.nama_desa_wisata ?? "-",
+        status: desa.status ? capitalizeFirstLetter(desa.status) : "-",
+        description: desa.keterangan ?? "-",
+        province: desa.provinsi ?? "-",
+        region: desa.kabupaten ?? "-",
+        lastUpdated: desa.tanggal_update ?? "-",
+      }));
+
+      setVillages(mappedData);
+      cacheData(mappedData);
+    } catch (err) {
+      console.error("Error fetching village status:", err);
+      setError("Tidak dapat memuat data desa.");
+
+      const cachedData = localStorage.getItem("statusDesaCache");
+      if (cachedData) {
+        try {
+          const cacheObject = JSON.parse(cachedData);
+          setVillages(cacheObject.data);
+          setError("Menggunakan data tersimpan (offline mode)");
+        } catch (cacheError) {
+          console.error("Error reading old cache:", cacheError);
+          Swal.fire("Gagal", "Tidak dapat memuat data desa.", "error");
+        }
+      } else {
         Swal.fire("Gagal", "Tidak dapat memuat data desa.", "error");
+      }
+    } finally {
+      setLoading(false);
+      setInitialLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData(true);
+  }, [fetchData]);
+
+  const refreshData = () => {
+    fetchData(false);
+  };
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        const cached = localStorage.getItem("statusDesaCache");
+        if (cached) {
+          try {
+            const cacheObject = JSON.parse(cached);
+            const now = Date.now();
+            if (now - cacheObject.timestamp > 2 * 60 * 1000) {
+              fetchData(false);
+            }
+          } catch (error) {
+            console.error("Error checking cache age:", error);
+          }
+        }
       }
     };
 
-    fetchData();
-  }, []);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [fetchData]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -85,25 +194,18 @@ export const StatusDesa = () => {
           );
 
           if (response.data.status === "success") {
-            // Update UI berdasarkan kd_status
-            setVillages((prev) =>
-              prev.map((v) =>
-                v.kd_status === village.kd_status
-                  ? {
-                      ...v,
-                      status: newStatus,
-                      description: response.data.data?.keterangan || "-",
-                    }
-                  : v
-              )
-            );
+            await fetchData(false);
             Swal.fire("Berhasil!", "Status desa berhasil diubah.", "success");
           } else {
             throw new Error("Gagal mengubah status");
           }
         } catch (err) {
           console.error("Error updating status:", err);
-          Swal.fire("Gagal", err.response?.data?.message || "Gagal mengubah status desa.", "error");
+          Swal.fire(
+            "Gagal",
+            err.response?.data?.message || "Gagal mengubah status desa.",
+            "error"
+          );
         }
 
         setOpenDropdown(null);
@@ -113,40 +215,101 @@ export const StatusDesa = () => {
 
   const { user } = useContext(UserContext);
 
-  // Logika Filter
   const filteredVillages = villages.filter((village) => {
-    const matchStatus = statusFilter === "Semua" || village.status === statusFilter;
-
-    const matchProvinsi = provinceFilter === "Semua" || village.province === provinceFilter;
-
-    const matchKabupaten = regionFilter === "Semua" || village.region === regionFilter;
+    const matchStatus =
+      statusFilter === "Semua" || village.status === statusFilter;
+    const matchProvinsi =
+      provinceFilter === "Semua" || village.province === provinceFilter;
+    const matchKabupaten =
+      regionFilter === "Semua" || village.region === regionFilter;
 
     return matchStatus && matchProvinsi && matchKabupaten;
   });
 
+  const formatDate = (dateString) => {
+    if (!dateString || dateString === "-") return "-";
+
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch (error) {
+      return dateString;
+    }
+  };
+
+  if (initialLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="flex items-center space-x-2">
+          <FaSpinner className="animate-spin" />
+          <span>Memuat data...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 overflow-x-auto md:ml-0 md:mt-0 mt-16">
       <div className="p-6">
-        {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Status Desa</h1>
           <div className="flex items-center">
             <div className="mr-2 text-right">
-              <div className="font-semibold">{user?.data.fullname}</div>
-              <div className="text-sm text-gray-500">{user?.data.role}</div>
+              <div className="font-semibold">
+                {user?.data?.fullname || "User"}
+              </div>
+              <div className="text-sm text-gray-500">
+                {user?.data?.role || "Role"}
+              </div>
             </div>
             <div className="h-10 w-10 rounded-full bg-blue-600 overflow-hidden">
-              <img src={profile} alt="Profile" className="h-full w-full object-cover" />
+              <img
+                src={profile}
+                alt="Profile"
+                className="h-full w-full object-cover"
+              />
             </div>
           </div>
         </div>
 
-        {/* Filters */}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 flex justify-between items-center">
+            <span>{error}</span>
+            {error.includes("offline") && (
+              <button
+                onClick={refreshData}
+                className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+              >
+                Coba Lagi
+              </button>
+            )}
+          </div>
+        )}
+
+        {loading && (
+          <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4">
+            <div className="flex items-center">
+              <FaSpinner className="animate-spin mr-2" />
+              Memuat data...
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div>
             <label className="block text-sm mb-2">Status</label>
             <div className="relative">
-              <select className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+              <select
+                className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
                 <option value="Semua">Semua</option>
                 <option value="Aktif">Aktif</option>
                 <option value="Tidak Aktif">Tidak Aktif</option>
@@ -162,7 +325,11 @@ export const StatusDesa = () => {
           <div>
             <label className="block text-sm mb-2">Provinsi</label>
             <div className="relative">
-              <select className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white" value={provinceFilter} onChange={(e) => setProvinceFilter(e.target.value)}>
+              <select
+                className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white"
+                value={provinceFilter}
+                onChange={(e) => setProvinceFilter(e.target.value)}
+              >
                 <option value="Semua">Semua Provinsi</option>
                 <option value="Jawa Tengah">Jawa Tengah</option>
                 <option value="Jawa Barat">Jawa Barat</option>
@@ -177,7 +344,11 @@ export const StatusDesa = () => {
           <div>
             <label className="block text-sm mb-2">Kabupaten/Kota</label>
             <div className="relative">
-              <select className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white" value={regionFilter} onChange={(e) => setRegionFilter(e.target.value)}>
+              <select
+                className="w-full border border-gray-300 rounded px-4 py-2 appearance-none bg-white"
+                value={regionFilter}
+                onChange={(e) => setRegionFilter(e.target.value)}
+              >
                 <option value="Semua">Semua Kabupaten</option>
                 <option value="Magelang">Magelang</option>
                 <option value="Solo">Solo</option>
@@ -190,29 +361,52 @@ export const StatusDesa = () => {
           </div>
         </div>
 
-        {/* Table */}
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-200 shadow-sm rounded-lg">
             <thead className="bg-gray-100">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">No</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Nama Desa Wisata</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 min-w-36">Status</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Keterangan</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                  No
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                  Nama Desa Wisata
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 min-w-36">
+                  Status
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                  Keterangan
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 min-w-40">
+                  Terakhir Diubah
+                </th>
               </tr>
             </thead>
             <tbody>
               {filteredVillages.length > 0 ? (
                 filteredVillages.map((village) => (
-                  <tr key={village.kd_status} className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm text-gray-900">{village.id}</td>
-                    <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">{village.name}</td>
+                  <tr
+                    key={village.kd_status}
+                    className="border-b hover:bg-gray-50"
+                  >
+                    <td className="px-4 py-3 text-sm text-gray-900">
+                      {village.id}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">
+                      {village.name}
+                    </td>
                     <td className="px-4 py-3 text-sm min-w-36">
                       <div className="status-dropdown relative">
                         <button
                           onClick={() => toggleDropdown(village.id)}
                           className={`inline-flex items-center px-3 py-1 rounded ${
-                            village.status === "Aktif" ? "bg-green-500" : village.status === "Tidak Aktif" ? "bg-red-500" : village.status === "Perbaikan" ? "bg-yellow-500" : "bg-gray-500"
+                            village.status === "Aktif"
+                              ? "bg-green-500"
+                              : village.status === "Tidak Aktif"
+                                ? "bg-red-500"
+                                : village.status === "Perbaikan"
+                                  ? "bg-yellow-500"
+                                  : "bg-gray-500"
                           } text-white`}
                         >
                           {village.status}
@@ -223,7 +417,12 @@ export const StatusDesa = () => {
                             <ul className="py-1">
                               {statusOptions.map((status) => (
                                 <li key={status}>
-                                  <button onClick={() => changeStatus(village, status)} className="block px-4 py-2 text-sm w-full text-left hover:bg-gray-100">
+                                  <button
+                                    onClick={() =>
+                                      changeStatus(village, status)
+                                    }
+                                    className="block px-4 py-2 text-sm w-full text-left hover:bg-gray-100"
+                                  >
                                     {status}
                                   </button>
                                 </li>
@@ -233,13 +432,29 @@ export const StatusDesa = () => {
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">{village.description}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">
+                      {village.description}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-600 min-w-40">
+                      {formatDate(village.lastUpdated)}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" className="px-4 py-6 text-center text-gray-500">
-                    Tidak ada data desa.
+                  <td
+                    colSpan="5"
+                    className="px-4 py-6 text-center text-gray-500"
+                  >
+                    <div className="flex flex-col items-center space-y-2">
+                      <span>Tidak ada data desa.</span>
+                      <button
+                        onClick={refreshData}
+                        className="text-blue-500 hover:text-blue-700 text-sm underline"
+                      >
+                        Muat ulang data
+                      </button>
+                    </div>
                   </td>
                 </tr>
               )}

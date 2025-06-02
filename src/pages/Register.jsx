@@ -7,6 +7,7 @@ import curug from "../assets/Register/curug.webp";
 import arrowDown from "../assets/Register/arrowDown.svg";
 import Indonesia from "../data/dataProvinsi";
 import { axiosInstance } from "../config";
+import Swal from "sweetalert2";
 
 export const Register = () => {
   const [isOpenProvinsi, setIsOpenProvinsi] = useState(false);
@@ -43,7 +44,6 @@ export const Register = () => {
       pengelola: e.target.namaPengelola.value,
       email: e.target.email.value,
       nomor_telepon: e.target.noTelepon.value,
-      kd_kategori_desa_wisata: "",
     };
 
     const userData = {
@@ -54,15 +54,27 @@ export const Register = () => {
     };
 
     try {
-      const res =
-        (await axiosInstance.post("/authentication/register", userData)) &
-        (await axiosInstance.post("/api/desa-wisata", formData));
-      console.log("Registrasi berhasil:", res.data);
+      // Register user first
+      const userRes = await axiosInstance.post(
+        "/authentication/register",
+        userData
+      );
 
-      console.log("Registrasi berhasil:", res.data);
+      // If user registration succeeds, create desa wisata
+      const desaRes = await axiosInstance.post("/api/desa-wisata", formData);
 
-      alert("Berhasil mendaftar! Tunggu verifikasi admin.");
-      window.location.href = "/masuk"; // redirect ke login
+      console.log("Registrasi berhasil:", userRes.data, desaRes.data);
+
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Berhasil mendaftar! Tunggu verifikasi admin.",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/masuk";
+        }
+      });
     } catch (err) {
       const errorMessage =
         err.response?.data?.message || "Gagal mendaftar. Silakan coba lagi.";

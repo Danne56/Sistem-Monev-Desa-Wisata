@@ -1,16 +1,11 @@
 import React, { useRef, useEffect, useState } from "react";
-import GaleriNglanggeran1 from "../../assets/DetailWisata/galeriNglanggeran1.webp";
-import GaleriNglanggeran2 from "../../assets/DetailWisata/galeriNglanggeran2.webp";
 import arrowRight from "../../assets/DetailWisata/icon/arrowRight.svg";
 
-const images = [GaleriNglanggeran1, GaleriNglanggeran2, GaleriNglanggeran1, GaleriNglanggeran2];
-
-export const GaleriWisata = () => {
+export const GaleriWisata = ({ images = [] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const sliderRef = useRef(null);
 
-  // Clone the first image and append it to the end for seamless loop
   const loopImages = [...images, images[0]];
 
   const handleNext = () => {
@@ -25,7 +20,6 @@ export const GaleriWisata = () => {
 
     const handleTransitionEnd = () => {
       if (currentIndex === images.length) {
-        // Reset position without animation
         slider.style.transition = "none";
         setCurrentIndex(0);
 
@@ -39,12 +33,17 @@ export const GaleriWisata = () => {
     };
 
     slider.addEventListener("transitionend", handleTransitionEnd);
-    return () => slider.removeEventListener("transitionend", handleTransitionEnd);
-  }, [currentIndex]);
+    return () =>
+      slider.removeEventListener("transitionend", handleTransitionEnd);
+  }, [currentIndex, images.length]);
+
+  if (images.length === 0) return null;
 
   return (
     <section className="bg-green-900 py-28 px-4 sm:px-10 w-full overflow-hidden">
-      <h2 className="text-white font-semibold md:text-[26px] sm:text-2xl text-body text-center mb-4">Galeri</h2>
+      <h2 className="text-white font-semibold md:text-[26px] sm:text-2xl text-body text-center mb-4">
+        Galeri
+      </h2>
 
       <div className="relative max-w-full flex justify-center items-center">
         <div className="relative w-full max-w-[1100px] h-[60vw] sm:h-[680px] overflow-hidden rounded-lg">
@@ -57,11 +56,19 @@ export const GaleriWisata = () => {
             }}
           >
             {loopImages.map((img, idx) => (
-              <img key={idx} src={img} alt={`Galeri ${idx}`} className="w-full max-w-[1100px] flex-shrink-0 h-full object-cover" />
+              <img
+                key={idx}
+                src={img}
+                alt={`Galeri ${idx}`}
+                className="w-full max-w-[1100px] flex-shrink-0 h-full object-cover"
+              />
             ))}
           </div>
 
-          <button onClick={handleNext} className="absolute top-1/2 right-4 transform -translate-y-1/2  transition">
+          <button
+            onClick={handleNext}
+            className="absolute top-1/2 right-4 transform -translate-y-1/2 transition z-10"
+          >
             <img src={arrowRight} alt="Next" className="w-10 h-10" />
           </button>
         </div>
