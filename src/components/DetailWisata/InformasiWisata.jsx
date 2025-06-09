@@ -6,6 +6,7 @@ import spotFoto from "../../assets/DetailWisata/icon/spotFoto.svg";
 import selfieArea from "../../assets/DetailWisata/icon/selfieArea.svg";
 import jungleTracking from "../../assets/DetailWisata/icon/jungleTracking.svg";
 import kamarMandi from "../../assets/DetailWisata/icon/toilet.svg";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 
 const fasilitasIcons = {
   "Areal Parkir": arealParkir,
@@ -38,6 +39,8 @@ export const InformasiWisata = ({
   deskripsi = "",
   fasilitas = [],
   video = [],
+  latitude = null,
+  longitude = null,
 }) => {
   const [showMore, setShowMore] = useState(false);
   const hasLongDescription = deskripsi?.length > 300;
@@ -48,7 +51,7 @@ export const InformasiWisata = ({
       <h2 className="md:text-5xl sm:text-4xl text-3xl font-bold mb-2">
         {namaDesa}
       </h2>
-      <div className="flex items-center text-gray-600 md:text-normal text-sm mb-4">
+      <div className="flex items-center text-gray-600 md:text-normal text-sm mb-4 mt-4">
         <img src={locationIcon} alt="lokasi" className="w-4 h-4 mr-1" />
         {lokasi}
       </div>
@@ -90,6 +93,31 @@ export const InformasiWisata = ({
                 {item}
               </div>
             ))}
+          </div>
+        </>
+      )}
+
+      {/* Lokasi di Peta */}
+      {latitude && longitude && (
+        <>
+          <h3 className="md:text-[26px] sm:text-2xl text-body font-bold my-6">
+            Maps
+          </h3>
+          <div className="w-full h-96 rounded-lg overflow-hidden mb-10">
+            <MapContainer
+              center={[latitude, longitude]}
+              zoom={13}
+              scrollWheelZoom={false}
+              style={{ height: "100%", width: "100%" }}
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <Marker position={[latitude, longitude]}>
+                <Popup>{namaDesa}</Popup>
+              </Marker>
+            </MapContainer>
           </div>
         </>
       )}
