@@ -23,7 +23,7 @@ export const LokasiSection3 = () => {
   }, []);
 
   return (
-    <section className="py-10 px-4 lg:px-20">
+    <section className="mb-20 py-10 px-4 lg:px-20">
       <div className="max-w-7xl mx-auto">
         <h2 className="lg:text-[40px] md:text-[36px] sm:text-[32px] text-[28px] font-extrabold my-8 text-center leading-tight">Jelajahi Desa Wisata</h2>
 
@@ -33,7 +33,7 @@ export const LokasiSection3 = () => {
             (item) =>
               item.gambar_cover && (
                 <div key={item.slug} className="relative rounded-xl overflow-hidden shadow-md group">
-                  <img src={item.gambar_cover} alt={item.nama_popular} className="w-full h-[350px] object-cover transition-transform duration-300 group-hover:scale-105" />
+                  <img src={item.gambar_cover} alt={item.nama_popular} className="w-full h-[320px] object-cover transition-transform duration-300 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col p-4">
                     <h3 className="text-white font-semibold text-lg">{item.nama_popular}</h3>
                     <div className="flex items-center gap-2 text-white text-sm mt-1">
@@ -48,9 +48,9 @@ export const LokasiSection3 = () => {
         </div>
 
         {/* Button */}
-        <div className="mt-10 flex justify-center">
+        {/* <div className="mt-10 flex justify-center">
           <button className="bg-[#135D36] text-white px-6 py-2 rounded-full font-medium hover:bg-green-800 transition">Muat Lebih</button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

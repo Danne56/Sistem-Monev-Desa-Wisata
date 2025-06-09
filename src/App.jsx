@@ -16,19 +16,14 @@ import { DashboardAdmin } from "./pages/DashboardAdmin";
 import { DashboardPengelola } from "./pages/DashboardPengelola";
 import { Unauthorized } from "./pages/Unauthorized";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import ScrollToTop from "./utils/ScrollToTop";
 
 function AppContent() {
   const location = useLocation();
   const path = location.pathname;
 
   // const specialPaths = ["/masuk", "/register"];
-  const withoutNavbar = [
-    "/dashboard/dinas",
-    "/dashboard/admin",
-    "/dashboard/pengelola",
-    "/masuk",
-    "/register",
-  ];
+  const withoutNavbar = ["/dashboard/dinas", "/dashboard/admin", "/dashboard/pengelola", "/masuk", "/register"];
   // const isSpecialPage = specialPaths.includes(path);
   const isWithoutNavbar = withoutNavbar.includes(path);
 
@@ -74,6 +69,7 @@ function App() {
   return (
     <UserContextProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <AppContent />
       </BrowserRouter>
     </UserContextProvider>

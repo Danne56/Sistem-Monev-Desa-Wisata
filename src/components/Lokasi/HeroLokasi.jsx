@@ -92,12 +92,7 @@ export const HeroLokasi = () => {
                 value={searchQuery}
                 onChange={handleSearch}
               />
-              <img
-                src={searchIcon}
-                alt="search-icon"
-                className="p-3 sm:p-4 lg:w-16 md:w-14 w-12 bg-greenMain rounded-r-lg cursor-pointer hover:brightness-90 duration-75"
-                onClick={handleSearchClick} // <-- Event klik ditambahkan
-              />
+              <img src={searchIcon} alt="search-icon" className="p-3 sm:p-4 lg:w-16 md:w-14 w-12 bg-greenMain rounded-r-lg cursor-pointer hover:brightness-90 duration-75" onClick={handleSearchClick} />
             </div>
           </div>
         </div>
