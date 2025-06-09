@@ -1,13 +1,5 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
-import {
-  FiUpload,
-  FiPlusCircle,
-  FiEdit,
-  FiTrash2,
-  FiSave,
-  FiX,
-  FiMapPin,
-} from "react-icons/fi";
+import { FiUpload, FiPlusCircle, FiEdit, FiTrash2, FiSave, FiX, FiMapPin } from "react-icons/fi";
 import profile from "../../assets/Dashboard/profile.svg";
 import { UserContext } from "../../context/UserContext";
 import { axiosInstance } from "../../config";
@@ -31,6 +23,7 @@ export const DeskripsiDesa = () => {
     videoURLs: [""],
     coverImage: null,
     galleryImages: [],
+    jenisDesa: [],
   });
 
   // Refs for file inputs
@@ -44,22 +37,15 @@ export const DeskripsiDesa = () => {
 
       try {
         setLoading(true);
-        const response = await axiosInstance.get(
-          `api/desa-wisata/email/${user.data.email}`
-        );
+        const response = await axiosInstance.get(`api/desa-wisata/email/${user.data.email}`);
 
-        if (
-          response.data.status === "success" &&
-          response.data.data.length > 0
-        ) {
+        if (response.data.status === "success" && response.data.data.length > 0) {
           const desaData = response.data.data[0]; // Ambil desa pertama (karena 1 user = 1 desa)
           setUserDesa(desaData);
 
           // Fetch existing deskripsi if available
           try {
-            const deskripsiResponse = await axiosInstance.get(
-              `api/deskripsi-desa/${desaData.kd_desa}`
-            );
+            const deskripsiResponse = await axiosInstance.get(`api/deskripsi-desa/${desaData.kd_desa}`);
             if (deskripsiResponse.data.status === "success") {
               const deskripsi = deskripsiResponse.data.data;
               setExistingDeskripsi(deskripsi);
@@ -67,16 +53,14 @@ export const DeskripsiDesa = () => {
 
               // Populate form with existing data
               setFormData({
+                ...formData,
                 lokasiDesa: deskripsi.lokasi_desa || "",
                 deskripsiDesa: deskripsi.deskripsi_desa || "",
-                fasilitas:
-                  deskripsi.fasilitas_desa?.length > 0
-                    ? deskripsi.fasilitas_desa
-                    : [""],
-                videoURLs:
-                  deskripsi.url_video?.length > 0 ? deskripsi.url_video : [""],
+                fasilitas: deskripsi.fasilitas_desa?.length > 0 ? deskripsi.fasilitas_desa : [""],
+                videoURLs: deskripsi.url_video?.length > 0 ? deskripsi.url_video : [""],
                 coverImage: deskripsi.gambar_cover || null,
                 galleryImages: deskripsi.galeri_desa || [],
+                jenisDesa: deskripsi.jenis_desa || [], // ← Tambahkan baris ini
               });
             }
           } catch (deskripsiError) {
@@ -164,10 +148,7 @@ export const DeskripsiDesa = () => {
           processedCount++;
 
           // If we've processed all valid files, update state
-          if (
-            processedCount ===
-            files.filter((f) => f.size <= 5 * 1024 * 1024).length
-          ) {
+          if (processedCount === files.filter((f) => f.size <= 5 * 1024 * 1024).length) {
             setFormData({
               ...formData,
               galleryImages: [...formData.galleryImages, ...newImages],
@@ -247,10 +228,7 @@ export const DeskripsiDesa = () => {
           newImages.push(e.target.result);
           processedCount++;
 
-          if (
-            processedCount ===
-            files.filter((f) => f.size <= 5 * 1024 * 1024).length
-          ) {
+          if (processedCount === files.filter((f) => f.size <= 5 * 1024 * 1024).length) {
             setFormData({
               ...formData,
               galleryImages: [...formData.galleryImages, ...newImages],
@@ -375,10 +353,9 @@ export const DeskripsiDesa = () => {
           deskripsi_desa: formData.deskripsiDesa,
           fasilitas_desa: formData.fasilitas.filter((f) => f.trim() !== ""),
           url_video: formData.videoURLs.filter((url) => url.trim() !== ""),
+          jenis_desa: formData.jenisDesa,
         };
-        const keepGalleryImages = formData.galleryImages.filter(
-          (img) => !img.startsWith("data:")
-        );
+        const keepGalleryImages = formData.galleryImages.filter((img) => !img.startsWith("data:"));
         dataToSubmit.keep_gallery_images = keepGalleryImages;
       } else {
         // For POST request - include kd_desa
@@ -388,6 +365,7 @@ export const DeskripsiDesa = () => {
           deskripsi_desa: formData.deskripsiDesa,
           fasilitas_desa: formData.fasilitas.filter((f) => f.trim() !== ""),
           url_video: formData.videoURLs.filter((url) => url.trim() !== ""),
+          jenis_desa: formData.jenisDesa,
         };
       }
 
@@ -402,10 +380,7 @@ export const DeskripsiDesa = () => {
       // Handle gallery images
       formData.galleryImages.forEach((image, index) => {
         if (image.startsWith("data:")) {
-          const galleryFile = dataURLtoFile(
-            image,
-            `gallery-image-${index}.jpg`
-          );
+          const galleryFile = dataURLtoFile(image, `gallery-image-${index}.jpg`);
           submitFormData.append("galeri_desa", galleryFile);
         }
       });
@@ -414,37 +389,27 @@ export const DeskripsiDesa = () => {
 
       if (existingDeskripsi) {
         // Update existing deskripsi
-        response = await axiosInstance.put(
-          `api/deskripsi-desa/${userDesa.kd_desa}`,
-          submitFormData,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        response = await axiosInstance.put(`api/deskripsi-desa/${userDesa.kd_desa}`, submitFormData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
       } else {
         // Create new deskripsi
-        response = await axiosInstance.post(
-          "api/deskripsi-desa",
-          submitFormData,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        response = await axiosInstance.post("api/deskripsi-desa", submitFormData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
       }
 
       if (response.data.status === "success") {
         Swal.fire({
           icon: "success",
           title: "Berhasil!",
-          text: existingDeskripsi
-            ? "Deskripsi desa berhasil diperbarui!"
-            : "Deskripsi desa berhasil ditambahkan!",
+          text: existingDeskripsi ? "Deskripsi desa berhasil diperbarui!" : "Deskripsi desa berhasil ditambahkan!",
           confirmButtonColor: "#3085d6",
         });
 
@@ -465,9 +430,7 @@ export const DeskripsiDesa = () => {
       Swal.fire({
         icon: "error",
         title: "Gagal Menyimpan",
-        text:
-          error.response?.data?.message ||
-          "Terjadi kesalahan saat menyimpan data.",
+        text: error.response?.data?.message || "Terjadi kesalahan saat menyimpan data.",
         confirmButtonColor: "#3085d6",
       });
     } finally {
@@ -479,25 +442,18 @@ export const DeskripsiDesa = () => {
   const handleDeleteDeskripsi = async () => {
     if (!existingDeskripsi || !userDesa) return;
 
-    if (
-      !window.confirm(
-        "Apakah Anda yakin ingin menghapus deskripsi desa ini? Semua data dan gambar akan dihapus permanen."
-      )
-    ) {
+    if (!window.confirm("Apakah Anda yakin ingin menghapus deskripsi desa ini? Semua data dan gambar akan dihapus permanen.")) {
       return;
     }
 
     try {
       setSubmitting(true);
-      const response = await axiosInstance.delete(
-        `api/deskripsi-desa/${userDesa.kd_desa}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axiosInstance.delete(`api/deskripsi-desa/${userDesa.kd_desa}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (response.data.status === "success") {
         Swal.fire({
@@ -524,9 +480,7 @@ export const DeskripsiDesa = () => {
       Swal.fire({
         icon: "error",
         title: "Gagal Menghapus",
-        text:
-          error.response?.data?.message ||
-          "Terjadi kesalahan saat menghapus data.",
+        text: error.response?.data?.message || "Terjadi kesalahan saat menghapus data.",
         confirmButtonColor: "#3085d6",
       });
     } finally {
@@ -559,13 +513,8 @@ export const DeskripsiDesa = () => {
       <div className="flex-1 overflow-x-auto p-6 bg-gray-50 md:mt-0 mt-16">
         <div className="flex justify-center items-center h-64">
           <div className="text-center">
-            <div className="text-lg font-semibold text-gray-600 mb-2">
-              Desa Wisata Tidak Ditemukan
-            </div>
-            <div className="text-sm text-gray-500">
-              Anda belum memiliki desa wisata yang terdaftar. Silakan hubungi
-              administrator.
-            </div>
+            <div className="text-lg font-semibold text-gray-600 mb-2">Desa Wisata Tidak Ditemukan</div>
+            <div className="text-sm text-gray-500">Anda belum memiliki desa wisata yang terdaftar. Silakan hubungi administrator.</div>
           </div>
         </div>
       </div>
@@ -581,19 +530,11 @@ export const DeskripsiDesa = () => {
         </div>
         <div className="flex items-center">
           <div className="mr-2 text-right">
-            <div className="font-semibold">
-              {user?.data?.fullname || "User"}
-            </div>
-            <div className="text-sm text-gray-500">
-              {user?.data?.role || "Role"}
-            </div>
+            <div className="font-semibold">{user?.data?.fullname || "User"}</div>
+            <div className="text-sm text-gray-500">{user?.data?.role || "Role"}</div>
           </div>
           <div className="h-10 w-10 rounded-full bg-blue-600 overflow-hidden">
-            <img
-              src={profile}
-              alt="Profile"
-              className="h-full w-full object-cover"
-            />
+            <img src={profile} alt="Profile" className="h-full w-full object-cover" />
           </div>
         </div>
       </div>
@@ -601,27 +542,17 @@ export const DeskripsiDesa = () => {
       {/* Action buttons */}
       {existingDeskripsi && (
         <div className="mb-4 flex gap-2">
-          <button
-            type="button"
-            onClick={handleDeleteDeskripsi}
-            disabled={submitting}
-            className="bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-red-600 disabled:opacity-50 flex items-center"
-          >
+          <button type="button" onClick={handleDeleteDeskripsi} disabled={submitting} className="bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-red-600 disabled:opacity-50 flex items-center">
             <FiTrash2 className="mr-2" />
             Hapus Deskripsi
           </button>
         </div>
       )}
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-lg p-6 shadow-sm"
-      >
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 shadow-sm">
         {/* Cover Image Upload */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Cover
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Cover</label>
           <div
             className="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:border-blue-400"
             onClick={() => coverInputRef.current.click()}
@@ -630,11 +561,7 @@ export const DeskripsiDesa = () => {
           >
             {formData.coverImage ? (
               <div className="w-full relative">
-                <img
-                  src={formData.coverImage}
-                  alt="Cover Preview"
-                  className="w-full h-64 object-cover rounded-lg"
-                />
+                <img src={formData.coverImage} alt="Cover Preview" className="w-full h-64 object-cover rounded-lg" />
                 <button
                   type="button"
                   className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
@@ -649,30 +576,17 @@ export const DeskripsiDesa = () => {
             ) : (
               <>
                 <FiUpload className="text-gray-400 text-3xl mb-2" />
-                <p className="text-sm text-center text-gray-500">
-                  Upload a file or drag and drop
-                </p>
-                <p className="text-xs text-center text-gray-400 mt-1">
-                  JPEG, JPG, PNG (5MB, 1440×506px)
-                </p>
+                <p className="text-sm text-center text-gray-500">Upload a file or drag and drop</p>
+                <p className="text-xs text-center text-gray-400 mt-1">JPEG, JPG, PNG (5MB, 1440×506px)</p>
               </>
             )}
-            <input
-              type="file"
-              ref={coverInputRef}
-              onChange={handleCoverUpload}
-              accept="image/jpeg,image/jpg,image/png"
-              className="hidden"
-            />
+            <input type="file" ref={coverInputRef} onChange={handleCoverUpload} accept="image/jpeg,image/jpg,image/png" className="hidden" />
           </div>
         </div>
 
         {/* Lokasi Desa */}
         <div className="mb-6">
-          <label
-            htmlFor="lokasiDesa"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
+          <label htmlFor="lokasiDesa" className="block text-sm font-medium text-gray-700 mb-2">
             <FiMapPin className="inline mr-1" />
             Lokasi Desa
           </label>
@@ -680,48 +594,65 @@ export const DeskripsiDesa = () => {
             type="text"
             id="lokasiDesa"
             value={formData.lokasiDesa}
-            onChange={(e) =>
-              setFormData({ ...formData, lokasiDesa: e.target.value })
-            }
+            onChange={(e) => setFormData({ ...formData, lokasiDesa: e.target.value })}
             className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             placeholder="Contoh: Jl. Raya Desa No. 123, Kecamatan ABC, Kabupaten XYZ"
           />
-          <p className="text-xs text-gray-500 mt-1">
-            Masukkan alamat lengkap atau koordinat lokasi desa wisata
-          </p>
+          <p className="text-xs text-gray-500 mt-1">Masukkan alamat lengkap atau koordinat lokasi desa wisata</p>
         </div>
 
         {/* Deskripsi Desa Wisata */}
         <div className="mb-6">
-          <label
-            htmlFor="deskripsiDesa"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
+          <label htmlFor="deskripsiDesa" className="block text-sm font-medium text-gray-700 mb-2">
             Deskripsi Desa Wisata
           </label>
           <textarea
             id="deskripsiDesa"
             value={formData.deskripsiDesa}
-            onChange={(e) =>
-              setFormData({ ...formData, deskripsiDesa: e.target.value })
-            }
+            onChange={(e) => setFormData({ ...formData, deskripsiDesa: e.target.value })}
             className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             rows={5}
             placeholder="Ceritakan tentang desa wisata Anda..."
           />
         </div>
 
+        {/* Jenis Desa Wisata */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Jenis Desa Wisata</label>
+          <div className="space-y-2">
+            {["alam", "budaya", "buatan"].map((type) => (
+              <label key={type} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.jenisDesa.includes(type)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setFormData({
+                        ...formData,
+                        jenisDesa: [...formData.jenisDesa, type],
+                      });
+                    } else {
+                      setFormData({
+                        ...formData,
+                        jenisDesa: formData.jenisDesa.filter((t) => t !== type),
+                      });
+                    }
+                  }}
+                  className="rounded text-blue-500 focus:ring-blue-500"
+                />
+                <span className="capitalize">{type}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
         {/* Fasilitas Desa Wisata */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Fasilitas Desa Wisata
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Fasilitas Desa Wisata</label>
           <div className="space-y-2">
             {formData.fasilitas.map((item, index) => (
               <div key={index} className="flex items-center">
-                <div className="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center mr-2">
-                  {fasilitasIcons[item] || "•"}
-                </div>
+                <div className="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center mr-2">{fasilitasIcons[item] || "•"}</div>
                 <input
                   type="text"
                   value={item}
@@ -730,22 +661,14 @@ export const DeskripsiDesa = () => {
                   placeholder="Nama fasilitas"
                 />
                 {formData.fasilitas.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeFasilitas(index)}
-                    className="ml-2 text-red-500 hover:text-red-700"
-                  >
+                  <button type="button" onClick={() => removeFasilitas(index)} className="ml-2 text-red-500 hover:text-red-700">
                     <FiX size={20} />
                   </button>
                 )}
               </div>
             ))}
             <div className="mt-2">
-              <button
-                type="button"
-                onClick={addFasilitas}
-                className="flex items-center text-blue-500 hover:text-blue-700"
-              >
+              <button type="button" onClick={addFasilitas} className="flex items-center text-blue-500 hover:text-blue-700">
                 <FiPlusCircle className="mr-1" /> Tambah Fasilitas
               </button>
             </div>
@@ -754,9 +677,7 @@ export const DeskripsiDesa = () => {
 
         {/* URL Video / Youtube */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            URL Video / Youtube
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">URL Video / Youtube</label>
           <div className="space-y-2">
             {formData.videoURLs.map((url, index) => (
               <div key={index} className="flex items-center">
@@ -768,11 +689,7 @@ export const DeskripsiDesa = () => {
                   className="flex-1 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
                 {formData.videoURLs.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeVideoURL(index)}
-                    className="ml-2 text-red-500 hover:text-red-700"
-                  >
+                  <button type="button" onClick={() => removeVideoURL(index)} className="ml-2 text-red-500 hover:text-red-700">
                     <FiX size={20} />
                   </button>
                 )}
@@ -780,11 +697,7 @@ export const DeskripsiDesa = () => {
             ))}
           </div>
           <div className="mt-2">
-            <button
-              type="button"
-              onClick={addVideoURL}
-              className="flex items-center justify-center w-full border border-gray-300 rounded-lg p-2 text-gray-500 hover:bg-gray-50"
-            >
+            <button type="button" onClick={addVideoURL} className="flex items-center justify-center w-full border border-gray-300 rounded-lg p-2 text-gray-500 hover:bg-gray-50">
               <FiPlusCircle className="mr-2" /> Tambah URL Video
             </button>
           </div>
@@ -792,9 +705,7 @@ export const DeskripsiDesa = () => {
 
         {/* Galeri */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Galeri
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Galeri</label>
           <div
             className="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer mb-4 hover:border-blue-400"
             onClick={() => galleryInputRef.current.click()}
@@ -802,20 +713,9 @@ export const DeskripsiDesa = () => {
             onDrop={handleGalleryDrop}
           >
             <FiUpload className="text-gray-400 text-3xl mb-2" />
-            <p className="text-sm text-center text-gray-500">
-              Upload a file or drag and drop
-            </p>
-            <p className="text-xs text-center text-gray-400 mt-1">
-              JPEG, JPG, PNG (5MB, 1440×506px, maks 8 file)
-            </p>
-            <input
-              type="file"
-              ref={galleryInputRef}
-              onChange={handleGalleryUpload}
-              accept="image/jpeg,image/jpg,image/png"
-              className="hidden"
-              multiple
-            />
+            <p className="text-sm text-center text-gray-500">Upload a file or drag and drop</p>
+            <p className="text-xs text-center text-gray-400 mt-1">JPEG, JPG, PNG (5MB, 1440×506px, maks 8 file)</p>
+            <input type="file" ref={galleryInputRef} onChange={handleGalleryUpload} accept="image/jpeg,image/jpg,image/png" className="hidden" multiple />
           </div>
 
           {/* Gallery Preview */}
@@ -823,16 +723,8 @@ export const DeskripsiDesa = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
               {formData.galleryImages.map((image, index) => (
                 <div key={index} className="relative">
-                  <img
-                    src={image}
-                    alt={`Gallery image ${index + 1}`}
-                    className="w-full h-32 object-cover rounded-lg"
-                  />
-                  <button
-                    type="button"
-                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 w-6 h-6 flex items-center justify-center hover:bg-red-600"
-                    onClick={() => removeGalleryImage(index)}
-                  >
+                  <img src={image} alt={`Gallery image ${index + 1}`} className="w-full h-32 object-cover rounded-lg" />
+                  <button type="button" className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 w-6 h-6 flex items-center justify-center hover:bg-red-600" onClick={() => removeGalleryImage(index)}>
                     <FiX size={12} />
                   </button>
                 </div>
@@ -843,17 +735,9 @@ export const DeskripsiDesa = () => {
 
         {/* Submit Button */}
         <div className="flex justify-end gap-2">
-          <button
-            type="submit"
-            disabled={submitting}
-            className="bg-blue-500 text-white rounded-lg px-6 py-2 hover:bg-blue-600 disabled:opacity-50 flex items-center"
-          >
+          <button type="submit" disabled={submitting} className="bg-blue-500 text-white rounded-lg px-6 py-2 hover:bg-blue-600 disabled:opacity-50 flex items-center">
             <FiSave className="mr-2" />
-            {submitting
-              ? "Menyimpan..."
-              : existingDeskripsi
-                ? "Update"
-                : "Simpan"}
+            {submitting ? "Menyimpan..." : existingDeskripsi ? "Update" : "Simpan"}
           </button>
         </div>
       </form>
