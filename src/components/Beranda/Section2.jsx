@@ -30,8 +30,6 @@ export const Section2 = () => {
     fetchData();
   }, []);
 
-  console.log(wisataData);
-
   return (
     <section className="atraksiWisata bg-greenMain mt-16 py-16 px-4">
       <div className="max-w-7xl mx-auto">
@@ -70,7 +68,7 @@ export const Section2 = () => {
                   <div className="bg-[#08500D] rounded-2xl overflow-hidden shadow-md">
                     <img src={item.atraksi[0].gambar} alt={item.title} className="w-full h-48 object-cover" />
                     <div className="p-4">
-                      <h3 className="font-semibold text-base text-white">{item.atraksi.nama}</h3>
+                      <h3 className="font-semibold text-base text-white">{item.atraksi[0].nama}</h3>
                       <div className="flex items-center gap-2 text-sm text-white mt-1">
                         <img src={location} alt="location" className="w-4 h-4" />
                         <span>

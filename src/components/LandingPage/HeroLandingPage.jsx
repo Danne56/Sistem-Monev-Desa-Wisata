@@ -4,6 +4,8 @@ import arrow_outward from "../../assets/Beranda/arrow_outward.svg";
 import arrowRight from "../../assets/LandingPage/icon/arrowRight.svg";
 import arrowLeft from "../../assets/LandingPage/icon/arrowLeft.svg";
 import location from "../../assets/LandingPage/icon/location.svg";
+import heroPic2 from "../../assets/Beranda/nganggring.jpg";
+
 import { Link } from "react-router-dom";
 
 // Data dummy desa
@@ -14,9 +16,9 @@ const desaList = [
     location: "Kabupaten Bangli, Bali",
   },
   {
-    image: heroPic,
-    title: "Desa Wisata Sade",
-    location: "Kabupaten Lombok Tengah, NTB",
+    image: heroPic2,
+    title: "Desa Wisata Nganggring",
+    location: "Kabupaten Sleman, DIY",
   },
   {
     image: heroPic,
@@ -24,9 +26,9 @@ const desaList = [
     location: "Kabupaten Gunungkidul, DIY",
   },
   {
-    image: heroPic,
-    title: "Desa Wisata Wae Rebo",
-    location: "Kabupaten Manggarai, NTT",
+    image: heroPic2,
+    title: "Desa Wisata Nganggring",
+    location: "Kabupaten Sleman, DIY",
   },
   {
     image: heroPic,

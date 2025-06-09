@@ -7,12 +7,12 @@ import { Section4 } from "../components/Beranda/Section4";
 
 export const Home = () => {
   return (
-    <div>
+    <>
       <Hero />
       <Section1 />
       <Section2 />
       <Section3 />
       <Section4 />
-    </div>
+    </>
   );
 };

@@ -1,6 +1,7 @@
 import React from "react";
 import location from "../../assets/Beranda/location.svg";
-import Top1 from "../../assets/Beranda/DewiSinta.webp";
+import Top1 from "../../assets/Beranda/nganggring.jpg";
+import Top4 from "../../assets/Beranda/DewiSinta.webp";
 import Top2 from "../../assets/Beranda/GoaCemara.webp";
 import Top3 from "../../assets/Beranda/Nglanggeran.webp";
 import shadow from "../../assets/Beranda/shadow.png";
@@ -8,9 +9,9 @@ import { Link } from "react-router-dom";
 
 export const Section1 = () => {
   const data = [
-    { id: 1, title: "Desa Wisata Dewi Sinta", location: "Kabupaten Bantul", image: Top1 },
+    { id: 1, title: "Desa Wisata Dewi Nganggring", location: "Kabupaten Sleman", image: Top1 },
     { id: 2, title: "Desa Wisata Goa Cemara", location: "Kabupaten Gunungkidul", image: Top2 },
-    { id: 3, title: "Desa Wisata Dewi Sinta", location: "Kabupaten Bantul", image: Top1 },
+    { id: 3, title: "Desa Wisata Dewi Sinta", location: "Kabupaten Bantul", image: Top4 },
     { id: 4, title: "Desa Wisata Nglanggeran", location: "Kabupaten Gunungkidul", image: Top3 },
     { id: 5, title: "Desa Wisata Goa Cemara", location: "Kabupaten Gunungkidul", image: Top2 },
   ];
