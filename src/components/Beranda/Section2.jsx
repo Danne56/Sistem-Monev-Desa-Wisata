@@ -1,24 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-import Pulosari from "../../assets/Beranda/Pulosari.webp";
 import location from "../../assets/Beranda/location.svg";
 import arrowLeft from "../../assets/Beranda/arrowLeft.svg";
 import arrowRight from "../../assets/Beranda/arrowRight.svg";
 import { Link } from "react-router-dom";
+import { axiosInstance } from "../../config";
 
 export const Section2 = () => {
-  const data = [
-    { id: 1, title: "Wisata Alam Jurang Pulosari1", location: "Desa Wisata Krebet, Kabupaten Bantul", image: Pulosari },
-    { id: 2, title: "Wisata Alam Jurang Pulosari2", location: "Desa Wisata Krebet, Kabupaten Bantul", image: Pulosari },
-    { id: 3, title: "Wisata Alam Jurang Pulosari3", location: "Desa Wisata Krebet, Kabupaten Bantul", image: Pulosari },
-    { id: 4, title: "Wisata Alam Jurang Pulosari4", location: "Desa Wisata Krebet, Kabupaten Bantul", image: Pulosari },
-    { id: 5, title: "Wisata Alam Jurang Pulosari5", location: "Desa Wisata Krebet, Kabupaten Bantul", image: Pulosari },
-  ];
+  const [wisataData, setWisataData] = useState([]);
+
+  useEffect(() => {
+    // Fetch data dari API
+    const fetchData = async () => {
+      try {
+        const response = await axiosInstance.get("/api/atraksi-wisata");
+        const result = response.data.data;
+
+        setWisataData(result);
+      } catch (error) {
+        console.error("Error fetching atraksi wisata:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  console.log(wisataData);
 
   return (
     <section className="atraksiWisata bg-greenMain mt-16 py-16 px-4">
@@ -42,7 +54,6 @@ export const Section2 = () => {
           navigation={{
             nextEl: ".swiper-button-next-custom",
             prevEl: ".swiper-button-prev-custom",
-            el: ".swiper-pagination-custom",
           }}
           pagination={{ clickable: true }}
           breakpoints={{
@@ -52,21 +63,30 @@ export const Section2 = () => {
           }}
           className="pb-12"
         >
-          <div className="swiper-pagination-custom flex justify-center mt-12" />
-          {data.map((item, index) => (
-            <SwiperSlide key={index}>
-              <div className="bg-[#08500D] rounded-2xl overflow-hidden shadow-md">
-                <img src={item.image} alt={item.title} className="w-full h-48 object-cover" />
-                <div className="p-4">
-                  <h3 className="font-semibold text-base text-white">{item.title}</h3>
-                  <div className="flex items-center gap-2 text-sm text-white mt-1">
-                    <img src={location} alt="location" className="w-4 h-4" />
-                    <span>{item.location}</span>
+          {wisataData.length > 0 ? (
+            wisataData.map((item, index) => (
+              <SwiperSlide key={index}>
+                <Link to={`/detail/${item.slug}`}>
+                  <div className="bg-[#08500D] rounded-2xl overflow-hidden shadow-md">
+                    <img src={item.atraksi[0].gambar} alt={item.title} className="w-full h-48 object-cover" />
+                    <div className="p-4">
+                      <h3 className="font-semibold text-base text-white">{item.atraksi.nama}</h3>
+                      <div className="flex items-center gap-2 text-sm text-white mt-1">
+                        <img src={location} alt="location" className="w-4 h-4" />
+                        <span>
+                          {item.kabupaten}, {item.nama_popular}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </Link>
+              </SwiperSlide>
+            ))
+          ) : (
+            <SwiperSlide>
+              <div className="text-center text-white py-10">Tidak ada atraksi wisata ditemukan.</div>
             </SwiperSlide>
-          ))}
+          )}
         </Swiper>
 
         <Link to="/atraksi" className="flex justify-center mt-6">

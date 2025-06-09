@@ -40,6 +40,7 @@ export const DeskripsiDesa = () => {
     videoURLs: [""],
     coverImage: null,
     galleryImages: [],
+    jenisDesa: [],
     latitude: null,
     longitude: null,
   });
@@ -55,37 +56,28 @@ export const DeskripsiDesa = () => {
 
       try {
         setLoading(true);
-        const response = await axiosInstance.get(
-          `api/desa-wisata/email/${user.data.email}`
-        );
+        const response = await axiosInstance.get(`api/desa-wisata/email/${user.data.email}`);
 
-        if (
-          response.data.status === "success" &&
-          response.data.data.length > 0
-        ) {
+        if (response.data.status === "success" && response.data.data.length > 0) {
           const desaData = response.data.data[0]; // Ambil desa pertama (karena 1 user = 1 desa)
           setUserDesa(desaData);
 
           // Fetch existing deskripsi if available
           try {
-            const deskripsiResponse = await axiosInstance.get(
-              `api/deskripsi-desa/${desaData.kd_desa}`
-            );
+            const deskripsiResponse = await axiosInstance.get(`api/deskripsi-desa/${desaData.kd_desa}`);
             if (deskripsiResponse.data.status === "success") {
               const deskripsi = deskripsiResponse.data.data;
               setExistingDeskripsi(deskripsi);
               setIsEditing(true);              // Populate form with existing data
               setFormData({
+                ...formData,
                 lokasiDesa: deskripsi.lokasi_desa || "",
                 deskripsiDesa: deskripsi.deskripsi_desa || "",
-                fasilitas:
-                  deskripsi.fasilitas_desa?.length > 0
-                    ? deskripsi.fasilitas_desa
-                    : [""],
-                videoURLs:
-                  deskripsi.url_video?.length > 0 ? deskripsi.url_video : [""],
+                fasilitas: deskripsi.fasilitas_desa?.length > 0 ? deskripsi.fasilitas_desa : [""],
+                videoURLs: deskripsi.url_video?.length > 0 ? deskripsi.url_video : [""],
                 coverImage: deskripsi.gambar_cover || null,
                 galleryImages: deskripsi.galeri_desa || [],
+                jenisDesa: deskripsi.jenis_desa || [], // ← Tambahkan baris ini
                 latitude: deskripsi.latitude ? Number(deskripsi.latitude) : null,
                 longitude: deskripsi.longitude ? Number(deskripsi.longitude) : null,
               });
@@ -175,10 +167,7 @@ export const DeskripsiDesa = () => {
           processedCount++;
 
           // If we've processed all valid files, update state
-          if (
-            processedCount ===
-            files.filter((f) => f.size <= 5 * 1024 * 1024).length
-          ) {
+          if (processedCount === files.filter((f) => f.size <= 5 * 1024 * 1024).length) {
             setFormData({
               ...formData,
               galleryImages: [...formData.galleryImages, ...newImages],
@@ -258,10 +247,7 @@ export const DeskripsiDesa = () => {
           newImages.push(e.target.result);
           processedCount++;
 
-          if (
-            processedCount ===
-            files.filter((f) => f.size <= 5 * 1024 * 1024).length
-          ) {
+          if (processedCount === files.filter((f) => f.size <= 5 * 1024 * 1024).length) {
             setFormData({
               ...formData,
               galleryImages: [...formData.galleryImages, ...newImages],
@@ -385,12 +371,11 @@ export const DeskripsiDesa = () => {
           deskripsi_desa: formData.deskripsiDesa,
           fasilitas_desa: formData.fasilitas.filter((f) => f.trim() !== ""),
           url_video: formData.videoURLs.filter((url) => url.trim() !== ""),
+          jenis_desa: formData.jenisDesa,
           latitude: formData.latitude,
           longitude: formData.longitude,
         };
-        const keepGalleryImages = formData.galleryImages.filter(
-          (img) => !img.startsWith("data:")
-        );
+        const keepGalleryImages = formData.galleryImages.filter((img) => !img.startsWith("data:"));
         dataToSubmit.keep_gallery_images = keepGalleryImages;
       } else {        // For POST request - include kd_desa
         dataToSubmit = {
@@ -399,6 +384,7 @@ export const DeskripsiDesa = () => {
           deskripsi_desa: formData.deskripsiDesa,
           fasilitas_desa: formData.fasilitas.filter((f) => f.trim() !== ""),
           url_video: formData.videoURLs.filter((url) => url.trim() !== ""),
+          jenis_desa: formData.jenisDesa,
           latitude: formData.latitude,
           longitude: formData.longitude,
         };
@@ -415,10 +401,7 @@ export const DeskripsiDesa = () => {
       // Handle gallery images
       formData.galleryImages.forEach((image, index) => {
         if (image.startsWith("data:")) {
-          const galleryFile = dataURLtoFile(
-            image,
-            `gallery-image-${index}.jpg`
-          );
+          const galleryFile = dataURLtoFile(image, `gallery-image-${index}.jpg`);
           submitFormData.append("galeri_desa", galleryFile);
         }
       });
@@ -427,37 +410,27 @@ export const DeskripsiDesa = () => {
 
       if (existingDeskripsi) {
         // Update existing deskripsi
-        response = await axiosInstance.put(
-          `api/deskripsi-desa/${userDesa.kd_desa}`,
-          submitFormData,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        response = await axiosInstance.put(`api/deskripsi-desa/${userDesa.kd_desa}`, submitFormData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
       } else {
         // Create new deskripsi
-        response = await axiosInstance.post(
-          "api/deskripsi-desa",
-          submitFormData,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        response = await axiosInstance.post("api/deskripsi-desa", submitFormData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
       }
 
       if (response.data.status === "success") {
         Swal.fire({
           icon: "success",
           title: "Berhasil!",
-          text: existingDeskripsi
-            ? "Deskripsi desa berhasil diperbarui!"
-            : "Deskripsi desa berhasil ditambahkan!",
+          text: existingDeskripsi ? "Deskripsi desa berhasil diperbarui!" : "Deskripsi desa berhasil ditambahkan!",
           confirmButtonColor: "#3085d6",
         });
 
@@ -478,9 +451,7 @@ export const DeskripsiDesa = () => {
       Swal.fire({
         icon: "error",
         title: "Gagal Menyimpan",
-        text:
-          error.response?.data?.message ||
-          "Terjadi kesalahan saat menyimpan data.",
+        text: error.response?.data?.message || "Terjadi kesalahan saat menyimpan data.",
         confirmButtonColor: "#3085d6",
       });
     } finally {
@@ -492,25 +463,18 @@ export const DeskripsiDesa = () => {
   const handleDeleteDeskripsi = async () => {
     if (!existingDeskripsi || !userDesa) return;
 
-    if (
-      !window.confirm(
-        "Apakah Anda yakin ingin menghapus deskripsi desa ini? Semua data dan gambar akan dihapus permanen."
-      )
-    ) {
+    if (!window.confirm("Apakah Anda yakin ingin menghapus deskripsi desa ini? Semua data dan gambar akan dihapus permanen.")) {
       return;
     }
 
     try {
       setSubmitting(true);
-      const response = await axiosInstance.delete(
-        `api/deskripsi-desa/${userDesa.kd_desa}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axiosInstance.delete(`api/deskripsi-desa/${userDesa.kd_desa}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (response.data.status === "success") {
         Swal.fire({
@@ -537,9 +501,7 @@ export const DeskripsiDesa = () => {
       Swal.fire({
         icon: "error",
         title: "Gagal Menghapus",
-        text:
-          error.response?.data?.message ||
-          "Terjadi kesalahan saat menghapus data.",
+        text: error.response?.data?.message || "Terjadi kesalahan saat menghapus data.",
         confirmButtonColor: "#3085d6",
       });
     } finally {
@@ -700,13 +662,8 @@ export const DeskripsiDesa = () => {
       <div className="flex-1 overflow-x-auto p-6 bg-gray-50 md:mt-0 mt-16">
         <div className="flex justify-center items-center h-64">
           <div className="text-center">
-            <div className="text-lg font-semibold text-gray-600 mb-2">
-              Desa Wisata Tidak Ditemukan
-            </div>
-            <div className="text-sm text-gray-500">
-              Anda belum memiliki desa wisata yang terdaftar. Silakan hubungi
-              administrator.
-            </div>
+            <div className="text-lg font-semibold text-gray-600 mb-2">Desa Wisata Tidak Ditemukan</div>
+            <div className="text-sm text-gray-500">Anda belum memiliki desa wisata yang terdaftar. Silakan hubungi administrator.</div>
           </div>
         </div>
       </div>
@@ -852,6 +809,38 @@ export const DeskripsiDesa = () => {
           />
         </div>
 
+        {/* Jenis Desa Wisata */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Jenis Desa Wisata
+          </label>
+          <div className="space-y-2">
+            {["alam", "budaya", "buatan"].map((type) => (
+              <label key={type} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.jenisDesa.includes(type)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setFormData({
+                        ...formData,
+                        jenisDesa: [...formData.jenisDesa, type],
+                      });
+                    } else {
+                      setFormData({
+                        ...formData,
+                        jenisDesa: formData.jenisDesa.filter((t) => t !== type),
+                      });
+                    }
+                  }}
+                  className="rounded text-blue-500 focus:ring-blue-500"
+                />
+                <span className="capitalize">{type}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
         {/* Fasilitas Desa Wisata */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -937,31 +926,39 @@ export const DeskripsiDesa = () => {
             <FiMapPin className="inline mr-1" />
             Pinpoint Desa
           </label>
-          
+
           {/* Coordinate Input Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Latitude</label>
+              <label className="block text-xs text-gray-600 mb-1">
+                Latitude
+              </label>
               <input
                 type="number"
                 step="any"
                 min="-90"
                 max="90"
                 value={formData.latitude || ""}
-                onChange={(e) => handleCoordinateChange("latitude", e.target.value)}
+                onChange={(e) =>
+                  handleCoordinateChange("latitude", e.target.value)
+                }
                 placeholder="-7.8753849"
                 className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Longitude</label>
+              <label className="block text-xs text-gray-600 mb-1">
+                Longitude
+              </label>
               <input
                 type="number"
                 step="any"
                 min="-180"
                 max="180"
                 value={formData.longitude || ""}
-                onChange={(e) => handleCoordinateChange("longitude", e.target.value)}
+                onChange={(e) =>
+                  handleCoordinateChange("longitude", e.target.value)
+                }
                 placeholder="110.4262088"
                 className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
@@ -994,11 +991,14 @@ export const DeskripsiDesa = () => {
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />                {(formData.latitude && formData.longitude) && (
+                />{" "}
+                {formData.latitude && formData.longitude && (
                   <Marker position={[formData.latitude, formData.longitude]}>
                     <Popup>
-                      Lokasi Desa: {userDesa?.nama_desa}<br />
-                      Koordinat: {Number(formData.latitude).toFixed(6)}, {Number(formData.longitude).toFixed(6)}
+                      Lokasi Desa: {userDesa?.nama_desa}
+                      <br />
+                      Koordinat: {Number(formData.latitude).toFixed(6)},{" "}
+                      {Number(formData.longitude).toFixed(6)}
                     </Popup>
                   </Marker>
                 )}
@@ -1006,9 +1006,10 @@ export const DeskripsiDesa = () => {
               </MapContainer>
             </div>
           </div>
-          
+
           <p className="text-xs text-gray-500 mt-2">
-            Klik pada peta untuk menentukan lokasi desa, atau masukkan koordinat secara manual.
+            Klik pada peta untuk menentukan lokasi desa, atau masukkan koordinat
+            secara manual.
           </p>
         </div>
 
@@ -1076,7 +1077,8 @@ export const DeskripsiDesa = () => {
               : existingDeskripsi
                 ? "Update"
                 : "Simpan"}
-          </button>        </div>
+          </button>
+        </div>
       </form>
     </div>
   );
