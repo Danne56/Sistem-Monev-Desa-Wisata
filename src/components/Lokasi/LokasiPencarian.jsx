@@ -2,34 +2,16 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { axiosInstance } from "../../config";
 
-export const LokasiSection3 = () => {
-  const [wisataData, setWisataData] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosInstance.get("/api/desa-wisata/details");
-        console.log(response);
-        if (response.data.status === "success") {
-          setWisataData(response.data.data);
-        } else {
-          console.error("Failed to fetch data:", response.data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
-  }, []);
-
+export const LaporanPencarian = ({ wisataData }) => {
+  console.log(wisataData);
   return (
     <section className="py-10 px-4 lg:px-20">
       <div className="max-w-7xl mx-auto">
-        <h2 className="lg:text-[40px] md:text-[36px] sm:text-[32px] text-[28px] font-extrabold my-8 text-center leading-tight">Jelajahi Desa Wisata</h2>
+        <h2 className="lg:text-[40px] md:text-[36px] sm:text-[32px] text-[28px] font-extrabold my-8 text-center leading-tight">Hasil Pencarian</h2>
 
         {/* Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {wisataData.map(
+          {wisataData?.map(
             (item) =>
               item.gambar_cover && (
                 <div key={item.slug} className="relative rounded-xl overflow-hidden shadow-md group">
