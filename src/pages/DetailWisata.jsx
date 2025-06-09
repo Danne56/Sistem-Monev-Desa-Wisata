@@ -75,6 +75,8 @@ export const DetailWisata = () => {
         deskripsi={deskripsiDesa.deskripsi_desa || ""}
         fasilitas={deskripsiDesa.fasilitas_desa || []}
         video={deskripsiDesa.url_video || []}
+        latitude={deskripsiDesa.latitude || null}
+        longitude={deskripsiDesa.longitude || null}
       />
       <GaleriWisata images={deskripsiDesa.galeri_desa || []} />
       <AtraksiWisata atraksi={deskripsiWisata.atraksi || []} />

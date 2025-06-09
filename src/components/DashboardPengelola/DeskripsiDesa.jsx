@@ -1,9 +1,20 @@
-import React, { useState, useRef, useContext, useEffect } from "react";
-import { FiUpload, FiPlusCircle, FiEdit, FiTrash2, FiSave, FiX, FiMapPin } from "react-icons/fi";
+import { useState, useRef, useContext, useEffect } from "react";
+import { FiUpload, FiPlusCircle, FiTrash2, FiSave, FiX, FiMapPin } from "react-icons/fi";
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 import profile from "../../assets/Dashboard/profile.svg";
 import { UserContext } from "../../context/UserContext";
 import { axiosInstance } from "../../config";
 import Swal from "sweetalert2";
+
+// Fix for default marker icon in React-Leaflet
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
 
 export const DeskripsiDesa = () => {
   const { user } = useContext(UserContext);
@@ -14,7 +25,6 @@ export const DeskripsiDesa = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-
   // State for form fields
   const [formData, setFormData] = useState({
     lokasiDesa: "",
@@ -24,6 +34,8 @@ export const DeskripsiDesa = () => {
     coverImage: null,
     galleryImages: [],
     jenisDesa: [],
+    latitude: null,
+    longitude: null,
   });
 
   // Refs for file inputs
@@ -49,9 +61,7 @@ export const DeskripsiDesa = () => {
             if (deskripsiResponse.data.status === "success") {
               const deskripsi = deskripsiResponse.data.data;
               setExistingDeskripsi(deskripsi);
-              setIsEditing(true);
-
-              // Populate form with existing data
+              setIsEditing(true); // Populate form with existing data
               setFormData({
                 ...formData,
                 lokasiDesa: deskripsi.lokasi_desa || "",
@@ -61,6 +71,8 @@ export const DeskripsiDesa = () => {
                 coverImage: deskripsi.gambar_cover || null,
                 galleryImages: deskripsi.galeri_desa || [],
                 jenisDesa: deskripsi.jenis_desa || [], // ← Tambahkan baris ini
+                latitude: deskripsi.latitude ? Number(deskripsi.latitude) : null,
+                longitude: deskripsi.longitude ? Number(deskripsi.longitude) : null,
               });
             }
           } catch (deskripsiError) {
@@ -354,6 +366,8 @@ export const DeskripsiDesa = () => {
           fasilitas_desa: formData.fasilitas.filter((f) => f.trim() !== ""),
           url_video: formData.videoURLs.filter((url) => url.trim() !== ""),
           jenis_desa: formData.jenisDesa,
+          latitude: formData.latitude,
+          longitude: formData.longitude,
         };
         const keepGalleryImages = formData.galleryImages.filter((img) => !img.startsWith("data:"));
         dataToSubmit.keep_gallery_images = keepGalleryImages;
@@ -366,6 +380,8 @@ export const DeskripsiDesa = () => {
           fasilitas_desa: formData.fasilitas.filter((f) => f.trim() !== ""),
           url_video: formData.videoURLs.filter((url) => url.trim() !== ""),
           jenis_desa: formData.jenisDesa,
+          latitude: formData.latitude,
+          longitude: formData.longitude,
         };
       }
 
@@ -415,14 +431,14 @@ export const DeskripsiDesa = () => {
 
         // Update state with new data
         setExistingDeskripsi(response.data.data);
-        setIsEditing(true);
-
-        // Update form data with returned URLs
+        setIsEditing(true); // Update form data with returned URLs
         const updatedData = response.data.data;
         setFormData({
           ...formData,
           coverImage: updatedData.gambar_cover || null,
           galleryImages: updatedData.galeri_desa || [],
+          latitude: updatedData.latitude ? Number(updatedData.latitude) : null,
+          longitude: updatedData.longitude ? Number(updatedData.longitude) : null,
         });
       }
     } catch (error) {
@@ -461,9 +477,7 @@ export const DeskripsiDesa = () => {
           title: "Berhasil!",
           text: "Deskripsi desa berhasil dihapus!",
           confirmButtonColor: "#3085d6",
-        });
-
-        // Reset state
+        }); // Reset state
         setExistingDeskripsi(null);
         setIsEditing(false);
         setFormData({
@@ -473,6 +487,8 @@ export const DeskripsiDesa = () => {
           videoURLs: [""],
           coverImage: null,
           galleryImages: [],
+          latitude: null,
+          longitude: null,
         });
       }
     } catch (error) {
@@ -496,6 +512,134 @@ export const DeskripsiDesa = () => {
     Mushola: "🕌",
     "Selfie Area": "📸",
     "Spot Foto": "📷",
+  };
+
+  // Map click handler component
+  const MapClickHandler = () => {
+    useMapEvents({
+      click: (e) => {
+        const { lat, lng } = e.latlng;
+        setFormData({
+          ...formData,
+          latitude: lat,
+          longitude: lng,
+        });
+        Swal.fire({
+          icon: "success",
+          title: "Lokasi Dipilih!",
+          text: `Koordinat: ${lat.toFixed(6)}, ${lng.toFixed(6)}`,
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      },
+    });
+    return null;
+  };
+
+  // Handle coordinate input change
+  const handleCoordinateChange = (field, value) => {
+    const numValue = parseFloat(value);
+    if (field === "latitude") {
+      if (isNaN(numValue) || numValue < -90 || numValue > 90) {
+        if (value !== "") {
+          Swal.fire({
+            icon: "error",
+            title: "Koordinat Tidak Valid",
+            text: "Latitude harus antara -90 dan 90",
+            confirmButtonColor: "#3085d6",
+          });
+        }
+        return;
+      }
+    } else if (field === "longitude") {
+      if (isNaN(numValue) || numValue < -180 || numValue > 180) {
+        if (value !== "") {
+          Swal.fire({
+            icon: "error",
+            title: "Koordinat Tidak Valid",
+            text: "Longitude harus antara -180 dan 180",
+            confirmButtonColor: "#3085d6",
+          });
+        }
+        return;
+      }
+    }
+
+    setFormData({
+      ...formData,
+      [field]: value === "" ? null : numValue,
+    });
+  };
+  // Get current location
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      Swal.fire({
+        icon: "error",
+        title: "Geolocation Tidak Didukung",
+        text: "Browser Anda tidak mendukung geolocation",
+        confirmButtonColor: "#3085d6",
+      });
+      return;
+    }
+
+    // Show loading message
+    Swal.fire({
+      title: "Mendapatkan Lokasi...",
+      text: "Mohon tunggu sementara kami mendapatkan lokasi Anda",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setFormData({
+          ...formData,
+          latitude,
+          longitude,
+        });
+        Swal.fire({
+          icon: "success",
+          title: "Lokasi Ditemukan!",
+          text: `Koordinat: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+          confirmButtonColor: "#3085d6",
+        });
+      },
+      (error) => {
+        console.error("Error getting location:", error);
+        let errorMessage = "Pastikan Anda mengizinkan akses lokasi";
+
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "Akses lokasi ditolak. Silakan izinkan akses lokasi di pengaturan browser dan coba lagi.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "Informasi lokasi tidak tersedia. Pastikan GPS aktif dan koneksi internet stabil.";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "Waktu habis saat mencari lokasi. Silakan coba lagi.";
+            break;
+          default:
+            errorMessage = "Terjadi kesalahan saat mendapatkan lokasi. Silakan coba lagi.";
+            break;
+        }
+        Swal.fire({
+          icon: "error",
+          title: "Gagal Mendapatkan Lokasi",
+          text: errorMessage,
+          confirmButtonColor: "#3085d6",
+        });
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000,
+      }
+    );
   };
 
   if (loading) {
@@ -576,7 +720,7 @@ export const DeskripsiDesa = () => {
             ) : (
               <>
                 <FiUpload className="text-gray-400 text-3xl mb-2" />
-                <p className="text-sm text-center text-gray-500">Upload a file or drag and drop</p>
+                <p className="text-sm text-center text-gray-500">Unggah file atau seret ke sini</p>
                 <p className="text-xs text-center text-gray-400 mt-1">JPEG, JPG, PNG (5MB, 1440×506px)</p>
               </>
             )}
@@ -701,6 +845,94 @@ export const DeskripsiDesa = () => {
               <FiPlusCircle className="mr-2" /> Tambah URL Video
             </button>
           </div>
+
+          {/* Interactive Map */}
+          <div className="border border-gray-300 rounded-lg overflow-hidden">
+            <div style={{ height: "400px", width: "100%" }}>
+              <MapContainer center={[formData.latitude || -7.8753849, formData.longitude || 110.4262088]} zoom={13} style={{ height: "100%", width: "100%" }}>
+                <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />{" "}
+                {formData.latitude && formData.longitude && (
+                  <Marker position={[formData.latitude, formData.longitude]}>
+                    <Popup>
+                      Lokasi Desa: {userDesa?.nama_desa}
+                      <br />
+                      Koordinat: {Number(formData.latitude).toFixed(6)}, {Number(formData.longitude).toFixed(6)}
+                    </Popup>
+                  </Marker>
+                )}
+                <MapClickHandler />
+              </MapContainer>
+            </div>
+          </div>
+
+          <p className="text-xs text-gray-500 mt-2">Klik pada peta untuk menentukan lokasi desa, atau masukkan koordinat secara manual.</p>
+        </div>
+
+        {/* Koordinat Lokasi */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            <FiMapPin className="inline mr-1" />
+            Pinpoint Desa
+          </label>
+
+          {/* Coordinate Input Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">Latitude</label>
+              <input
+                type="number"
+                step="any"
+                min="-90"
+                max="90"
+                value={formData.latitude || ""}
+                onChange={(e) => handleCoordinateChange("latitude", e.target.value)}
+                placeholder="-7.8753849"
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">Longitude</label>
+              <input
+                type="number"
+                step="any"
+                min="-180"
+                max="180"
+                value={formData.longitude || ""}
+                onChange={(e) => handleCoordinateChange("longitude", e.target.value)}
+                placeholder="110.4262088"
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+          </div>
+
+          {/* Get Current Location Button */}
+          <div className="mb-4">
+            <button type="button" onClick={getCurrentLocation} className="flex items-center justify-center w-full md:w-auto px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+              <FiMapPin className="mr-2" />
+              Gunakan Lokasi Saat Ini
+            </button>
+          </div>
+
+          {/* Interactive Map */}
+          <div className="border border-gray-300 rounded-lg overflow-hidden">
+            <div style={{ height: "400px", width: "100%" }}>
+              <MapContainer center={[formData.latitude || -7.8753849, formData.longitude || 110.4262088]} zoom={13} style={{ height: "100%", width: "100%" }}>
+                <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />{" "}
+                {formData.latitude && formData.longitude && (
+                  <Marker position={[formData.latitude, formData.longitude]}>
+                    <Popup>
+                      Lokasi Desa: {userDesa?.nama_desa}
+                      <br />
+                      Koordinat: {Number(formData.latitude).toFixed(6)}, {Number(formData.longitude).toFixed(6)}
+                    </Popup>
+                  </Marker>
+                )}
+                <MapClickHandler />
+              </MapContainer>
+            </div>
+          </div>
+
+          <p className="text-xs text-gray-500 mt-2">Klik pada peta untuk menentukan lokasi desa, atau masukkan koordinat secara manual.</p>
         </div>
 
         {/* Galeri */}
@@ -713,7 +945,7 @@ export const DeskripsiDesa = () => {
             onDrop={handleGalleryDrop}
           >
             <FiUpload className="text-gray-400 text-3xl mb-2" />
-            <p className="text-sm text-center text-gray-500">Upload a file or drag and drop</p>
+            <p className="text-sm text-center text-gray-500">Unggah file atau seret ke sini</p>
             <p className="text-xs text-center text-gray-400 mt-1">JPEG, JPG, PNG (5MB, 1440×506px, maks 8 file)</p>
             <input type="file" ref={galleryInputRef} onChange={handleGalleryUpload} accept="image/jpeg,image/jpg,image/png" className="hidden" multiple />
           </div>
