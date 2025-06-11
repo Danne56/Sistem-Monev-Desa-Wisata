@@ -3,6 +3,7 @@ import profile from "../../assets/Dashboard/profile.svg";
 import { FaCaretDown, FaPencilAlt, FaTimes, FaSpinner } from "react-icons/fa";
 import { UserContext } from "../../context/UserContext";
 import Swal from "sweetalert2";
+import { axiosInstance } from "../../config";
 
 export const KategoriDesa = () => {
   const [villages, setVillages] = useState([]);
@@ -94,15 +95,15 @@ export const KategoriDesa = () => {
       setError(null);
 
       try {
-        const res = await fetch("http://localhost:5000/api/skor", {
+        const response = await axiosInstance.get("/api/skor", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        const data = await res.json();
+        const data = response.data;
 
-        if (res.ok && data.status === "success") {
+        if (data.status === "success") {
           const processedData = data.data.map((d) => ({
             id: d.kd_desa,
             name: d.nama_desa || "Desa Wisata",
@@ -125,8 +126,8 @@ export const KategoriDesa = () => {
           setError(data.message || "Gagal mengambil data");
         }
       } catch (err) {
-        setError("Terjadi kesalahan saat mengambil data");
         console.error("Error fetching villages:", err);
+        setError("Tidak dapat memuat data desa.");
 
         // Jika ada error, coba gunakan cache lama
         const cachedData = localStorage.getItem("villagesCache");
@@ -137,7 +138,10 @@ export const KategoriDesa = () => {
             setError("Menggunakan data tersimpan (offline mode)");
           } catch (cacheError) {
             console.error("Error reading old cache:", cacheError);
+            Swal.fire("Gagal", "Tidak dapat memuat data desa.", "error");
           }
+        } else {
+          Swal.fire("Gagal", "Tidak dapat memuat data desa.", "error");
         }
       } finally {
         setLoading(false);
@@ -228,27 +232,24 @@ export const KategoriDesa = () => {
     setLoading(true);
     try {
       // Tentukan apakah ini POST (create) atau PUT (update)
-      const method = currentVillage.hasScore ? "PUT" : "POST";
+      const method = currentVillage.hasScore ? "put" : "post";
       const url = currentVillage.hasScore
-        ? `http://localhost:5000/api/skor/${currentVillage.id}`
-        : `http://localhost:5000/api/skor`;
+        ? `/api/skor/${currentVillage.id}`
+        : `/api/skor`;
 
       const body = currentVillage.hasScore
         ? scores
         : { kd_desa: currentVillage.id, ...scores };
 
-      const res = await fetch(url, {
-        method: method,
+      const response = await axiosInstance[method](url, body, {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(body),
       });
 
-      const data = await res.json();
+      const data = response.data;
 
-      if (res.ok && data.status === "success") {
+      if (data.status === "success") {
         // Update villages state dengan data baru
         const updatedVillages = villages.map((v) =>
           v.id === currentVillage.id
@@ -280,12 +281,12 @@ export const KategoriDesa = () => {
         });
       }
     } catch (err) {
+      console.error("Error saving scores:", err);
       Swal.fire({
         icon: "error",
-        title: "Error!",
-        text: "Terjadi kesalahan saat menyimpan skor",
+        title: "Gagal!",
+        text: err.response?.data?.message || "Gagal menyimpan skor",
       });
-      console.error("Error saving scores:", err);
     } finally {
       setLoading(false);
     }
