@@ -59,9 +59,13 @@ export const KelolaAkun = () => {
     setError(null);
 
     try {
+      const token = localStorage.getItem("token");
       const response = await axiosInstance.get("/api/users", {
         params: {
           includeDesa: true,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
       });
       const data = response.data.data || [];
