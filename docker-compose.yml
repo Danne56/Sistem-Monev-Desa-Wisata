@@ -1,0 +1,20 @@
+services:
+  monev-client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sistem-monev-client:latest
+    container_name: monev-client
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
+      - VITE_API_BASE_URL=http://localhost:5000
+      - VITE_DISABLE_ROUTE_PROTECTION=true
+    restart: unless-stopped
+    networks:
+      - monev-network
+
+networks:
+  monev-network:
+    driver: bridge
